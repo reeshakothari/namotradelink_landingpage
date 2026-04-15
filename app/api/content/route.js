@@ -1,14 +1,19 @@
-import { kv } from '@vercel/kv';
+import { put, list } from '@vercel/blob';
 import fileContent from '../../../data/content.json';
 
-const KV_KEY = 'ntl_site_content';
+const BLOB_NAME = 'ntl-site-content.json';
 
 export async function GET() {
   try {
-    const content = await kv.get(KV_KEY);
-    return Response.json(content ?? fileContent);
+    const { blobs } = await list({ prefix: BLOB_NAME });
+    if (blobs.length > 0) {
+      const res = await fetch(blobs[0].url, { cache: 'no-store' });
+      const content = await res.json();
+      return Response.json(content);
+    }
+    // No blob yet — return the committed file defaults
+    return Response.json(fileContent);
   } catch {
-    // KV not yet configured — fall back to the committed file
     return Response.json(fileContent);
   }
 }
@@ -16,17 +21,18 @@ export async function GET() {
 export async function POST(request) {
   try {
     const content = await request.json();
-    await kv.set(KV_KEY, content);
+    await put(BLOB_NAME, JSON.stringify(content), {
+      access: 'public',
+      addRandomSuffix: false,
+      contentType: 'application/json',
+    });
     return Response.json({ ok: true });
   } catch (err) {
-    const notConfigured =
-      !process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN;
+    const notConfigured = !process.env.BLOB_READ_WRITE_TOKEN;
     return Response.json(
       {
         ok: false,
-        error: notConfigured
-          ? 'KV_NOT_CONFIGURED'
-          : String(err?.message ?? err),
+        error: notConfigured ? 'BLOB_NOT_CONFIGURED' : String(err?.message ?? err),
       },
       { status: 500 }
     );

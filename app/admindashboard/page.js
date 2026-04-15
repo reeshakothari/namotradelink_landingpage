@@ -335,7 +335,7 @@ function PublishStatus({ saved, dark }) {
   const map = {
     saving: { color: '#f59e0b', text: 'Publishing…' },
     saved:  { color: '#22c55e', text: '✓ Live — changes are visible to everyone' },
-    no_kv:  { color: '#f59e0b', text: '⚠ Vercel KV not connected — see setup below' },
+    no_kv:  { color: '#f59e0b', text: '⚠ Blob token missing — redeploy on Vercel to fix' },
     error:  { color: '#ef4444', text: '✗ Publish failed — check Vercel KV setup' },
   };
   const m = map[saved];
@@ -459,15 +459,15 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
   return (
     <div style={{ margin: '-32px -36px', fontFamily: "'Inter', system-ui, sans-serif" }}>
 
-      {/* KV setup notice — shown until KV is connected */}
+      {/* Blob token notice */}
       {saved === 'no_kv' && (
         <div style={{ background: '#fefce8', borderBottom: '2px solid #fbbf24', padding: '12px 32px', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
           <span style={{ fontSize: 20 }}>⚠️</span>
           <div>
-            <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 4 }}>Vercel KV not connected — one-time setup needed</div>
+            <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 4 }}>Almost there — one redeploy needed</div>
             <div style={{ fontSize: 13, color: '#78350f', lineHeight: 1.6 }}>
-              1. Go to your <strong>Vercel dashboard</strong> → open this project → <strong>Storage</strong> tab → <strong>Create Database</strong> → choose <strong>KV</strong> → connect to this project.<br/>
-              2. Vercel will auto-add the env vars. Redeploy once. After that, <strong>Publish</strong> works instantly — no git push needed ever again.
+              Your Blob store is connected but the token hasn't been picked up yet.<br/>
+              Go to <strong>Vercel dashboard → your project → Deployments → Redeploy</strong> (top right). After that one redeploy, <strong>Publish</strong> works instantly forever.
             </div>
           </div>
         </div>
@@ -855,7 +855,7 @@ export default function AdminDashboard() {
       const data = await res.json();
       if (data.ok) {
         setPubSaved('saved');
-      } else if (data.error === 'KV_NOT_CONFIGURED') {
+      } else if (data.error === 'BLOB_NOT_CONFIGURED') {
         setPubSaved('no_kv');
       } else {
         setPubSaved('error');
