@@ -328,6 +328,21 @@ function EF({ value, onChange, multiline, fontSize = 15, fontWeight = 400, color
   return multiline ? <textarea rows={rows} {...props} /> : <input {...props} />;
 }
 
+/* ─── Publish status message ─── */
+function PublishStatus({ saved, dark }) {
+  const c = dark ? 'rgba(255,255,255,0.6)' : '#64748b';
+  if (!saved || saved === null) return null;
+  const map = {
+    saving: { color: '#f59e0b', text: 'Publishing…' },
+    saved:  { color: '#22c55e', text: '✓ Live — changes are visible to everyone' },
+    no_kv:  { color: '#f59e0b', text: '⚠ Vercel KV not connected — see setup below' },
+    error:  { color: '#ef4444', text: '✗ Publish failed — check Vercel KV setup' },
+  };
+  const m = map[saved];
+  if (!m) return null;
+  return <span style={{ fontSize: 13, fontWeight: 600, color: m.color }}>{m.text}</span>;
+}
+
 /* ─── Image Upload Component ─── */
 function ImageUpload({ src, onChange, height = 150 }) {
   const fileRef = useRef(null);
@@ -433,16 +448,6 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
 
   const up = path => val => updateDraft(path, val);
 
-  // Download the current draft as content.json — user replaces data/content.json and pushes to Vercel
-  const downloadJson = () => {
-    const blob = new Blob([JSON.stringify(draft, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'content.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  };
 
   const updateListItem = (path, i, field, val) => {
     const arr = path.split('.').reduce((o, k) => o[k], draft);
@@ -454,21 +459,32 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
   return (
     <div style={{ margin: '-32px -36px', fontFamily: "'Inter', system-ui, sans-serif" }}>
 
+      {/* KV setup notice — shown until KV is connected */}
+      {saved === 'no_kv' && (
+        <div style={{ background: '#fefce8', borderBottom: '2px solid #fbbf24', padding: '12px 32px', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+          <span style={{ fontSize: 20 }}>⚠️</span>
+          <div>
+            <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 4 }}>Vercel KV not connected — one-time setup needed</div>
+            <div style={{ fontSize: 13, color: '#78350f', lineHeight: 1.6 }}>
+              1. Go to your <strong>Vercel dashboard</strong> → open this project → <strong>Storage</strong> tab → <strong>Create Database</strong> → choose <strong>KV</strong> → connect to this project.<br/>
+              2. Vercel will auto-add the env vars. Redeploy once. After that, <strong>Publish</strong> works instantly — no git push needed ever again.
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Sticky Publish Bar ── */}
       <div style={{ position: 'sticky', top: 0, zIndex: 50, background: '#1a2a4a', padding: '12px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.25)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <span style={{ fontWeight: 800, color: '#fff', fontSize: 15, letterSpacing: '0.05em' }}>EDIT WEBSITE</span>
-          <span style={{ background: 'rgba(232,119,34,0.2)', color: '#e87722', borderRadius: 6, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>Live Preview Mode</span>
-          <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>Scroll down to see and edit every section</span>
+          <span style={{ background: 'rgba(232,119,34,0.2)', color: '#e87722', borderRadius: 6, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>Live Edit</span>
+          <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>Scroll to edit every section</span>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          {saved && <span style={{ color: '#4ade80', fontWeight: 600, fontSize: 13 }}>✓ Preview updated</span>}
-          <a href="/" target="_blank" style={{ padding: '8px 14px', background: 'rgba(255,255,255,0.1)', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.2)' }}>↗ Preview</a>
-          <button onClick={publish} style={{ background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, padding: '9px 16px', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>
-            Save Preview
-          </button>
-          <button onClick={downloadJson} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 20px', fontWeight: 700, fontSize: 13, cursor: 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.4)', display: 'flex', alignItems: 'center', gap: 6 }}>
-            ⬇ Download content.json
+          <PublishStatus saved={saved} />
+          <a href="/" target="_blank" style={{ padding: '8px 14px', background: 'rgba(255,255,255,0.1)', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.2)' }}>↗ View Site</a>
+          <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 24px', fontWeight: 700, fontSize: 14, cursor: saved === 'saving' ? 'wait' : 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.4)', transition: 'background 0.2s' }}>
+            {saved === 'saving' ? 'Publishing…' : saved === 'saved' ? '✓ Published!' : 'Publish Changes'}
           </button>
         </div>
       </div>
@@ -797,37 +813,13 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
         </div>
       </div>
 
-      {/* Bottom — download + instructions */}
-      <div style={{ background: '#0d1b30', padding: '36px 40px' }}>
-        <div style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', marginBottom: 20, lineHeight: 1.7 }}>
-            Changes you make here are previewed in your local browser.<br/>
-            To make them <strong style={{ color: '#fff' }}>live for everyone</strong>, follow these 3 steps:
-          </div>
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', alignItems: 'stretch', marginBottom: 24, flexWrap: 'wrap' }}>
-            {[
-              { step: '1', label: 'Download', desc: 'Click the button below to get content.json', color: '#e87722' },
-              { step: '2', label: 'Replace file', desc: 'Drop it into your project at data/content.json', color: '#3b82f6' },
-              { step: '3', label: 'Push to Vercel', desc: 'git add . → git commit → git push', color: '#22c55e' },
-            ].map(s => (
-              <div key={s.step} style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 10, padding: '16px 20px', flex: 1, minWidth: 160, border: `1px solid ${s.color}33`, textAlign: 'center' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: s.color, color: '#fff', fontWeight: 800, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>{s.step}</div>
-                <div style={{ fontWeight: 700, color: '#fff', fontSize: 14, marginBottom: 4 }}>{s.label}</div>
-                <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>{s.desc}</div>
-              </div>
-            ))}
-          </div>
-          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
-            {saved && <span style={{ color: '#4ade80', fontWeight: 600, fontSize: 14 }}>✓ Preview saved</span>}
-            <button onClick={publish} style={{ background: 'rgba(255,255,255,0.08)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, padding: '12px 24px', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>
-              Save for Preview
-            </button>
-            <button onClick={downloadJson} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 32px', fontWeight: 700, fontSize: 15, cursor: 'pointer', boxShadow: '0 4px 16px rgba(232,119,34,0.4)', display: 'flex', alignItems: 'center', gap: 8 }}>
-              ⬇ Download content.json
-            </button>
-            <a href="/" target="_blank" style={{ padding: '12px 20px', background: 'rgba(255,255,255,0.08)', color: '#fff', borderRadius: 10, fontSize: 14, fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.15)' }}>↗ Preview</a>
-          </div>
-        </div>
+      {/* Bottom publish bar */}
+      <div style={{ background: '#0d1b30', padding: '28px 40px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 14 }}>
+        <PublishStatus saved={saved} dark />
+        <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '14px 48px', fontWeight: 700, fontSize: 16, cursor: saved === 'saving' ? 'wait' : 'pointer', boxShadow: '0 4px 16px rgba(232,119,34,0.35)', transition: 'background 0.2s' }}>
+          {saved === 'saving' ? 'Publishing…' : saved === 'saved' ? '✓ Published!' : 'Publish Changes'}
+        </button>
+        <a href="/" target="_blank" style={{ padding: '14px 20px', background: 'rgba(255,255,255,0.08)', color: '#fff', borderRadius: 10, fontSize: 14, fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.15)' }}>↗ View Site</a>
       </div>
     </div>
   );
@@ -850,10 +842,28 @@ export default function AdminDashboard() {
   const saveLeads = useCallback((l) => { setLeadsState(l); localStorage.setItem(LEADS_KEY, JSON.stringify(l)); }, []);
   const saveCustomers = useCallback((c) => { setCustomersState(c); localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(c)); }, []);
 
-  const publishContent = useCallback(() => {
+  const publishContent = useCallback(async () => {
+    setPubSaved('saving');
+    // Update local preview immediately
     setSiteContent(draft);
-    setPubSaved(true);
-    setTimeout(() => setPubSaved(false), 3000);
+    try {
+      const res = await fetch('/api/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(draft),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setPubSaved('saved');
+      } else if (data.error === 'KV_NOT_CONFIGURED') {
+        setPubSaved('no_kv');
+      } else {
+        setPubSaved('error');
+      }
+    } catch {
+      setPubSaved('error');
+    }
+    setTimeout(() => setPubSaved(null), 4000);
   }, [draft]);
 
   const updateDraft = useCallback((path, value) => {
