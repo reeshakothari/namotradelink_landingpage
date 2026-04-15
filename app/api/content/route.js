@@ -1,30 +1,49 @@
-import { kv } from '@vercel/kv';
+import postgres from 'postgres';
 import fileContent from '../../../data/content.json';
-
-const KEY = 'ntl_site_content';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+function getDB() {
+  return postgres(process.env.POSTGRES_URL, { ssl: 'require', max: 1 });
+}
+
+async function ensureTable(db) {
+  await db`CREATE TABLE IF NOT EXISTS site_config (key text PRIMARY KEY, value jsonb NOT NULL)`;
+}
+
 export async function GET() {
+  if (!process.env.POSTGRES_URL) {
+    return Response.json(fileContent);
+  }
   try {
-    const content = await kv.get(KEY);
-    return Response.json(content ?? fileContent, {
+    const db = getDB();
+    await ensureTable(db);
+    const rows = await db`SELECT value FROM site_config WHERE key = 'ntl_content'`;
+    await db.end();
+    return Response.json(rows[0]?.value ?? fileContent, {
       headers: { 'Cache-Control': 'no-store' },
     });
-  } catch {
-    // KV not configured yet — serve the committed file
+  } catch (err) {
+    console.error('[content GET]', err);
     return Response.json(fileContent);
   }
 }
 
 export async function POST(request) {
-  if (!process.env.KV_REST_API_URL || !process.env.KV_REST_API_TOKEN) {
-    return Response.json({ ok: false, error: 'KV_NOT_CONFIGURED' }, { status: 500 });
+  if (!process.env.POSTGRES_URL) {
+    return Response.json({ ok: false, error: 'DB_NOT_CONFIGURED' }, { status: 500 });
   }
   try {
     const content = await request.json();
-    await kv.set(KEY, content);
+    const db = getDB();
+    await ensureTable(db);
+    await db`
+      INSERT INTO site_config (key, value)
+      VALUES ('ntl_content', ${db.json(content)})
+      ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
+    `;
+    await db.end();
     return Response.json({ ok: true });
   } catch (err) {
     console.error('[content POST]', err);

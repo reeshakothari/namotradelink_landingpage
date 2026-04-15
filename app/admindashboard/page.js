@@ -335,7 +335,7 @@ function PublishStatus({ saved, dark }) {
   const map = {
     saving: { color: '#f59e0b', text: 'Publishing…' },
     saved:  { color: '#22c55e', text: '✓ Live — changes are visible to everyone' },
-    no_kv:  { color: '#f59e0b', text: '⚠ KV not connected yet — see instructions below' },
+    no_kv:  { color: '#f59e0b', text: '⚠ Database not connected yet — see instructions below' },
     error:  { color: '#ef4444', text: '✗ Publish failed — see error in browser console' },
   };
   const m = map[saved];
@@ -459,16 +459,16 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
   return (
     <div style={{ margin: '-32px -36px', fontFamily: "'Inter', system-ui, sans-serif" }}>
 
-      {/* KV setup notice */}
+      {/* DB setup notice */}
       {saved === 'no_kv' && (
         <div style={{ background: '#fefce8', borderBottom: '2px solid #fbbf24', padding: '14px 32px', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
           <span style={{ fontSize: 22 }}>⚠️</span>
           <div>
-            <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 6, fontSize: 15 }}>One-time KV setup needed (2 min)</div>
+            <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 6, fontSize: 15 }}>One-time Supabase setup needed (1 min)</div>
             <div style={{ fontSize: 13, color: '#78350f', lineHeight: 1.8 }}>
-              <b>1.</b> Go to <b>vercel.com → your project → Storage → Browse Storage → Upstash</b> → Continue<br/>
-              <b>2.</b> Choose <b>Redis</b> → create a free database → click <b>Connect to Project</b><br/>
-              <b>3.</b> Vercel auto-adds the env vars. The project will redeploy automatically.<br/>
+              <b>1.</b> Go to <b>supabase.com → your project → Project Settings → Integrations → Vercel</b><br/>
+              <b>2.</b> Click <b>Connect Project</b> and select your Vercel project<br/>
+              <b>3.</b> Vercel auto-adds the <b>POSTGRES_URL</b> env var. The project will redeploy automatically.<br/>
               <b>4.</b> Come back and click <b>Publish Changes</b> — it will work permanently from here.
             </div>
           </div>
@@ -857,7 +857,7 @@ export default function AdminDashboard() {
       const data = await res.json();
       if (data.ok) {
         setPubSaved('saved');
-      } else if (data.error === 'KV_NOT_CONFIGURED') {
+      } else if (data.error === 'DB_NOT_CONFIGURED') {
         setPubSaved('no_kv');
       } else {
         console.error('Publish error:', data.error);
