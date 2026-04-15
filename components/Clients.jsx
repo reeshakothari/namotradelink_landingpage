@@ -1,14 +1,8 @@
-const clients = [
-  'Abhiyanta PMC Pvt Ltd', 'Matchwell Engineering Pvt Ltd',
-  'Darsheel Construction', 'Mahati Industries Pvt Ltd',
-  'Elements Technofabs Pvt Ltd', 'Omkar Industries',
-  'Konbil Landmarks', 'Patil Automation',
-  'Industrial Packers', 'Pravin Raut & Associates',
-  'Innoova Construction', 'Q Point Engineering',
-  'Surich Industries', 'Scon Projects',
-];
+'use client';
+import { useSiteContent } from '@/lib/useSiteContent';
 
 export default function Clients() {
+  const { clients } = useSiteContent();
   return (
     <section className="clients section" id="clients">
       <div className="container">

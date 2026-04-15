@@ -1,24 +1,21 @@
+'use client';
+import { useSiteContent } from '@/lib/useSiteContent';
+
 export default function About() {
+  const { about } = useSiteContent();
   return (
     <section className="about section" id="about">
       <div className="container about-grid">
         <div className="about-text">
-          <span className="section-label">About Our Company</span>
-          <h2>Your Trusted Partner in Steel &amp; Structure.</h2>
-          <p>
-            We are trusted dealers in construction and industrial steel products, serving the
-            industry for over 30 years. Known for quality, reliability, and competitive pricing,
-            we supply ISI-certified steel with assured strength and precision. Backed by strong
-            manufacturer tie-ups, we ensure timely delivery and customer satisfaction across
-            every order.
-          </p>
+          <span className="section-label">{about.sectionLabel}</span>
+          <h2>{about.heading}</h2>
+          <p>{about.description}</p>
           <ul className="check-list">
-            <li><span className="check">✔</span> ISI-Certified, High-Strength Products</li>
-            <li><span className="check">✔</span> Wide Product Range</li>
-            <li><span className="check">✔</span> 30+ Years of Industry Trust</li>
+            {about.checklist.map((item) => (
+              <li key={item}><span className="check">✔</span> {item}</li>
+            ))}
           </ul>
         </div>
-
         <div className="vision-mission-grid">
           <div className="vm-card">
             <div className="vm-icon">
@@ -27,9 +24,8 @@ export default function About() {
               </svg>
             </div>
             <h3>Vision</h3>
-            <p>To deliver superior-quality steel solutions that consistently exceed customer expectations through innovation, service excellence, and long-term partnerships.</p>
+            <p>{about.vision}</p>
           </div>
-
           <div className="vm-card vm-card--mission">
             <div className="vm-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="28" height="28">
@@ -37,7 +33,7 @@ export default function About() {
               </svg>
             </div>
             <h3>Mission</h3>
-            <p>To build lasting relationships by offering exceptional service, embracing technology, and supporting every customer&apos;s steel requirement with integrity and expertise.</p>
+            <p>{about.mission}</p>
           </div>
         </div>
       </div>

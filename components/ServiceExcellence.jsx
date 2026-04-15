@@ -1,22 +1,16 @@
-import Image from 'next/image';
-
-const p = (seed, w, h) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
-
-const services = [
-  { title: 'Fast & On-Time Delivery', desc: 'We understand project timelines. Our logistics ensure your material arrives exactly when you need it.' },
-  { title: 'High Accuracy in Order Fulfillment', desc: 'Precise quantities, correct grades, and verified dimensions on every single order.' },
-  { title: 'Technical Support & Customized Solutions', desc: 'Our experts help you choose the right product and can supply made-to-order specifications.' },
-];
+'use client';
+import { useSiteContent } from '@/lib/useSiteContent';
 
 export default function ServiceExcellence() {
+  const { services } = useSiteContent();
   return (
     <section className="service section" id="service">
       <div className="container service-inner">
         <div className="service-text">
-          <span className="section-label">Service Excellence</span>
-          <h2>Delivering Beyond Expectations</h2>
+          <span className="section-label">{services.sectionLabel}</span>
+          <h2>{services.heading}</h2>
           <div className="service-items">
-            {services.map((s) => (
+            {services.items.map((s) => (
               <div className="service-item" key={s.title}>
                 <div className="service-dot" />
                 <div>
@@ -27,53 +21,15 @@ export default function ServiceExcellence() {
             ))}
           </div>
         </div>
-
         <div className="service-visual">
-          <div className="service-img-grid">
-            <div className="service-img-main">
-              <Image
-                src={p('steel-warehouse', 600, 440)}
-                alt="Steel warehouse"
-                fill
-                sizes="(max-width: 1024px) 100vw, 500px"
-                style={{ objectFit: 'cover', borderRadius: '16px' }}
-              />
-            </div>
-            <div className="service-img-small-grid">
-              <div className="service-img-small">
-                <Image
-                  src={p('steel-pipes', 280, 200)}
-                  alt="Steel pipes"
-                  fill
-                  sizes="140px"
-                  style={{ objectFit: 'cover', borderRadius: '12px' }}
-                />
-              </div>
-              <div className="service-img-small">
-                <Image
-                  src={p('steel-beams', 280, 200)}
-                  alt="Steel beams"
-                  fill
-                  sizes="140px"
-                  style={{ objectFit: 'cover', borderRadius: '12px' }}
-                />
-              </div>
-              <div className="service-img-small">
-                <Image
-                  src={p('metal-work', 280, 200)}
-                  alt="Metal work"
-                  fill
-                  sizes="140px"
-                  style={{ objectFit: 'cover', borderRadius: '12px' }}
-                />
-              </div>
-              <div className="service-img-small service-img-stat">
-                <div className="service-stat-box">
-                  <span className="service-stat-num">30+</span>
-                  <span className="service-stat-label">Years of Trust</span>
-                </div>
-              </div>
-            </div>
+          <div className="service-img-placeholder">
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" width="160" height="160">
+              <circle cx="100" cy="100" r="90" stroke="#e87722" strokeWidth="3" strokeDasharray="8 4"/>
+              <circle cx="100" cy="100" r="65" fill="#1a2a4a20"/>
+              <rect x="55" y="75" width="90" height="10" rx="5" fill="#e87722" opacity="0.8"/>
+              <rect x="55" y="95" width="90" height="10" rx="5" fill="#e87722" opacity="0.6"/>
+              <rect x="55" y="115" width="90" height="10" rx="5" fill="#e87722" opacity="0.4"/>
+            </svg>
           </div>
         </div>
       </div>
