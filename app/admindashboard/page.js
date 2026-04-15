@@ -335,8 +335,8 @@ function PublishStatus({ saved, dark }) {
   const map = {
     saving: { color: '#f59e0b', text: 'Publishing…' },
     saved:  { color: '#22c55e', text: '✓ Live — changes are visible to everyone' },
-    no_kv:  { color: '#f59e0b', text: '⚠ Blob token missing — redeploy on Vercel to fix' },
-    error:  { color: '#ef4444', text: '✗ Publish failed — check Vercel KV setup' },
+    no_kv:  { color: '#f59e0b', text: '⚠ KV not connected yet — see instructions below' },
+    error:  { color: '#ef4444', text: '✗ Publish failed — see error in browser console' },
   };
   const m = map[saved];
   if (!m) return null;
@@ -459,15 +459,17 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
   return (
     <div style={{ margin: '-32px -36px', fontFamily: "'Inter', system-ui, sans-serif" }}>
 
-      {/* Blob token notice */}
+      {/* KV setup notice */}
       {saved === 'no_kv' && (
-        <div style={{ background: '#fefce8', borderBottom: '2px solid #fbbf24', padding: '12px 32px', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
-          <span style={{ fontSize: 20 }}>⚠️</span>
+        <div style={{ background: '#fefce8', borderBottom: '2px solid #fbbf24', padding: '14px 32px', display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+          <span style={{ fontSize: 22 }}>⚠️</span>
           <div>
-            <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 4 }}>Almost there — one redeploy needed</div>
-            <div style={{ fontSize: 13, color: '#78350f', lineHeight: 1.6 }}>
-              Your Blob store is connected but the token hasn't been picked up yet.<br/>
-              Go to <strong>Vercel dashboard → your project → Deployments → Redeploy</strong> (top right). After that one redeploy, <strong>Publish</strong> works instantly forever.
+            <div style={{ fontWeight: 700, color: '#92400e', marginBottom: 6, fontSize: 15 }}>One-time KV setup needed (2 min)</div>
+            <div style={{ fontSize: 13, color: '#78350f', lineHeight: 1.8 }}>
+              <b>1.</b> Go to <b>vercel.com → your project → Storage → Browse Storage → Upstash</b> → Continue<br/>
+              <b>2.</b> Choose <b>Redis</b> → create a free database → click <b>Connect to Project</b><br/>
+              <b>3.</b> Vercel auto-adds the env vars. The project will redeploy automatically.<br/>
+              <b>4.</b> Come back and click <b>Publish Changes</b> — it will work permanently from here.
             </div>
           </div>
         </div>
@@ -855,9 +857,10 @@ export default function AdminDashboard() {
       const data = await res.json();
       if (data.ok) {
         setPubSaved('saved');
-      } else if (data.error === 'BLOB_NOT_CONFIGURED') {
+      } else if (data.error === 'KV_NOT_CONFIGURED') {
         setPubSaved('no_kv');
       } else {
+        console.error('Publish error:', data.error);
         setPubSaved('error');
       }
     } catch {
