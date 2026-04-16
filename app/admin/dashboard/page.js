@@ -93,7 +93,7 @@ function OverviewTab({ leads, customers }) {
                   <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1a2a4a', fontSize: 14 }}>{l.name}</td>
                   <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 14 }}>{l.phone}</td>
                   <td style={{ padding: '10px 12px' }}><Badge text={l.type} color={l.type} /></td>
-                  <td style={{ padding: '10px 12px' }}><Badge text={l.status} color={l.status} /></td>
+                  <td style={{ padding: '10px 12px' }}>{(() => { const s = STATUS_STYLE[l.status] || STATUS_STYLE.new; return <span style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}`, borderRadius: 99, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{s.label}</span>; })()}</td>
                   <td style={{ padding: '10px 12px', color: '#94a3b8', fontSize: 13 }}>{l.date}</td>
                 </tr>
               ))}
@@ -111,13 +111,53 @@ function OverviewTab({ leads, customers }) {
   );
 }
 
+/* ─── Status colour config ─── */
+const STATUS_STYLE = {
+  new:       { bg: '#eff6ff', color: '#2563eb', border: '#bfdbfe', label: 'New' },
+  contacted: { bg: '#fffbeb', color: '#d97706', border: '#fde68a', label: 'Contacted' },
+  converted: { bg: '#f0fdf4', color: '#16a34a', border: '#bbf7d0', label: 'Converted' },
+  closed:    { bg: '#f8fafc', color: '#64748b', border: '#cbd5e1', label: 'Closed' },
+};
+
+const StatusSelect = ({ value, onChange }) => {
+  const s = STATUS_STYLE[value] || STATUS_STYLE.new;
+  return (
+    <div style={{ position: 'relative', display: 'inline-block' }}>
+      <select
+        value={value}
+        onChange={e => onChange(e.target.value)}
+        style={{
+          background: s.bg, color: s.color, border: `1.5px solid ${s.border}`,
+          borderRadius: 99, padding: '4px 24px 4px 10px', fontSize: 12, fontWeight: 700,
+          cursor: 'pointer', outline: 'none', appearance: 'none', WebkitAppearance: 'none',
+        }}
+      >
+        {Object.entries(STATUS_STYLE).map(([val, { label }]) => (
+          <option key={val} value={val}>{label}</option>
+        ))}
+      </select>
+      <span style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', fontSize: 10, color: s.color }}>▾</span>
+    </div>
+  );
+};
+
 /* ─── Leads Tab ─── */
 function LeadsTab({ leads, saveLeads }) {
   const [subTab, setSubTab] = useState('inbound');
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: 'inbound' });
   const [editId, setEditId] = useState(null);
+  const [sortBy, setSortBy] = useState('date_desc');
   const filtered = leads.filter(l => l.type === subTab);
+  const ORDER = ['new', 'contacted', 'converted', 'closed'];
+  const sorted = [...filtered].sort((a, b) => {
+    if (sortBy === 'name_asc')  return (a.name || '').localeCompare(b.name || '');
+    if (sortBy === 'name_desc') return (b.name || '').localeCompare(a.name || '');
+    if (sortBy === 'status')    return ORDER.indexOf(a.status) - ORDER.indexOf(b.status);
+    if (sortBy === 'date_asc')  return (a.created_at || a.date || '').localeCompare(b.created_at || b.date || '');
+    // date_desc (default)
+    return (b.created_at || b.date || '').localeCompare(a.created_at || a.date || '');
+  });
   const f = k => v => setForm(p => ({ ...p, [k]: v }));
   const submit = async e => {
     e.preventDefault();
@@ -157,9 +197,25 @@ function LeadsTab({ leads, saveLeads }) {
           </button>
         ))}
       </div>
-      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 16, marginTop: -12 }}>{subTab === 'inbound' ? 'Leads coming in from your contact form, referrals, or inquiries.' : 'Prospects you are actively reaching out to.'}</p>
+      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 12, marginTop: -12 }}>{subTab === 'inbound' ? 'Leads coming in from your contact form, referrals, or inquiries.' : 'Prospects you are actively reaching out to.'}</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
+        <span style={{ fontSize: 12, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Sort:</span>
+        {[
+          { value: 'date_desc', label: 'Newest' },
+          { value: 'date_asc',  label: 'Oldest' },
+          { value: 'status',    label: 'Status' },
+          { value: 'name_asc',  label: 'Name A–Z' },
+        ].map(opt => (
+          <button key={opt.value} onClick={() => setSortBy(opt.value)} style={{
+            padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
+            background: sortBy === opt.value ? '#1a2a4a' : '#fff',
+            color:      sortBy === opt.value ? '#fff'    : '#64748b',
+            border:     `1px solid ${sortBy === opt.value ? '#1a2a4a' : '#e2e8f0'}`,
+          }}>{opt.label}</button>
+        ))}
+      </div>
       <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 1px 4px rgba(0,0,0,0.08)', overflow: 'hidden' }}>
-        {filtered.length === 0 ? (
+        {sorted.length === 0 ? (
           <div style={{ padding: 48, textAlign: 'center', color: '#94a3b8' }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>◈</div>
             <div>No {subTab} leads yet. Click <strong style={{ color: '#e87722' }}>+ Add Lead</strong> to get started.</div>
@@ -170,16 +226,14 @@ function LeadsTab({ leads, saveLeads }) {
               {['Name', 'Phone', 'Company', 'Requirement', 'Status', 'Date', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
             </tr></thead>
             <tbody>
-              {filtered.map(l => (
+              {sorted.map(l => (
                 <tr key={l.id} style={{ borderBottom: '1px solid #f1f5f9' }} onMouseEnter={e => e.currentTarget.style.background = '#fafbff'} onMouseLeave={e => e.currentTarget.style.background = ''}>
                   <td style={{ padding: '12px 16px', fontWeight: 600, color: '#1a2a4a', fontSize: 14 }}>{l.name}</td>
                   <td style={{ padding: '12px 16px', color: '#334155', fontSize: 14 }}>{l.phone}</td>
                   <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 14 }}>{l.company || '—'}</td>
                   <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 13, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.requirement || '—'}</td>
                   <td style={{ padding: '12px 16px' }}>
-                    <select value={l.status} onChange={e => updateStatus(l.id, e.target.value)} style={{ border: 'none', background: 'transparent', cursor: 'pointer', fontSize: 13, color: '#334155', outline: 'none' }}>
-                      {['new', 'contacted', 'converted', 'closed'].map(s => <option key={s} value={s}>{s.charAt(0).toUpperCase() + s.slice(1)}</option>)}
-                    </select>
+                    <StatusSelect value={l.status} onChange={status => updateStatus(l.id, status)} />
                   </td>
                   <td style={{ padding: '12px 16px', color: '#94a3b8', fontSize: 13, whiteSpace: 'nowrap' }}>{l.date}</td>
                   <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
