@@ -119,17 +119,31 @@ function LeadsTab({ leads, saveLeads }) {
   const [editId, setEditId] = useState(null);
   const filtered = leads.filter(l => l.type === subTab);
   const f = k => v => setForm(p => ({ ...p, [k]: v }));
-  const submit = e => {
+  const submit = async e => {
     e.preventDefault();
-    if (editId) { saveLeads(leads.map(l => l.id === editId ? { ...l, ...form } : l)); }
-    else { saveLeads([...leads, { ...form, id: Date.now(), date: new Date().toLocaleDateString('en-IN') }]); }
+    if (editId) {
+      await fetch('/api/leads', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: editId, ...form }) });
+      saveLeads(leads.map(l => l.id === editId ? { ...l, ...form } : l));
+    } else {
+      const res = await fetch('/api/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, date: new Date().toLocaleDateString('en-IN') }) });
+      const newLead = await res.json();
+      saveLeads([...leads, newLead]);
+    }
     setShowModal(false); setEditId(null);
     setForm({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: subTab });
   };
   const openAdd = () => { setForm({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: subTab }); setEditId(null); setShowModal(true); };
   const openEdit = l => { setForm({ name: l.name, phone: l.phone, company: l.company || '', requirement: l.requirement || '', notes: l.notes || '', status: l.status, type: l.type }); setEditId(l.id); setShowModal(true); };
-  const del = id => { if (window.confirm('Delete this lead?')) saveLeads(leads.filter(l => l.id !== id)); };
-  const updateStatus = (id, status) => saveLeads(leads.map(l => l.id === id ? { ...l, status } : l));
+  const del = async id => {
+    if (window.confirm('Delete this lead?')) {
+      await fetch(`/api/leads?id=${id}`, { method: 'DELETE' });
+      saveLeads(leads.filter(l => l.id !== id));
+    }
+  };
+  const updateStatus = async (id, status) => {
+    await fetch('/api/leads', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status }) });
+    saveLeads(leads.map(l => l.id === id ? { ...l, status } : l));
+  };
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
@@ -836,12 +850,15 @@ export default function AdminDashboard() {
   const [pubSaved, setPubSaved] = useState(false);
 
   useEffect(() => {
-    setLeadsState(stored(LEADS_KEY, []));
+    fetch('/api/leads')
+      .then(r => r.json())
+      .then(data => setLeadsState(Array.isArray(data) ? data : []))
+      .catch(() => setLeadsState(stored(LEADS_KEY, [])));
     setCustomersState(stored(CUSTOMERS_KEY, []));
     setDraft(getSiteContent());
   }, []);
 
-  const saveLeads = useCallback((l) => { setLeadsState(l); localStorage.setItem(LEADS_KEY, JSON.stringify(l)); }, []);
+  const saveLeads = useCallback((l) => { setLeadsState(l); }, []);
   const saveCustomers = useCallback((c) => { setCustomersState(c); localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(c)); }, []);
 
   const publishContent = useCallback(async () => {

@@ -3,14 +3,36 @@ import { useState } from 'react';
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(false);
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
+    setError(false);
+    const data = new FormData(e.target);
+    const lead = {
+      name:        data.get('name'),
+      phone:       data.get('phone'),
+      email:       data.get('email') || null,
+      requirement: data.get('product') || null,
+      notes:       data.get('message') || null,
+      type:        'inbound',
+      status:      'new',
+      date:        new Date().toLocaleDateString('en-IN'),
+    };
+    try {
+      const res = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(lead),
+      });
+      if (!res.ok) throw new Error('failed');
+      setSubmitted(true);
       e.target.reset();
-    }, 4000);
+      setTimeout(() => setSubmitted(false), 4000);
+    } catch {
+      setError(true);
+      setTimeout(() => setError(false), 4000);
+    }
   }
 
   return (
@@ -107,10 +129,10 @@ export default function Contact() {
             <button
               type="submit"
               className="btn-primary btn-full"
-              style={submitted ? { background: '#16a34a', borderColor: '#16a34a' } : {}}
+              style={submitted ? { background: '#16a34a', borderColor: '#16a34a' } : error ? { background: '#dc2626', borderColor: '#dc2626' } : {}}
               disabled={submitted}
             >
-              {submitted ? 'Message Sent! We\'ll be in touch.' : 'Send Inquiry →'}
+              {submitted ? '✓ Message Sent! We\'ll be in touch.' : error ? 'Failed — please try again' : 'Send Inquiry →'}
             </button>
           </form>
         </div>
