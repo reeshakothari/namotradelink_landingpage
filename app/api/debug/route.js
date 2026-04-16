@@ -1,7 +1,7 @@
 export async function GET() {
   return Response.json({
-    BLOB_READ_WRITE_TOKEN: !!process.env.BLOB_READ_WRITE_TOKEN,
-    BLOB_TOKEN_PREFIX: process.env.BLOB_READ_WRITE_TOKEN?.slice(0, 12) ?? 'NOT SET',
+    POSTGRES_URL: !!process.env.POSTGRES_URL,
+    POSTGRES_URL_PREFIX: process.env.POSTGRES_URL?.slice(0, 20) ?? 'NOT SET',
     NODE_ENV: process.env.NODE_ENV,
   });
 }
