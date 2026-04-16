@@ -16,7 +16,7 @@ export default function Hero() {
         </h1>
         <p className="hero-sub">{hero.subtitle}</p>
         <div className="hero-contact">
-          <a href={`tel:${hero.phone.replace(/\s/g, '')}`} className="btn-primary">
+          <a href={`https://wa.me/${hero.phone.replace(/[\s+]/g, '')}`} target="_blank" rel="noopener noreferrer" className="btn-primary">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
               <rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1"/>
             </svg>

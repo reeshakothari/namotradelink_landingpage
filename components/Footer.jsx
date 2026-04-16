@@ -26,9 +26,16 @@ export default function Footer() {
         <div className="footer-links">
           <h4>Quick Links</h4>
           <ul>
-            {['#about', '#products', '#brands', '#case-studies', '#clients', '#contact'].map((href) => (
+            {[
+              { href: '/about', label: 'About' },
+              { href: '/products', label: 'Products' },
+              { href: '/brands', label: 'Brands' },
+              { href: '/case-studies', label: 'Case Studies' },
+              { href: '/clients', label: 'Clients' },
+              { href: '/contact', label: 'Contact' },
+            ].map(({ href, label }) => (
               <li key={href}>
-                <Link href={href}>{href.replace('#', '').replace('-', ' ').replace(/\b\w/g, c => c.toUpperCase())}</Link>
+                <Link href={href}>{label}</Link>
               </li>
             ))}
           </ul>
@@ -45,7 +52,7 @@ export default function Footer() {
 
         <div className="footer-contact">
           <h4>Contact</h4>
-          <p><a href="tel:+919860489490">+91 98604 89490</a></p>
+          <p><a href="https://wa.me/919860489490" target="_blank" rel="noopener noreferrer">+91 98604 89490</a></p>
           <p><a href="mailto:namotradelink@gmail.com">namotradelink@gmail.com</a></p>
           <p>Office No. 801, Apex Business Court,<br/>Near Gangadham, Pune 411037</p>
           <p className="footer-person">Presented by: <strong>Pratik Khivsara</strong></p>

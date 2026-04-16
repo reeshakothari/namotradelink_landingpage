@@ -12,11 +12,11 @@ const LogoIcon = () => (
 );
 
 const links = [
-  { href: '#about', label: 'About' },
-  { href: '#products', label: 'Products' },
-  { href: '#brands', label: 'Brands' },
-  { href: '#case-studies', label: 'Case Studies' },
-  { href: '#clients', label: 'Clients' },
+  { href: '/about', label: 'About' },
+  { href: '/products', label: 'Products' },
+  { href: '/brands', label: 'Brands' },
+  { href: '/case-studies', label: 'Case Studies' },
+  { href: '/clients', label: 'Clients' },
 ];
 
 export default function Navbar() {
@@ -45,7 +45,7 @@ export default function Navbar() {
             {links.map(l => (
               <Link key={l.href} href={l.href}>{l.label}</Link>
             ))}
-            <Link href="#contact" className="btn-nav">Contact Us</Link>
+            <Link href="/contact" className="btn-nav">Contact Us</Link>
           </nav>
 
           <button className="hamburger" onClick={() => setMenuOpen(o => !o)} aria-label="Toggle menu">
@@ -60,7 +60,7 @@ export default function Navbar() {
         {links.map(l => (
           <Link key={l.href} href={l.href} onClick={() => setMenuOpen(false)}>{l.label}</Link>
         ))}
-        <Link href="#contact" onClick={() => setMenuOpen(false)} style={{ color: 'var(--orange)', fontWeight: 700 }}>Contact Us</Link>
+        <Link href="/contact" onClick={() => setMenuOpen(false)} style={{ color: 'var(--orange)', fontWeight: 700 }}>Contact Us</Link>
       </div>
     </>
   );

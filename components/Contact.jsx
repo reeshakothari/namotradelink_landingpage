@@ -29,7 +29,7 @@ export default function Contact() {
               </div>
               <div>
                 <span className="contact-label">Phone</span>
-                <a href="tel:+919860489490">+91 98604 89490</a>
+                <a href="https://wa.me/919860489490" target="_blank" rel="noopener noreferrer">+91 98604 89490</a>
               </div>
             </div>
             <div className="contact-item">
