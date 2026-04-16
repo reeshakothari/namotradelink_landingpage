@@ -1,12 +1,5 @@
 import Link from 'next/link';
-
-const LogoIcon = () => (
-  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
-    <rect width="40" height="40" rx="6" fill="#1a2a4a"/>
-    <path d="M8 28 L14 14 L20 24 L26 14 L32 28" stroke="#e87722" strokeWidth="2.5" strokeLinejoin="round" fill="none"/>
-    <circle cx="20" cy="30" r="3" fill="#e87722"/>
-  </svg>
-);
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -14,9 +7,9 @@ export default function Footer() {
       <div className="container footer-inner">
         <div className="footer-brand">
           <div className="logo" style={{ marginBottom: 20 }}>
-            <LogoIcon />
+            <Image src="/logo.png" alt="Namo Steel" width={36} height={36} style={{ objectFit: 'contain' }} />
             <div className="logo-text">
-              <span className="logo-name">NAMO TRADELINK</span>
+              <span className="logo-name">NAMO STEEL</span>
               <span className="logo-tag">The Steel Hub</span>
             </div>
           </div>
@@ -61,7 +54,7 @@ export default function Footer() {
 
       <div className="footer-bottom">
         <div className="container">
-          <p>© 2025 Namo Tradelink. All rights reserved. | Iron &amp; Steel Merchants Since 1995</p>
+          <p>© 2025 Namo Steel. All rights reserved. | Iron &amp; Steel Merchants Since 1995</p>
         </div>
       </div>
     </footer>

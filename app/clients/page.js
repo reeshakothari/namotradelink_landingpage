@@ -2,7 +2,7 @@ import Navbar from '@/components/Navbar';
 import Clients from '@/components/Clients';
 import Footer from '@/components/Footer';
 
-export const metadata = { title: 'Clients – Namo Tradelink' };
+export const metadata = { title: 'Clients – Namo Steel' };
 
 export default function ClientsPage() {
   return (

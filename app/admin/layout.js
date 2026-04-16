@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Admin Dashboard – Namo Tradelink',
+  title: 'Admin Dashboard – Namo Steel',
   description: 'Namo Tradelink internal admin panel',
 };
 

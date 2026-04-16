@@ -1,15 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-
-const LogoIcon = () => (
-  <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="40" height="40">
-    <rect width="40" height="40" rx="6" fill="#1a2a4a"/>
-    <path d="M8 28 L14 14 L20 24 L26 14 L32 28" stroke="#e87722" strokeWidth="2.5" strokeLinejoin="round" fill="none"/>
-    <circle cx="20" cy="30" r="3" fill="#e87722"/>
-    <path d="M15 10 L25 10 M20 6 L20 14" stroke="#e87722" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
-);
+import Image from 'next/image';
 
 const links = [
   { href: '/about', label: 'About' },
@@ -33,10 +25,12 @@ export default function Navbar() {
     <>
       <header className="nav" style={{ boxShadow: scrolled ? '0 4px 24px rgba(0,0,0,0.3)' : 'none' }}>
         <div className="container nav-inner">
-          <Link href="#home" className="logo">
-            <div className="logo-icon"><LogoIcon /></div>
+          <Link href="/" className="logo">
+            <div className="logo-icon">
+              <Image src="/logo.png" alt="Namo Steel" width={40} height={40} style={{ objectFit: 'contain' }} />
+            </div>
             <div className="logo-text">
-              <span className="logo-name">NAMO TRADELINK</span>
+              <span className="logo-name">NAMO STEEL</span>
               <span className="logo-tag">The Steel Hub</span>
             </div>
           </Link>
