@@ -510,6 +510,126 @@ function SectionBanner({ label }) {
   );
 }
 
+/* ─── Companies Tab ─── */
+function CompaniesTab() {
+  const [companies, setCompanies] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [editId, setEditId] = useState(null);
+  const [form, setForm] = useState({ name: '', slug: '', email: '', password: '', industry: '' });
+  const [slugError, setSlugError] = useState('');
+
+  useEffect(() => {
+    fetch('/api/companies').then(r => r.json()).then(data => { if (Array.isArray(data)) setCompanies(data); });
+  }, []);
+
+  const f = k => v => {
+    setForm(p => ({ ...p, [k]: v }));
+    if (k === 'name' && !editId) setForm(p => ({ ...p, [k]: v, slug: v.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') }));
+  };
+
+  const submit = async e => {
+    e.preventDefault();
+    setSlugError('');
+    if (editId) {
+      await fetch('/api/companies', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: editId, ...form }) });
+      setCompanies(prev => prev.map(c => c.id === editId ? { ...c, ...form } : c));
+    } else {
+      const res = await fetch('/api/companies', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+      const data = await res.json();
+      if (data.error === 'SLUG_TAKEN') { setSlugError('This company ID is already taken. Choose another.'); return; }
+      if (data.id) setCompanies(prev => [data, ...prev]);
+    }
+    setShowModal(false); setEditId(null);
+    setForm({ name: '', slug: '', email: '', password: '', industry: '' });
+  };
+
+  const openAdd = () => { setForm({ name: '', slug: '', email: '', password: '', industry: '' }); setEditId(null); setSlugError(''); setShowModal(true); };
+  const openEdit = c => { setForm({ name: c.name, slug: c.slug, email: c.email || '', password: '', industry: c.industry || '' }); setEditId(c.id); setSlugError(''); setShowModal(true); };
+  const del = async id => {
+    if (window.confirm('Delete this company? They will lose access.')) {
+      await fetch(`/api/companies?id=${id}`, { method: 'DELETE' });
+      setCompanies(prev => prev.filter(c => c.id !== id));
+    }
+  };
+
+  const origin = typeof window !== 'undefined' ? window.location.origin : '';
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+        <h2 style={{ color: '#1a2a4a', margin: 0, fontSize: 24 }}>Company Profiles</h2>
+        <button onClick={openAdd} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>+ Add Company</button>
+      </div>
+      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 24 }}>Each company gets a unique URL to access their own portal.</p>
+
+      {companies.length === 0 ? (
+        <div style={{ background: '#fff', borderRadius: 12, padding: 48, textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', color: '#94a3b8' }}>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>🏢</div>
+          <div>No companies yet. Click <strong style={{ color: '#e87722' }}>+ Add Company</strong> to onboard one.</div>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
+          {companies.map(c => (
+            <div key={c.id} style={{ background: '#fff', borderRadius: 14, padding: '22px 24px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', border: '1px solid #f1f5f9' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <div style={{ width: 44, height: 44, borderRadius: 10, background: '#e87722', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 900, color: '#fff', flexShrink: 0 }}>
+                    {c.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: 700, color: '#1a2a4a', fontSize: 15 }}>{c.name}</div>
+                    {c.industry && <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2 }}>{c.industry}</div>}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  <button onClick={() => openEdit(c)} style={{ background: '#f1f5f9', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 12, cursor: 'pointer', color: '#334155' }}>Edit</button>
+                  <button onClick={() => del(c.id)} style={{ background: '#fef2f2', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 12, cursor: 'pointer', color: '#dc2626' }}>Del</button>
+                </div>
+              </div>
+
+              <div style={{ background: '#f8fafc', borderRadius: 8, padding: '10px 14px', marginBottom: 12 }}>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Portal URL</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                  <span style={{ fontFamily: 'monospace', fontSize: 13, color: '#e87722', fontWeight: 600 }}>{origin}/{c.slug}</span>
+                  <button onClick={() => navigator.clipboard.writeText(`${origin}/${c.slug}`)}
+                    style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 5, padding: '3px 10px', fontSize: 11, cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                    Copy
+                  </button>
+                </div>
+              </div>
+
+              {c.email && <div style={{ fontSize: 13, color: '#64748b' }}>✉ {c.email}</div>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <Modal open={showModal} onClose={() => setShowModal(false)} title={editId ? 'Edit Company' : 'Add Company'}>
+        <form onSubmit={submit}>
+          <FInput label="Company Name" value={form.name} onChange={f('name')} placeholder="Omkar Industries" required />
+          <div style={{ marginBottom: 14 }}>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Company ID (URL slug)</label>
+            <div style={{ display: 'flex', alignItems: 'center', border: `1.5px solid ${slugError ? '#fca5a5' : '#e2e8f0'}`, borderRadius: 8, overflow: 'hidden' }}>
+              <span style={{ padding: '8px 10px', background: '#f8fafc', fontSize: 14, color: '#94a3b8', borderRight: '1px solid #e2e8f0' }}>site.com/</span>
+              <input value={form.slug} onChange={e => { setForm(p => ({ ...p, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })); setSlugError(''); }}
+                placeholder="omkar-industries" required
+                style={{ flex: 1, padding: '8px 12px', border: 'none', fontSize: 14, outline: 'none', fontFamily: 'monospace' }} />
+            </div>
+            {slugError && <div style={{ fontSize: 12, color: '#dc2626', marginTop: 4 }}>{slugError}</div>}
+          </div>
+          <FInput label="Email" value={form.email} onChange={f('email')} placeholder="contact@company.com" />
+          <FInput label="Industry" value={form.industry} onChange={f('industry')} placeholder="Steel Fabrication, Construction…" />
+          <FInput label={editId ? 'New Password (leave blank to keep)' : 'Password'} value={form.password} onChange={f('password')} placeholder="Set access password" required={!editId} />
+          <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
+            <button type="submit" style={{ flex: 1, background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>{editId ? 'Save Changes' : 'Create Company'}</button>
+            <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, background: '#f1f5f9', color: '#334155', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Cancel</button>
+          </div>
+        </form>
+      </Modal>
+    </div>
+  );
+}
+
 /* ─── Edit Website Tab ─── */
 function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
   const [productTab, setProductTab] = useState('flat');
@@ -959,11 +1079,12 @@ export default function AdminDashboard() {
   }
 
   const navItems = [
-    { id: 'overview', label: 'Overview', emoji: '▦' },
-    { id: 'leads', label: 'Leads', emoji: '◈', count: leads.length },
-    { id: 'customers', label: 'Customers', emoji: '◉', count: customers.length },
-    { id: 'products', label: 'Products', emoji: '⬡' },
-    { id: 'website', label: 'Edit Website', emoji: '✎' },
+    { id: 'overview',   label: 'Overview',   emoji: '▦' },
+    { id: 'leads',      label: 'Leads',      emoji: '◈', count: leads.length },
+    { id: 'customers',  label: 'Customers',  emoji: '◉', count: customers.length },
+    { id: 'companies',  label: 'Companies',  emoji: '🏢' },
+    { id: 'products',   label: 'Products',   emoji: '⬡' },
+    { id: 'website',    label: 'Edit Website', emoji: '✎' },
   ];
 
   return (
@@ -997,6 +1118,7 @@ export default function AdminDashboard() {
         {tab === 'overview' && <OverviewTab leads={leads} customers={customers} />}
         {tab === 'leads' && <LeadsTab leads={leads} saveLeads={saveLeads} />}
         {tab === 'customers' && <CustomersTab customers={customers} saveCustomers={saveCustomers} />}
+        {tab === 'companies' && <CompaniesTab />}
         {tab === 'products' && <ProductsAdminTab draft={draft} updateDraft={updateDraft} />}
         {tab === 'website' && <EditWebsiteTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}
       </main>
