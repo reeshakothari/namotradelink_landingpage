@@ -1,4 +1,10 @@
 {
+  "theme": {
+    "primary": "#e87722",
+    "primaryDark": "#c96310",
+    "secondary": "#1a2a4a",
+    "secondaryLight": "#243557"
+  },
   "hero": {
     "badge": "SINCE 1995",
     "title": "Steel Solutions for\nSolid Foundations.",

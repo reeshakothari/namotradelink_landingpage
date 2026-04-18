@@ -510,6 +510,119 @@ function SectionBanner({ label }) {
   );
 }
 
+/* ─── Theme Tab ─── */
+const PRESETS = [
+  { name: 'Steel Orange',   primary: '#e87722', primaryDark: '#c96310', secondary: '#1a2a4a', secondaryLight: '#243557' },
+  { name: 'Royal Blue',     primary: '#2563eb', primaryDark: '#1d4ed8', secondary: '#0f172a', secondaryLight: '#1e293b' },
+  { name: 'Forest Green',   primary: '#16a34a', primaryDark: '#15803d', secondary: '#14532d', secondaryLight: '#166534' },
+  { name: 'Deep Purple',    primary: '#7c3aed', primaryDark: '#6d28d9', secondary: '#1e1b4b', secondaryLight: '#312e81' },
+  { name: 'Crimson Red',    primary: '#dc2626', primaryDark: '#b91c1c', secondary: '#1c1917', secondaryLight: '#292524' },
+  { name: 'Teal',           primary: '#0d9488', primaryDark: '#0f766e', secondary: '#134e4a', secondaryLight: '#115e59' },
+  { name: 'Amber Gold',     primary: '#d97706', primaryDark: '#b45309', secondary: '#1c1917', secondaryLight: '#292524' },
+  { name: 'Slate Dark',     primary: '#475569', primaryDark: '#334155', secondary: '#0f172a', secondaryLight: '#1e293b' },
+];
+
+function ThemeTab({ draft, updateDraft }) {
+  const theme = draft?.theme || PRESETS[0];
+
+  function applyPreset(preset) {
+    updateDraft('theme.primary', preset.primary);
+    updateDraft('theme.primaryDark', preset.primaryDark);
+    updateDraft('theme.secondary', preset.secondary);
+    updateDraft('theme.secondaryLight', preset.secondaryLight);
+    // Live preview immediately
+    document.documentElement.style.setProperty('--orange', preset.primary);
+    document.documentElement.style.setProperty('--orange-dark', preset.primaryDark);
+    document.documentElement.style.setProperty('--navy', preset.secondary);
+    document.documentElement.style.setProperty('--navy-light', preset.secondaryLight);
+  }
+
+  function handleColor(key, cssVar, value) {
+    updateDraft(`theme.${key}`, value);
+    document.documentElement.style.setProperty(cssVar, value);
+  }
+
+  const isActive = (p) => p.primary === theme.primary && p.secondary === theme.secondary;
+
+  return (
+    <div>
+      <h2 style={{ color: '#1a2a4a', margin: '0 0 6px', fontSize: 24 }}>Theme & Colours</h2>
+      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 32 }}>Changes apply instantly for preview. Click <strong>Publish Changes</strong> in the Edit Website tab to go live.</p>
+
+      {/* Preset themes */}
+      <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 16 }}>Preset Themes</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: 12, marginBottom: 40 }}>
+        {PRESETS.map(p => (
+          <button key={p.name} onClick={() => applyPreset(p)} style={{
+            border: isActive(p) ? `3px solid ${p.primary}` : '2px solid #e2e8f0',
+            borderRadius: 14, overflow: 'hidden', cursor: 'pointer', background: '#fff',
+            boxShadow: isActive(p) ? `0 4px 16px ${p.primary}44` : '0 1px 4px rgba(0,0,0,0.06)',
+            transition: 'all 0.15s', padding: 0,
+          }}>
+            {/* Colour swatch */}
+            <div style={{ display: 'flex', height: 56 }}>
+              <div style={{ flex: 1, background: p.secondary }} />
+              <div style={{ flex: 1, background: p.primary }} />
+            </div>
+            <div style={{ padding: '10px 12px', textAlign: 'left' }}>
+              <div style={{ fontWeight: 700, fontSize: 13, color: '#1a2a4a' }}>{p.name}</div>
+              {isActive(p) && <div style={{ fontSize: 11, color: p.primary, fontWeight: 600, marginTop: 2 }}>✓ Active</div>}
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* Custom pickers */}
+      <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 16 }}>Custom Colours</h3>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 32 }}>
+        {[
+          { label: 'Accent / Primary', key: 'primary', cssVar: '--orange', desc: 'Buttons, highlights, badges' },
+          { label: 'Accent Dark', key: 'primaryDark', cssVar: '--orange-dark', desc: 'Button hover state' },
+          { label: 'Dark / Secondary', key: 'secondary', cssVar: '--navy', desc: 'Navbar, headings, footer' },
+          { label: 'Secondary Light', key: 'secondaryLight', cssVar: '--navy-light', desc: 'Sidebar, dark backgrounds' },
+        ].map(({ label, key, cssVar, desc }) => (
+          <div key={key} style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+            <div style={{ fontWeight: 700, fontSize: 13, color: '#1a2a4a', marginBottom: 4 }}>{label}</div>
+            <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 12 }}>{desc}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <input
+                type="color"
+                value={theme[key] || '#000000'}
+                onChange={e => handleColor(key, cssVar, e.target.value)}
+                style={{ width: 44, height: 44, border: '2px solid #e2e8f0', borderRadius: 8, cursor: 'pointer', padding: 2, background: 'none' }}
+              />
+              <div>
+                <div style={{ fontFamily: 'monospace', fontSize: 14, fontWeight: 700, color: '#334155' }}>{theme[key] || '#000000'}</div>
+                <div style={{ fontSize: 11, color: '#94a3b8' }}>Click to change</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Live preview strip */}
+      <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 16 }}>Live Preview</h3>
+      <div style={{ borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.1)' }}>
+        <div style={{ background: theme.secondary, padding: '14px 24px', display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ width: 28, height: 28, borderRadius: 6, background: theme.primary }} />
+          <span style={{ color: '#fff', fontWeight: 800, fontSize: 14, letterSpacing: '0.08em' }}>NAMO STEEL</span>
+          <div style={{ marginLeft: 'auto', display: 'flex', gap: 8 }}>
+            {['About', 'Products', 'Contact'].map(l => <span key={l} style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13 }}>{l}</span>)}
+            <span style={{ background: theme.primary, color: '#fff', borderRadius: 20, padding: '4px 14px', fontSize: 12, fontWeight: 700 }}>Contact Us</span>
+          </div>
+        </div>
+        <div style={{ background: '#f8fafc', padding: '28px 24px', display: 'flex', gap: 16, alignItems: 'center' }}>
+          <div>
+            <div style={{ display: 'inline-block', background: `${theme.primary}20`, color: theme.primary, borderRadius: 99, padding: '4px 14px', fontSize: 11, fontWeight: 700, marginBottom: 8 }}>SINCE 1995</div>
+            <div style={{ fontSize: 22, fontWeight: 800, color: theme.secondary, lineHeight: 1.2, marginBottom: 12 }}>Steel Solutions for<br /><span style={{ color: theme.primary }}>Solid Foundations.</span></div>
+            <button style={{ background: theme.primary, color: '#fff', border: 'none', borderRadius: 24, padding: '10px 24px', fontWeight: 700, fontSize: 13, cursor: 'default' }}>Explore Products →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Companies Tab ─── */
 function CompaniesTab() {
   const [companies, setCompanies] = useState([]);
@@ -1079,11 +1192,12 @@ export default function AdminDashboard() {
   }
 
   const navItems = [
-    { id: 'overview',   label: 'Overview',   emoji: '▦' },
-    { id: 'leads',      label: 'Leads',      emoji: '◈', count: leads.length },
-    { id: 'customers',  label: 'Customers',  emoji: '◉', count: customers.length },
-    { id: 'companies',  label: 'Companies',  emoji: '🏢' },
-    { id: 'products',   label: 'Products',   emoji: '⬡' },
+    { id: 'overview',   label: 'Overview',     emoji: '▦' },
+    { id: 'leads',      label: 'Leads',        emoji: '◈', count: leads.length },
+    { id: 'customers',  label: 'Customers',    emoji: '◉', count: customers.length },
+    { id: 'companies',  label: 'Companies',    emoji: '🏢' },
+    { id: 'products',   label: 'Products',     emoji: '⬡' },
+    { id: 'theme',      label: 'Theme',        emoji: '🎨' },
     { id: 'website',    label: 'Edit Website', emoji: '✎' },
   ];
 
@@ -1119,6 +1233,7 @@ export default function AdminDashboard() {
         {tab === 'leads' && <LeadsTab leads={leads} saveLeads={saveLeads} />}
         {tab === 'customers' && <CustomersTab customers={customers} saveCustomers={saveCustomers} />}
         {tab === 'companies' && <CompaniesTab />}
+        {tab === 'theme' && <ThemeTab draft={draft} updateDraft={updateDraft} />}
         {tab === 'products' && <ProductsAdminTab draft={draft} updateDraft={updateDraft} />}
         {tab === 'website' && <EditWebsiteTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}
       </main>
