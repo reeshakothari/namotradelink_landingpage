@@ -522,7 +522,7 @@ const PRESETS = [
   { name: 'Slate Dark',     primary: '#475569', primaryDark: '#334155', secondary: '#0f172a', secondaryLight: '#1e293b' },
 ];
 
-function ThemeTab({ draft, updateDraft }) {
+function ThemeTab({ draft, updateDraft, publish, saved }) {
   const theme = draft?.theme || PRESETS[0];
 
   function applyPreset(preset) {
@@ -617,6 +617,24 @@ function ThemeTab({ draft, updateDraft }) {
             <div style={{ fontSize: 22, fontWeight: 800, color: theme.secondary, lineHeight: 1.2, marginBottom: 12 }}>Steel Solutions for<br /><span style={{ color: theme.primary }}>Solid Foundations.</span></div>
             <button style={{ background: theme.primary, color: '#fff', border: 'none', borderRadius: 24, padding: '10px 24px', fontWeight: 700, fontSize: 13, cursor: 'default' }}>Explore Products →</button>
           </div>
+        </div>
+      </div>
+
+      {/* Publish bar */}
+      <div style={{ marginTop: 32, background: '#1a2a4a', borderRadius: 14, padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+        <div>
+          <div style={{ fontWeight: 700, color: '#fff', fontSize: 15 }}>Publish Theme</div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>Makes your chosen colours live for all visitors instantly.</div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <PublishStatus saved={saved} dark />
+          <button
+            onClick={publish}
+            disabled={saved === 'saving'}
+            style={{ background: saved === 'saved' ? '#22c55e' : theme.primary, color: '#fff', border: 'none', borderRadius: 10, padding: '12px 32px', fontWeight: 700, fontSize: 14, cursor: saved === 'saving' ? 'wait' : 'pointer', whiteSpace: 'nowrap', transition: 'background 0.2s' }}
+          >
+            {saved === 'saving' ? 'Publishing…' : saved === 'saved' ? '✓ Live!' : 'Publish Theme →'}
+          </button>
         </div>
       </div>
     </div>
@@ -1233,7 +1251,7 @@ export default function AdminDashboard() {
         {tab === 'leads' && <LeadsTab leads={leads} saveLeads={saveLeads} />}
         {tab === 'customers' && <CustomersTab customers={customers} saveCustomers={saveCustomers} />}
         {tab === 'companies' && <CompaniesTab />}
-        {tab === 'theme' && <ThemeTab draft={draft} updateDraft={updateDraft} />}
+        {tab === 'theme' && <ThemeTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}
         {tab === 'products' && <ProductsAdminTab draft={draft} updateDraft={updateDraft} />}
         {tab === 'website' && <EditWebsiteTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}
       </main>
