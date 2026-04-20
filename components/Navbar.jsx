@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useCart } from '@/lib/CartContext';
 
 const links = [
   { href: '/about', label: 'About' },
@@ -15,7 +14,6 @@ const links = [
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { totalCount, setOpen } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -42,18 +40,6 @@ export default function Navbar() {
               <Link key={l.href} href={l.href}>{l.label}</Link>
             ))}
             <Link href="/contact" className="btn-nav">Contact Us</Link>
-            <button
-              onClick={() => setOpen(true)}
-              aria-label="Open cart"
-              style={{ position: 'relative', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 8, width: 38, height: 38, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 17, color: '#fff', flexShrink: 0 }}
-            >
-              🛒
-              {totalCount > 0 && (
-                <span style={{ position: 'absolute', top: -6, right: -6, background: 'var(--orange)', color: '#fff', borderRadius: 99, fontSize: 10, fontWeight: 800, minWidth: 18, height: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 4px', border: '2px solid #1a2a4a' }}>
-                  {totalCount}
-                </span>
-              )}
-            </button>
           </nav>
 
           <button className="hamburger" onClick={() => setMenuOpen(o => !o)} aria-label="Toggle menu">

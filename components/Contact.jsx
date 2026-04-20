@@ -1,9 +1,40 @@
 'use client';
 import { useState } from 'react';
 
+const PRODUCT_OPTIONS = [
+  'M.S-HRC Plate',
+  'CRC Plate',
+  'Sheet',
+  'GP Plate',
+  'M.S Pipes',
+  'GP Pipes',
+  'CRC Pipes',
+  'Angles (Z, T, Equal)',
+  'Flats',
+  'Beams',
+  'Channels',
+  'TMT Bars',
+  'CRC Coils',
+  'Polycarbonate Sheets',
+  'GI Corrugated & Perforated Sheets',
+  'Colour Coated Sheets',
+  'Deck Sheets',
+  'Weld Mesh & Chain Link',
+  'Self Tapping Screws',
+  'Binding Wire',
+  'Cement Sheet',
+  'Plate Cutting',
+  'Foundation Bolts',
+];
+
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
+  const [selected, setSelected] = useState([]);
+
+  function toggleProduct(p) {
+    setSelected(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -13,7 +44,7 @@ export default function Contact() {
       name:        data.get('name'),
       phone:       data.get('phone'),
       email:       data.get('email') || null,
-      requirement: data.get('product') || null,
+      requirement: selected.length > 0 ? selected.join(', ') : null,
       notes:       data.get('message') || null,
       type:        'inbound',
       status:      'new',
@@ -27,6 +58,7 @@ export default function Contact() {
       });
       if (!res.ok) throw new Error('failed');
       setSubmitted(true);
+      setSelected([]);
       e.target.reset();
       setTimeout(() => setSubmitted(false), 4000);
     } catch {
@@ -110,21 +142,30 @@ export default function Contact() {
               <label htmlFor="email">Email Address</label>
               <input type="email" id="email" name="email" placeholder="you@company.com" />
             </div>
+
             <div className="form-group">
-              <label htmlFor="product">Product / Requirement</label>
-              <select id="product" name="product">
-                <option value="">Select a product category</option>
-                <option>Flat Products (HRC / CRC / GP Plates)</option>
-                <option>Tubular Products (MS / GP / CRC Pipes)</option>
-                <option>Structural Steel (TMT Bars / Angles / Channels / Beams)</option>
-                <option>Roofing &amp; Sheets</option>
-                <option>Accessories &amp; Others</option>
-                <option>Custom / Plate Cutting</option>
-              </select>
+              <label>Products Required {selected.length > 0 && <span style={{ color: 'var(--orange)', fontWeight: 700 }}>({selected.length} selected)</span>}</label>
+              <div style={{
+                border: '1.5px solid #e5e7eb', borderRadius: 8, padding: '10px 12px',
+                maxHeight: 200, overflowY: 'auto', display: 'flex', flexWrap: 'wrap', gap: '8px 12px',
+              }}>
+                {PRODUCT_OPTIONS.map(p => (
+                  <label key={p} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, color: selected.includes(p) ? 'var(--orange)' : '#374151', fontWeight: selected.includes(p) ? 600 : 400, whiteSpace: 'nowrap' }}>
+                    <input
+                      type="checkbox"
+                      checked={selected.includes(p)}
+                      onChange={() => toggleProduct(p)}
+                      style={{ accentColor: 'var(--orange)', width: 14, height: 14, cursor: 'pointer' }}
+                    />
+                    {p}
+                  </label>
+                ))}
+              </div>
             </div>
+
             <div className="form-group">
               <label htmlFor="message">Message</label>
-              <textarea id="message" name="message" rows={4} placeholder="Describe your requirement…" />
+              <textarea id="message" name="message" rows={3} placeholder="Describe your requirement, quantity, specifications…" />
             </div>
             <button
               type="submit"
