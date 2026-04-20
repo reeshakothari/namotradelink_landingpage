@@ -17,33 +17,6 @@ export default function Cart() {
 
   return (
     <>
-      {/* Floating cart button */}
-      <button
-        onClick={() => setOpen(true)}
-        style={{
-          position: 'fixed', bottom: 28, right: 28, zIndex: 900,
-          background: '#e87722', color: '#fff', border: 'none',
-          borderRadius: 50, width: 58, height: 58, cursor: 'pointer',
-          boxShadow: '0 4px 20px rgba(232,119,34,0.45)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 22, transition: 'transform 0.15s',
-        }}
-        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.08)'}
-        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-        aria-label="Open cart"
-      >
-        🛒
-        {totalCount > 0 && (
-          <span style={{
-            position: 'absolute', top: -4, right: -4,
-            background: '#1a2a4a', color: '#fff', borderRadius: 99,
-            fontSize: 11, fontWeight: 800, minWidth: 20, height: 20,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            padding: '0 5px', border: '2px solid #fff',
-          }}>{totalCount}</span>
-        )}
-      </button>
-
       {/* Backdrop */}
       {open && (
         <div
