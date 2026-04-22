@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getSiteContent, setSiteContent } from '@/lib/siteContent';
+import { LayoutDashboard, Users, UserCheck, Building2, Package, Palette, Pencil, ExternalLink, AlertTriangle } from 'lucide-react';
 
 /* ─── localStorage helpers ─── */
 const LEADS_KEY = 'ntl_leads';
@@ -583,10 +584,13 @@ function ImageUpload({ src, onChange, height = 150 }) {
 /* ─── Section Label Banner ─── */
 function SectionBanner({ label, id }) {
   return (
-    <div id={id} style={{ background: '#fafafa', borderTop: '1px solid #e8e8e8', borderBottom: '1px solid #e8e8e8', padding: '7px 40px', display: 'flex', alignItems: 'center', gap: 10, scrollMarginTop: 88 }}>
-      <div style={{ width: 3, height: 14, borderRadius: 2, background: '#e87722', flexShrink: 0 }} />
-      <span style={{ fontSize: 10, fontWeight: 700, color: '#e87722', textTransform: 'uppercase', letterSpacing: '0.16em' }}>{label}</span>
-      <span style={{ marginLeft: 'auto', fontSize: 10, color: '#b0b8c4', letterSpacing: '0.04em' }}>Hover any text or image to edit</span>
+    <div id={id} style={{ background: '#f8f9fb', borderTop: '1px solid #eef0f3', borderBottom: '1px solid #eef0f3', padding: '6px 48px', display: 'flex', alignItems: 'center', gap: 10, scrollMarginTop: 104, fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      <div style={{ width: 3, height: 12, borderRadius: 2, background: '#f97316', flexShrink: 0 }} />
+      <span style={{ fontSize: 10, fontWeight: 700, color: '#f97316', textTransform: 'uppercase', letterSpacing: '0.18em' }}>{label}</span>
+      <span style={{ marginLeft: 'auto', fontSize: 10, color: '#c8d0da', letterSpacing: '0.03em', display: 'flex', alignItems: 'center', gap: 4 }}>
+        <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#c8d0da' }} />
+        Hover any text or image to edit
+      </span>
     </div>
   );
 }
@@ -848,10 +852,19 @@ function CompaniesTab() {
 /* ─── Edit Website Tab ─── */
 function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
   const [productTab, setProductTab] = useState('flat');
+  const [activeSection, setActiveSection] = useState('ew-hero');
+  const [showBar, setShowBar] = useState(false);
   const up = path => val => updateDraft(path, val);
-  const orange = draft?.theme?.primary || '#e87722';
-  const navy   = draft?.theme?.secondary || '#1a2a4a';
-  const offWh  = '#f8f6f2';
+  const orange = draft?.theme?.primary || '#f97316';
+  const navy   = draft?.theme?.secondary || '#0d1b2e';
+  const offWh  = '#f9f7f2';
+
+  const scrollToSection = (id) => {
+    setActiveSection(id);
+    setShowBar(true);
+    setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+    setTimeout(() => setShowBar(false), 1000);
+  };
 
 
   const updateListItem = (path, i, field, val) => {
@@ -886,23 +899,40 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
         </div>
       )}
 
-      {/* ── Sticky Publish Bar ── */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(15,29,51,0.97)', backdropFilter: 'blur(12px)', padding: '10px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span style={{ fontWeight: 700, color: 'rgba(255,255,255,0.9)', fontSize: 13, letterSpacing: '0.08em' }}>EDIT WEBSITE</span>
-          <span style={{ background: 'rgba(232,119,34,0.15)', color: '#e87722', borderRadius: 5, padding: '2px 9px', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em' }}>LIVE</span>
+      {/* ── Loading Bar ── */}
+      {showBar && (
+        <div style={{ position: 'fixed', top: 0, left: 220, right: 0, height: 3, zIndex: 200, overflow: 'hidden', pointerEvents: 'none' }}>
+          <div style={{ height: '100%', background: 'linear-gradient(90deg, #f97316, #fb923c)', animation: 'ns-bar 0.9s ease-out forwards', borderRadius: '0 2px 2px 0' }} />
+        </div>
+      )}
+
+      {/* ── Sticky Top Bar ── */}
+      <div style={{ position: 'sticky', top: 0, zIndex: 50, background: '#0d1b2e', height: 52, padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #1e2d42', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12, fontWeight: 400 }}>Admin</span>
+          <span style={{ color: 'rgba(255,255,255,0.18)', fontSize: 14 }}>/</span>
+          <span style={{ fontWeight: 800, color: '#fff', fontSize: 14, fontFamily: "'Barlow Condensed', system-ui, sans-serif", letterSpacing: '0.1em', textTransform: 'uppercase' }}>EDIT WEBSITE</span>
+          <span style={{ background: '#22c55e', color: '#fff', borderRadius: 4, padding: '2px 8px', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em', display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ display: 'inline-block', width: 5, height: 5, borderRadius: '50%', background: '#fff', opacity: 0.85 }} />
+            LIVE
+          </span>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <PublishStatus saved={saved} />
-          <a href="/" target="_blank" style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)', borderRadius: 7, fontSize: 12, fontWeight: 500, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.09)', letterSpacing: '0.01em' }}>↗ Preview</a>
-          <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 20px', fontWeight: 700, fontSize: 13, cursor: saved === 'saving' ? 'wait' : 'pointer', letterSpacing: '0.01em', transition: 'background 0.2s' }}>
+          <PublishStatus saved={saved} dark />
+          <a href="/" target="_blank" rel="noopener" style={{ padding: '7px 14px', background: 'transparent', color: 'rgba(255,255,255,0.55)', borderRadius: 7, fontSize: 12, fontWeight: 500, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.14)', display: 'flex', alignItems: 'center', gap: 5, transition: 'all 0.15s' }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.35)'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'}
+          >
+            <ExternalLink size={12} /> Preview
+          </a>
+          <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#f97316', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 20px', fontWeight: 700, fontSize: 13, cursor: saved === 'saving' ? 'wait' : 'pointer', transition: 'background 0.2s', animation: !saved || saved === null ? 'ns-pulse 2.5s ease-in-out infinite' : 'none', boxShadow: !saved || saved === null ? '0 0 0 0 rgba(249,115,22,0.4)' : 'none' }}>
             {saved === 'saving' ? 'Publishing…' : saved === 'saved' ? '✓ Published!' : 'Publish Changes'}
           </button>
         </div>
       </div>
 
-      {/* ── Section Jump Nav ── */}
-      <div style={{ position: 'sticky', top: 45, zIndex: 49, background: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #ebebeb', padding: '0 28px', display: 'flex', gap: 0, overflowX: 'auto' }}>
+      {/* ── Section Tab Nav ── */}
+      <div style={{ position: 'sticky', top: 52, zIndex: 49, background: '#fff', borderBottom: '1px solid #f0f0f0', padding: '0 20px', display: 'flex', gap: 0, overflowX: 'auto' }}>
         {[
           { id: 'ew-hero', label: 'Hero' },
           { id: 'ew-about', label: 'About' },
@@ -915,43 +945,60 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
           { id: 'ew-clients', label: 'Clients' },
           { id: 'ew-contact', label: 'Contact' },
           { id: 'ew-footer', label: 'Footer' },
-        ].map(s => (
-          <button key={s.id} onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-            style={{ padding: '9px 13px', background: 'none', border: 'none', borderBottom: '2px solid transparent', cursor: 'pointer', fontSize: 11, fontWeight: 600, color: '#8898aa', whiteSpace: 'nowrap', transition: 'all 0.15s', letterSpacing: '0.03em' }}
-            onMouseEnter={e => { e.currentTarget.style.color = '#e87722'; e.currentTarget.style.borderBottomColor = '#e87722'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#8898aa'; e.currentTarget.style.borderBottomColor = 'transparent'; }}>
-            {s.label}
-          </button>
-        ))}
+        ].map(s => {
+          const isActive = activeSection === s.id;
+          return (
+            <button key={s.id} onClick={() => scrollToSection(s.id)}
+              style={{ position: 'relative', padding: '12px 14px', background: 'none', border: 'none', borderBottom: `2.5px solid ${isActive ? '#f97316' : 'transparent'}`, cursor: 'pointer', fontSize: 12, fontWeight: isActive ? 700 : 500, color: isActive ? '#f97316' : '#94a3b8', whiteSpace: 'nowrap', letterSpacing: '0.02em', transition: 'color 0.15s, border-color 0.2s', fontFamily: "'DM Sans', system-ui, sans-serif" }}
+              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.color = '#475569'; } }}
+              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.color = '#94a3b8'; } }}
+            >
+              {s.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* ════════════════════════════════════════
            HERO SECTION
       ════════════════════════════════════════ */}
       <SectionBanner label="Hero Section" id="ew-hero" />
-      <div style={{ background: `linear-gradient(135deg, ${navy} 0%, #0f1d33 100%)`, padding: '72px 40px 56px', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: -80, right: -80, width: 400, height: 400, borderRadius: '50%', background: `${orange}0f`, pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -60, left: '40%', width: 300, height: 300, borderRadius: '50%', background: `${orange}06`, pointerEvents: 'none' }} />
-        <div style={{ maxWidth: 700, position: 'relative' }}>
-          <div style={{ marginBottom: 18 }}>
-            <EF value={draft.hero.badge} onChange={up('hero.badge')} fontSize={12} fontWeight={700} color={orange} style={{ letterSpacing: '0.15em', textTransform: 'uppercase', display: 'inline-block', width: 'auto', background: `${orange}1a`, borderRadius: 20, padding: '5px 16px', border: `1px solid ${orange}30` }} />
+      <div style={{ background: `linear-gradient(135deg, ${navy} 0%, #0a1628 60%, #122038 100%)`, padding: '80px 48px 64px', position: 'relative', overflow: 'hidden', backgroundImage: `linear-gradient(135deg, ${navy} 0%, #0a1628 60%, #122038 100%), url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.018'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}>
+        {/* Glow orbs */}
+        <div style={{ position: 'absolute', top: -100, right: -60, width: 500, height: 500, borderRadius: '50%', background: `radial-gradient(circle, ${orange}12 0%, transparent 65%)`, pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: -80, left: '35%', width: 350, height: 350, borderRadius: '50%', background: `radial-gradient(circle, ${orange}07 0%, transparent 70%)`, pointerEvents: 'none' }} />
+        {/* Diagonal steel accent */}
+        <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '42%', background: 'linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.012) 50%, rgba(255,255,255,0.025) 100%)', pointerEvents: 'none' }} />
+
+        <div style={{ maxWidth: 720, position: 'relative' }}>
+          {/* Badge */}
+          <div style={{ marginBottom: 22 }}>
+            <EF value={draft.hero.badge} onChange={up('hero.badge')} fontSize={11} fontWeight={700} color={orange} style={{ letterSpacing: '0.2em', textTransform: 'uppercase', display: 'inline-block', width: 'auto', background: `${orange}18`, borderRadius: 100, padding: '5px 18px', border: `1.5px solid ${orange}35` }} />
           </div>
-          <EF value={draft.hero.title} onChange={up('hero.title')} multiline fontSize={42} fontWeight={900} color="#fff" style={{ lineHeight: 1.1, marginBottom: 16, display: 'block', letterSpacing: '-0.02em' }} rows={2} />
-          <EF value={draft.hero.subtitle} onChange={up('hero.subtitle')} fontSize={17} color="rgba(255,255,255,0.6)" style={{ marginBottom: 28, display: 'block', lineHeight: 1.6 }} />
-          <div style={{ display: 'flex', gap: 12, marginBottom: 40, flexWrap: 'wrap' }}>
-            <div style={{ background: orange, borderRadius: 9, padding: '12px 22px', display: 'flex', gap: 8, alignItems: 'center', boxShadow: `0 6px 20px ${orange}50` }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a9 9 0 0 1-.57-.01c-.198 0-.52.074-.792.372C7.525 10.32 6.5 11.04 6.5 12.5c0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
+
+          {/* Title */}
+          <EF value={draft.hero.title} onChange={up('hero.title')} multiline fontSize={52} fontWeight={900} color="#fff" style={{ lineHeight: 1.05, marginBottom: 18, display: 'block', letterSpacing: '-0.025em', fontFamily: "'Barlow Condensed', system-ui, sans-serif" }} rows={2} />
+
+          {/* Subtitle */}
+          <EF value={draft.hero.subtitle} onChange={up('hero.subtitle')} fontSize={18} color="rgba(255,255,255,0.55)" style={{ marginBottom: 36, display: 'block', lineHeight: 1.55, maxWidth: 520, fontFamily: "'DM Sans', system-ui, sans-serif" }} />
+
+          {/* CTAs */}
+          <div style={{ display: 'flex', gap: 12, marginBottom: 48, flexWrap: 'wrap' }}>
+            <div style={{ background: `linear-gradient(135deg, ${orange}, #ea580c)`, borderRadius: 10, padding: '13px 24px', display: 'flex', gap: 9, alignItems: 'center', boxShadow: `0 8px 24px ${orange}45, 0 2px 8px ${orange}30`, cursor: 'default' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" opacity="0.9"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a9 9 0 0 1-.57-.01c-.198 0-.52.074-.792.372C7.525 10.32 6.5 11.04 6.5 12.5c0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
               <EF value={draft.hero.phone} onChange={up('hero.phone')} fontSize={15} fontWeight={700} color="#fff" style={{ width: 'auto' }} />
             </div>
-            <div style={{ border: '2px solid rgba(255,255,255,0.25)', borderRadius: 9, padding: '12px 22px', backdropFilter: 'blur(4px)', background: 'rgba(255,255,255,0.06)' }}>
-              <EF value={draft.hero.ctaText} onChange={up('hero.ctaText')} fontSize={15} fontWeight={600} color="#fff" style={{ width: 'auto' }} />
+            <div style={{ border: '1.5px solid rgba(255,255,255,0.22)', borderRadius: 10, padding: '13px 24px', backdropFilter: 'blur(8px)', background: 'rgba(255,255,255,0.05)', cursor: 'default' }}>
+              <EF value={draft.hero.ctaText} onChange={up('hero.ctaText')} fontSize={15} fontWeight={600} color="rgba(255,255,255,0.9)" style={{ width: 'auto' }} />
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 44, paddingTop: 24, borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+
+          {/* Stats */}
+          <div style={{ display: 'flex', gap: 0, paddingTop: 28, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
             {draft.hero.stats.map((s, i) => (
-              <div key={i} style={{ position: 'relative' }}>
-                <EF value={s.num} onChange={val => updateDraft('hero.stats', draft.hero.stats.map((st, j) => j === i ? { ...st, num: val } : st))} fontSize={28} fontWeight={900} color={orange} style={{ width: 80, letterSpacing: '-0.01em' }} />
-                <EF value={s.label} onChange={val => updateDraft('hero.stats', draft.hero.stats.map((st, j) => j === i ? { ...st, label: val } : st))} fontSize={12} color="rgba(255,255,255,0.5)" style={{ width: 110 }} />
+              <div key={i} style={{ flex: 1, paddingRight: 24, borderRight: i < draft.hero.stats.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none', marginRight: i < draft.hero.stats.length - 1 ? 24 : 0, animation: `ns-count 0.5s ease forwards`, animationDelay: `${i * 0.1}s`, opacity: 0 }}>
+                <EF value={s.num} onChange={val => updateDraft('hero.stats', draft.hero.stats.map((st, j) => j === i ? { ...st, num: val } : st))} fontSize={32} fontWeight={900} color={orange} style={{ width: 90, letterSpacing: '-0.02em', fontFamily: "'Barlow Condensed', system-ui, sans-serif" }} />
+                <EF value={s.label} onChange={val => updateDraft('hero.stats', draft.hero.stats.map((st, j) => j === i ? { ...st, label: val } : st))} fontSize={12} color="rgba(255,255,255,0.45)" style={{ width: 120, marginTop: 2, letterSpacing: '0.02em' }} />
               </div>
             ))}
           </div>
@@ -1311,12 +1358,14 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       </div>
 
       {/* Bottom publish bar */}
-      <div style={{ background: 'rgba(15,29,51,0.97)', padding: '22px 40px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 12 }}>
+      <div style={{ background: '#0d1b2e', padding: '24px 48px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 14, borderTop: '1px solid #1e2d42', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
         <PublishStatus saved={saved} dark />
-        <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#e87722', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 40px', fontWeight: 700, fontSize: 14, cursor: saved === 'saving' ? 'wait' : 'pointer', transition: 'background 0.2s' }}>
+        <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : 'linear-gradient(135deg, #f97316, #ea580c)', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 44px', fontWeight: 700, fontSize: 14, cursor: saved === 'saving' ? 'wait' : 'pointer', transition: 'background 0.2s', animation: !saved || saved === null ? 'ns-pulse 2.5s ease-in-out infinite' : 'none', boxShadow: '0 6px 20px rgba(249,115,22,0.35)' }}>
           {saved === 'saving' ? 'Publishing…' : saved === 'saved' ? '✓ Published!' : 'Publish Changes'}
         </button>
-        <a href="/" target="_blank" style={{ padding: '11px 18px', background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.6)', borderRadius: 9, fontSize: 13, fontWeight: 500, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.1)' }}>↗ View Site</a>
+        <a href="/" target="_blank" rel="noopener" style={{ padding: '12px 20px', background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.5)', borderRadius: 10, fontSize: 13, fontWeight: 500, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.09)', display: 'flex', alignItems: 'center', gap: 6 }}>
+          <ExternalLink size={13} /> View Site
+        </a>
       </div>
     </div>
   );
@@ -1385,81 +1434,129 @@ export default function AdminDashboard() {
     return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', fontFamily: 'system-ui, sans-serif', color: '#64748b', fontSize: 16 }}>Loading admin panel…</div>;
   }
 
-  const SvgIcon = ({ d, d2, viewBox = '0 0 24 24' }) => (
-    <svg width="16" height="16" viewBox={viewBox} fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-      <path d={d} />{d2 && <path d={d2} />}
-    </svg>
-  );
   const navItems = [
-    { id: 'overview',   label: 'Overview',     icon: <SvgIcon d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z" /> },
-    { id: 'leads',      label: 'Leads',        icon: <SvgIcon d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />, count: leads.length },
-    { id: 'customers',  label: 'Customers',    icon: <SvgIcon d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />, count: customers.length },
-    { id: 'companies',  label: 'Companies',    icon: <SvgIcon d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" d2="M9 22V12h6v10" /> },
-    { id: 'products',   label: 'Products',     icon: <SvgIcon d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /> },
-    { id: 'theme',      label: 'Theme',        icon: <SvgIcon d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /> },
-    { id: 'website',    label: 'Edit Website', icon: <SvgIcon d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /> },
+    { id: 'overview',  label: 'Overview',     icon: <LayoutDashboard size={15} /> },
+    { id: 'leads',     label: 'Leads',        icon: <Users size={15} />,       count: leads.length },
+    { id: 'customers', label: 'Customers',    icon: <UserCheck size={15} />,   count: customers.length },
+    { id: 'companies', label: 'Companies',    icon: <Building2 size={15} /> },
+    { id: 'products',  label: 'Products',     icon: <Package size={15} /> },
+    { id: 'theme',     label: 'Theme',        icon: <Palette size={15} /> },
+    { id: 'website',   label: 'Edit Website', icon: <Pencil size={15} /> },
   ];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: "'Inter', system-ui, sans-serif", background: '#f5f7fa' }}>
-      {/* Sidebar */}
-      <aside style={{ width: 240, background: '#0f1d33', display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 100, boxShadow: '4px 0 32px rgba(0,0,0,0.2)' }}>
-        {/* Logo */}
-        <div style={{ padding: '18px 20px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 11 }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Namo Steel" style={{ width: 34, height: 34, objectFit: 'contain', flexShrink: 0 }} />
-          <div>
-            <div style={{ fontWeight: 700, fontSize: 14, color: '#fff', letterSpacing: '0.06em' }}>NAMO STEEL</div>
-            <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase', letterSpacing: '0.16em', marginTop: 1 }}>Admin Panel</div>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap');
+        @keyframes ns-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(249,115,22,0.45); }
+          55% { box-shadow: 0 0 0 9px rgba(249,115,22,0); }
+        }
+        @keyframes ns-wobble {
+          0%, 100% { transform: translateX(0) rotate(0deg); }
+          20% { transform: translateX(-4px) rotate(-3deg); }
+          40% { transform: translateX(4px) rotate(3deg); }
+          60% { transform: translateX(-2px) rotate(-1.5deg); }
+          80% { transform: translateX(2px) rotate(1.5deg); }
+        }
+        @keyframes ns-bar {
+          0%   { width: 0%; opacity: 1; }
+          60%  { width: 82%; }
+          85%  { width: 96%; }
+          100% { width: 100%; opacity: 0; }
+        }
+        @keyframes ns-count {
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .ns-sidebar-btn:hover:not([data-active="true"]) {
+          background: rgba(255,255,255,0.045) !important;
+          color: rgba(255,255,255,0.8) !important;
+        }
+        .ns-viewsite:hover { border-color: rgba(255,255,255,0.28) !important; color: rgba(255,255,255,0.75) !important; }
+        .ns-issue:hover { animation: ns-wobble 0.45s ease forwards; }
+      `}</style>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '220px minmax(0, 1fr)', minHeight: '100vh', fontFamily: "'DM Sans', 'Inter', system-ui, sans-serif" }}>
+
+        {/* ═══════════════ SIDEBAR ═══════════════ */}
+        <aside style={{ width: 220, background: '#0d1b2e', display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 100, borderRight: '1px solid #1e2d42' }}>
+
+          {/* Logo */}
+          <div style={{ padding: '18px 14px 16px', borderBottom: '1px solid #1e2d42', display: 'flex', alignItems: 'center', gap: 11 }}>
+            <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #f97316, #ea580c)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 19, color: '#fff', fontFamily: "'Barlow Condensed', system-ui, sans-serif", flexShrink: 0, boxShadow: '0 3px 10px rgba(249,115,22,0.45)' }}>N</div>
+            <div>
+              <div style={{ fontWeight: 800, fontSize: 13.5, color: '#fff', letterSpacing: '0.13em', fontFamily: "'Barlow Condensed', system-ui, sans-serif" }}>NAMO STEEL</div>
+              <div style={{ fontSize: 9, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.22em', marginTop: 2 }}>ADMIN PANEL</div>
+            </div>
           </div>
-        </div>
 
-        {/* Nav */}
-        <nav style={{ flex: 1, padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'auto' }}>
-          {navItems.map((item, idx) => {
-            const isActive = tab === item.id;
-            const dividerBefore = idx === 4; // divider before Companies
-            return (
-              <div key={item.id}>
-                {dividerBefore && <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', margin: '6px 4px' }} />}
-                <button onClick={() => setTab(item.id)} style={{
-                  display: 'flex', alignItems: 'center', gap: 11, padding: '9px 12px 9px 11px',
-                  borderRadius: 8, border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%',
-                  background: isActive ? 'rgba(232,119,34,0.12)' : 'transparent',
-                  color: isActive ? '#e87722' : 'rgba(255,255,255,0.52)',
-                  borderLeft: `2px solid ${isActive ? '#e87722' : 'transparent'}`,
-                  transition: 'all 0.15s',
-                }}>
-                  <span style={{ width: 18, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{item.icon}</span>
-                  <span style={{ fontWeight: isActive ? 600 : 400, fontSize: 13, flex: 1, letterSpacing: '0.01em' }}>{item.label}</span>
-                  {item.count !== undefined && item.count > 0 && (
-                    <span style={{ background: isActive ? '#e87722' : 'rgba(255,255,255,0.08)', color: isActive ? '#fff' : 'rgba(255,255,255,0.5)', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 600 }}>{item.count}</span>
-                  )}
-                </button>
-              </div>
-            );
-          })}
-        </nav>
+          {/* Nav */}
+          <nav style={{ flex: 1, padding: '10px 8px', overflowY: 'auto' }}>
+            {navItems.map((item, idx) => {
+              const isActive = tab === item.id;
+              const isWebsite = item.id === 'website';
+              return (
+                <div key={item.id}>
+                  {idx === 5 && <div style={{ height: 1, background: '#1e2d42', margin: '8px 4px 10px' }} />}
+                  <button
+                    className="ns-sidebar-btn"
+                    data-active={String(isActive)}
+                    onClick={() => setTab(item.id)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px',
+                      width: '100%', border: 'none', borderRadius: 8, cursor: 'pointer',
+                      textAlign: 'left', marginBottom: 2,
+                      background: isActive && isWebsite ? 'linear-gradient(135deg, #f97316, #ea580c)'
+                                : isActive ? 'rgba(249,115,22,0.1)'
+                                : 'transparent',
+                      color: isActive && isWebsite ? '#fff'
+                            : isActive ? '#f97316'
+                            : 'rgba(255,255,255,0.42)',
+                      borderLeft: !isWebsite ? `2.5px solid ${isActive ? '#f97316' : 'transparent'}` : '2.5px solid transparent',
+                      transition: 'all 0.15s',
+                      boxShadow: isActive && isWebsite ? '0 4px 14px rgba(249,115,22,0.35)' : 'none',
+                    }}
+                  >
+                    <span style={{ width: 17, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{item.icon}</span>
+                    <span style={{ fontSize: 13, fontWeight: isActive ? 600 : 400, flex: 1, letterSpacing: '0.01em' }}>{item.label}</span>
+                    {item.count !== undefined && item.count > 0 && (
+                      <span style={{ background: isActive && !isWebsite ? '#f97316' : 'rgba(255,255,255,0.09)', color: isActive && !isWebsite ? '#fff' : 'rgba(255,255,255,0.4)', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 700 }}>{item.count}</span>
+                    )}
+                  </button>
+                </div>
+              );
+            })}
+          </nav>
 
-        {/* Bottom */}
-        <div style={{ padding: '14px 10px 18px', borderTop: '1px solid rgba(255,255,255,0.07)', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <a href="/" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '9px 12px', borderRadius: 9, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', fontSize: 13, fontWeight: 500, border: '1px solid rgba(255,255,255,0.08)', transition: 'all 0.15s' }}>
-            <span style={{ fontSize: 14 }}>↗</span> View Website
-          </a>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', textAlign: 'center', paddingTop: 4 }}>Namo Steel Admin v2</div>
-        </div>
-      </aside>
+          {/* Bottom */}
+          <div style={{ padding: '10px 8px 16px', borderTop: '1px solid #1e2d42' }}>
+            {/* Issues Badge */}
+            <div className="ns-issue" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.18)', borderRadius: 8, padding: '9px 12px', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', transition: 'all 0.15s' }}>
+              <AlertTriangle size={13} color="#ef4444" />
+              <span style={{ fontSize: 12, fontWeight: 700, color: '#ef4444', flex: 1 }}>18 Issues</span>
+              <span style={{ fontSize: 13, color: 'rgba(239,68,68,0.6)', fontWeight: 700 }}>✕</span>
+            </div>
 
-      {/* Main Content */}
-      <main style={{ marginLeft: 240, flex: 1, padding: tab === 'website' ? 0 : '32px 36px', minHeight: '100vh', boxSizing: 'border-box', background: '#f5f7fa' }}>
-        {tab === 'overview' && <OverviewTab leads={leads} customers={customers} />}
-        {tab === 'leads' && <LeadsTab leads={leads} saveLeads={saveLeads} />}
-        {tab === 'customers' && <CustomersTab customers={customers} saveCustomers={saveCustomers} />}
-        {tab === 'companies' && <CompaniesTab />}
-        {tab === 'theme' && <ThemeTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}
-        {tab === 'products' && <ProductsAdminTab draft={draft} updateDraft={updateDraft} />}
-        {tab === 'website' && <EditWebsiteTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}
-      </main>
-    </div>
+            <a href="/" target="_blank" rel="noopener" className="ns-viewsite" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 12px', borderRadius: 8, color: 'rgba(255,255,255,0.38)', textDecoration: 'none', fontSize: 13, fontWeight: 500, border: '1px solid rgba(255,255,255,0.07)', transition: 'all 0.15s', marginBottom: 8 }}>
+              <ExternalLink size={13} />
+              <span>View Website</span>
+            </a>
+            <div style={{ fontSize: 10, color: '#334155', textAlign: 'center', letterSpacing: '0.08em', fontWeight: 600 }}>v2</div>
+          </div>
+        </aside>
+
+        {/* ═══════════════ MAIN CONTENT ═══════════════ */}
+        <main style={{ marginLeft: 220, minHeight: '100vh', padding: tab === 'website' ? 0 : '32px 36px', boxSizing: 'border-box', background: tab === 'website' ? '#f0f2f5' : '#f5f7fa' }}>
+          {tab === 'overview'  && <OverviewTab leads={leads} customers={customers} />}
+          {tab === 'leads'     && <LeadsTab leads={leads} saveLeads={saveLeads} />}
+          {tab === 'customers' && <CustomersTab customers={customers} saveCustomers={saveCustomers} />}
+          {tab === 'companies' && <CompaniesTab />}
+          {tab === 'theme'     && <ThemeTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}
+          {tab === 'products'  && <ProductsAdminTab draft={draft} updateDraft={updateDraft} />}
+          {tab === 'website'   && <EditWebsiteTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}
+        </main>
+      </div>
+    </>
   );
 }
