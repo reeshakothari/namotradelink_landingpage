@@ -20,11 +20,11 @@ const Badge = ({ text, color }) => {
 const Modal = ({ open, onClose, title, children }) => {
   if (!open) return null;
   return (
-    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }} onClick={onClose}>
-      <div style={{ background: '#fff', borderRadius: 12, padding: '28px 32px', minWidth: 340, maxWidth: 520, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 20px 60px rgba(0,0,0,0.25)' }} onClick={e => e.stopPropagation()}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <h3 style={{ margin: 0, fontSize: 18, color: '#1a2a4a' }}>{title}</h3>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#999', lineHeight: 1 }}>×</button>
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(15,29,51,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16, backdropFilter: 'blur(4px)' }} onClick={onClose}>
+      <div style={{ background: '#fff', borderRadius: 18, padding: '26px 30px', minWidth: 360, maxWidth: 520, width: '100%', maxHeight: '90vh', overflowY: 'auto', boxShadow: '0 32px 80px rgba(0,0,0,0.22)' }} onClick={e => e.stopPropagation()}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 22 }}>
+          <h3 style={{ margin: 0, fontSize: 17, fontWeight: 800, color: '#0f172a' }}>{title}</h3>
+          <button onClick={onClose} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, width: 32, height: 32, fontSize: 18, cursor: 'pointer', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', lineHeight: 1 }}>×</button>
         </div>
         {children}
       </div>
@@ -32,20 +32,25 @@ const Modal = ({ open, onClose, title, children }) => {
   );
 };
 
+const inputBase = { width: '100%', padding: '9px 12px', border: '1.5px solid #e2e8f0', borderRadius: 9, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none', transition: 'border-color 0.15s', color: '#1a2a4a' };
 const FInput = ({ label, value, onChange, type = 'text', placeholder, required, multiline, rows = 3 }) => (
   <div style={{ marginBottom: 14 }}>
-    {label && <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</label>}
+    {label && <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</label>}
     {multiline
-      ? <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={rows} required={required} style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, resize: 'vertical', fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none' }} />
-      : <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} required={required} style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none' }} />
+      ? <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={rows} required={required}
+          style={{ ...inputBase, resize: 'vertical' }}
+          onFocus={e => e.target.style.borderColor = '#3b82f6'} onBlur={e => e.target.style.borderColor = '#e2e8f0'} />
+      : <input type={type} value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} required={required}
+          style={inputBase}
+          onFocus={e => e.target.style.borderColor = '#3b82f6'} onBlur={e => e.target.style.borderColor = '#e2e8f0'} />
     }
   </div>
 );
 
 const FSelect = ({ label, value, onChange, options }) => (
   <div style={{ marginBottom: 14 }}>
-    {label && <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</label>}
-    <select value={value} onChange={e => onChange(e.target.value)} style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none', background: '#fff' }}>
+    {label && <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{label}</label>}
+    <select value={value} onChange={e => onChange(e.target.value)} style={{ ...inputBase, background: '#fff', cursor: 'pointer' }}>
       {options.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>
   </div>
@@ -57,56 +62,96 @@ function OverviewTab({ leads, customers }) {
   const outbound = leads.filter(l => l.type === 'outbound');
   const pending = leads.filter(l => l.status === 'new' || l.status === 'contacted');
   const converted = leads.filter(l => l.status === 'converted');
+
   const stats = [
-    { label: 'Total Leads', value: leads.length, icon: '◈', color: '#3b82f6', sub: `${inbound.length} inbound · ${outbound.length} outbound` },
-    { label: 'Customers', value: customers.length, icon: '◉', color: '#22c55e', sub: 'Active accounts' },
-    { label: 'Pending Follow-up', value: pending.length, icon: '⏳', color: '#f59e0b', sub: 'Need attention' },
-    { label: 'Converted', value: converted.length, icon: '✓', color: '#8b5cf6', sub: 'Closed deals' },
+    { label: 'Total Leads', value: leads.length, icon: '◈', color: '#3b82f6', bg: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)', sub: `${inbound.length} inbound · ${outbound.length} outbound` },
+    { label: 'Customers', value: customers.length, icon: '◉', color: '#22c55e', bg: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', sub: 'Active accounts' },
+    { label: 'Pending Follow-up', value: pending.length, icon: '⏳', color: '#f59e0b', bg: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', sub: 'Need attention' },
+    { label: 'Converted', value: converted.length, icon: '✓', color: '#8b5cf6', bg: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)', sub: 'Closed deals' },
   ];
+
+  const stageData = [
+    { label: 'New', count: leads.filter(l => l.status === 'new').length, color: '#3b82f6' },
+    { label: 'Contacted', count: leads.filter(l => l.status === 'contacted').length, color: '#f59e0b' },
+    { label: 'Converted', count: leads.filter(l => l.status === 'converted').length, color: '#22c55e' },
+    { label: 'Closed', count: leads.filter(l => l.status === 'closed').length, color: '#94a3b8' },
+  ];
+  const maxStage = Math.max(...stageData.map(s => s.count), 1);
+
   return (
     <div>
-      <h2 style={{ color: '#1a2a4a', marginBottom: 24, fontSize: 24 }}>Overview</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16, marginBottom: 32 }}>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>Overview</h1>
+        <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: 13 }}>{new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 24 }}>
         {stats.map(s => (
-          <div key={s.label} style={{ background: '#fff', borderRadius: 12, padding: '20px 24px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', borderLeft: `4px solid ${s.color}` }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <div style={{ fontSize: 13, color: '#64748b', marginBottom: 6 }}>{s.label}</div>
-                <div style={{ fontSize: 32, fontWeight: 700, color: '#1a2a4a', lineHeight: 1 }}>{s.value}</div>
-                <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 4 }}>{s.sub}</div>
-              </div>
-              <span style={{ fontSize: 28, color: s.color + '44' }}>{s.icon}</span>
+          <div key={s.label} style={{ background: s.bg, borderRadius: 16, padding: '20px 22px', border: `1px solid ${s.color}20` }}>
+            <div style={{ width: 38, height: 38, borderRadius: 10, background: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 4px 12px ${s.color}40`, marginBottom: 14 }}>
+              <span style={{ color: '#fff', fontSize: 15 }}>{s.icon}</span>
             </div>
+            <div style={{ fontSize: 34, fontWeight: 800, color: '#0f172a', lineHeight: 1, letterSpacing: '-0.02em' }}>{s.value}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#334155', marginTop: 5 }}>{s.label}</div>
+            <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{s.sub}</div>
           </div>
         ))}
       </div>
-      {leads.length > 0 ? (
-        <div style={{ background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-          <h3 style={{ margin: '0 0 16px', color: '#1a2a4a', fontSize: 16 }}>Recent Leads</h3>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead><tr style={{ borderBottom: '2px solid #f1f5f9' }}>
-              {['Name', 'Phone', 'Type', 'Status', 'Date'].map(h => <th key={h} style={{ textAlign: 'left', padding: '8px 12px', fontSize: 12, color: '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{h}</th>)}
-            </tr></thead>
-            <tbody>
-              {leads.slice().reverse().slice(0, 6).map(l => (
-                <tr key={l.id} style={{ borderBottom: '1px solid #f8fafc' }}>
-                  <td style={{ padding: '10px 12px', fontWeight: 600, color: '#1a2a4a', fontSize: 14 }}>{l.name}</td>
-                  <td style={{ padding: '10px 12px', color: '#64748b', fontSize: 14 }}>{l.phone}</td>
-                  <td style={{ padding: '10px 12px' }}><Badge text={l.type} color={l.type} /></td>
-                  <td style={{ padding: '10px 12px' }}>{(() => { const s = STATUS_STYLE[l.status] || STATUS_STYLE.new; return <span style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}`, borderRadius: 99, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{s.label}</span>; })()}</td>
-                  <td style={{ padding: '10px 12px', color: '#94a3b8', fontSize: 13 }}>{l.date}</td>
-                </tr>
+
+      <div style={{ display: 'grid', gridTemplateColumns: leads.length > 0 ? '1fr 300px' : '1fr', gap: 16, alignItems: 'start' }}>
+        {leads.length > 0 ? (
+          <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 1px 6px rgba(0,0,0,0.05)', border: '1px solid #f1f5f9', overflow: 'hidden' }}>
+            <div style={{ padding: '18px 20px 14px', borderBottom: '1px solid #f8fafc' }}>
+              <h3 style={{ margin: 0, color: '#0f172a', fontSize: 15, fontWeight: 700 }}>Recent Leads</h3>
+            </div>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead><tr style={{ background: '#fafbff' }}>
+                {['Name', 'Phone', 'Type', 'Status', 'Date'].map(h => <th key={h} style={{ textAlign: 'left', padding: '9px 16px', fontSize: 11, color: '#94a3b8', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{h}</th>)}
+              </tr></thead>
+              <tbody>
+                {leads.slice().reverse().slice(0, 6).map(l => (
+                  <tr key={l.id} style={{ borderTop: '1px solid #f8fafc' }}>
+                    <td style={{ padding: '11px 16px', fontWeight: 600, color: '#1a2a4a', fontSize: 14 }}>{l.name}</td>
+                    <td style={{ padding: '11px 16px', color: '#64748b', fontSize: 13 }}>{l.phone}</td>
+                    <td style={{ padding: '11px 16px' }}><Badge text={l.type} color={l.type} /></td>
+                    <td style={{ padding: '11px 16px' }}>{(() => { const s = STATUS_STYLE[l.status] || STATUS_STYLE.new; return <span style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}`, borderRadius: 99, padding: '2px 10px', fontSize: 11, fontWeight: 700 }}>{s.label}</span>; })()}</td>
+                    <td style={{ padding: '11px 16px', color: '#94a3b8', fontSize: 12 }}>{l.date}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div style={{ background: '#fff', borderRadius: 16, padding: 48, textAlign: 'center', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', border: '1px solid #f1f5f9' }}>
+            <div style={{ width: 56, height: 56, borderRadius: 14, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 14px', fontSize: 24 }}>◈</div>
+            <h3 style={{ color: '#1a2a4a', margin: '0 0 6px', fontSize: 16 }}>No leads yet</h3>
+            <p style={{ color: '#64748b', margin: 0, fontSize: 13 }}>Go to the Leads tab to add your first lead.</p>
+          </div>
+        )}
+
+        {leads.length > 0 && (
+          <div style={{ background: '#fff', borderRadius: 16, padding: '20px 22px', boxShadow: '0 1px 6px rgba(0,0,0,0.05)', border: '1px solid #f1f5f9' }}>
+            <h3 style={{ margin: '0 0 18px', color: '#0f172a', fontSize: 15, fontWeight: 700 }}>Lead Pipeline</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              {stageData.map(s => (
+                <div key={s.label}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                    <span style={{ fontSize: 13, color: '#334155', fontWeight: 600 }}>{s.label}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: s.color }}>{s.count}</span>
+                  </div>
+                  <div style={{ height: 7, background: '#f1f5f9', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: `${(s.count / maxStage) * 100}%`, background: s.color, borderRadius: 99, transition: 'width 0.5s ease' }} />
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div style={{ background: '#fff', borderRadius: 12, padding: 48, textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>◈</div>
-          <h3 style={{ color: '#1a2a4a', margin: '0 0 8px' }}>No leads yet</h3>
-          <p style={{ color: '#64748b', margin: 0 }}>Go to the Leads tab to add your first lead.</p>
-        </div>
-      )}
+            </div>
+            <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: 12, color: '#94a3b8' }}>Conversion rate</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: '#22c55e' }}>{leads.length > 0 ? Math.round((converted.length / leads.length) * 100) : 0}%</span>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -187,8 +232,11 @@ function LeadsTab({ leads, saveLeads }) {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h2 style={{ color: '#1a2a4a', margin: 0, fontSize: 24 }}>Lead Management</h2>
-        <button onClick={openAdd} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>+ Add Lead</button>
+        <div>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>Lead Management</h1>
+          <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: 13 }}>Track and manage all your inbound and outbound leads</p>
+        </div>
+        <button onClick={openAdd} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.3)' }}>+ Add Lead</button>
       </div>
       <div style={{ display: 'flex', gap: 2, background: '#f1f5f9', borderRadius: 10, padding: 4, marginBottom: 24, width: 'fit-content' }}>
         {[{ id: 'inbound', label: '↙ Inbound' }, { id: 'outbound', label: '↗ Outbound' }].map(t => (
@@ -214,7 +262,7 @@ function LeadsTab({ leads, saveLeads }) {
           }}>{opt.label}</button>
         ))}
       </div>
-      <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 1px 4px rgba(0,0,0,0.08)', overflow: 'hidden' }}>
+      <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', border: '1px solid #f1f5f9', overflow: 'hidden' }}>
         {sorted.length === 0 ? (
           <div style={{ padding: 48, textAlign: 'center', color: '#94a3b8' }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>◈</div>
@@ -285,10 +333,13 @@ function CustomersTab({ customers, saveCustomers }) {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h2 style={{ color: '#1a2a4a', margin: 0, fontSize: 24 }}>Customer List</h2>
-        <button onClick={() => { setForm({ name: '', company: '', phone: '', city: '', products: '', notes: '' }); setEditId(null); setShowModal(true); }} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>+ Add Customer</button>
+        <div>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>Customer List</h1>
+          <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: 13 }}>Manage your existing customer relationships</p>
+        </div>
+        <button onClick={() => { setForm({ name: '', company: '', phone: '', city: '', products: '', notes: '' }); setEditId(null); setShowModal(true); }} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.3)' }}>+ Add Customer</button>
       </div>
-      <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 1px 4px rgba(0,0,0,0.08)', overflow: 'hidden' }}>
+      <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', border: '1px solid #f1f5f9', overflow: 'hidden' }}>
         <div style={{ padding: '16px 20px', borderBottom: '1px solid #f1f5f9' }}>
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search customers..." style={{ border: '1.5px solid #e2e8f0', borderRadius: 8, padding: '8px 14px', fontSize: 14, width: 260, outline: 'none' }} />
         </div>
@@ -350,8 +401,11 @@ function ProductsAdminTab({ draft, updateDraft }) {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
-        <h2 style={{ color: '#1a2a4a', margin: 0, fontSize: 24 }}>Product List</h2>
-        <button onClick={addProduct} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>+ Add Product</button>
+        <div>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>Product List</h1>
+          <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: 13 }}>Edit product cards shown on the website</p>
+        </div>
+        <button onClick={addProduct} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.3)' }}>+ Add Product</button>
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
         {categories.map(c => (
@@ -390,10 +444,29 @@ function ProductsAdminTab({ draft, updateDraft }) {
 /* ─── Editable Field ─── */
 function EF({ value, onChange, multiline, fontSize = 15, fontWeight = 400, color = 'inherit', style = {}, placeholder, rows = 3 }) {
   const [hov, setHov] = useState(false);
-  const base = { background: 'transparent', border: '1.5px dashed transparent', outline: 'none', padding: '2px 5px', borderRadius: 5, fontFamily: 'inherit', color, fontSize, fontWeight, width: '100%', resize: multiline ? 'vertical' : 'none', transition: 'all 0.15s', boxSizing: 'border-box', lineHeight: 'inherit', ...style };
-  const hovered = { borderColor: 'rgba(232,119,34,0.65)', background: 'rgba(232,119,34,0.06)' };
-  const props = { value, onChange: e => onChange(e.target.value), placeholder, onMouseEnter: () => setHov(true), onMouseLeave: () => setHov(false), style: { ...base, ...(hov ? hovered : {}) } };
-  return multiline ? <textarea rows={rows} {...props} /> : <input {...props} />;
+  const [focused, setFocused] = useState(false);
+  const base = {
+    background: 'transparent', border: '1.5px solid transparent', outline: 'none',
+    padding: '3px 6px', borderRadius: 6, fontFamily: 'inherit', color, fontSize, fontWeight,
+    width: '100%', resize: multiline ? 'vertical' : 'none', transition: 'all 0.15s',
+    boxSizing: 'border-box', lineHeight: 'inherit', ...style,
+  };
+  const hovStyle = hov && !focused ? { borderColor: 'rgba(59,130,246,0.35)', background: 'rgba(59,130,246,0.04)' } : {};
+  const focusStyle = focused ? { borderColor: '#3b82f6', background: 'rgba(59,130,246,0.05)', borderStyle: 'solid' } : {};
+  const props = {
+    value, onChange: e => onChange(e.target.value), placeholder,
+    onMouseEnter: () => setHov(true), onMouseLeave: () => setHov(false),
+    onFocus: () => setFocused(true), onBlur: () => setFocused(false),
+    style: { ...base, ...hovStyle, ...focusStyle },
+  };
+  return (
+    <div style={{ position: 'relative', display: style.display || 'block' }}>
+      {multiline ? <textarea rows={rows} {...props} /> : <input {...props} />}
+      {hov && !focused && (
+        <span style={{ position: 'absolute', top: 4, right: 4, fontSize: 10, color: 'rgba(59,130,246,0.5)', pointerEvents: 'none', fontWeight: 600, background: 'rgba(255,255,255,0.7)', borderRadius: 3, padding: '1px 4px', lineHeight: 1.4 }}>✎</span>
+      )}
+    </div>
+  );
 }
 
 /* ─── Publish status message ─── */
@@ -500,12 +573,14 @@ function ImageUpload({ src, onChange, height = 150 }) {
 }
 
 /* ─── Section Label Banner ─── */
-function SectionBanner({ label }) {
+function SectionBanner({ label, id }) {
   return (
-    <div style={{ background: '#fff7f0', borderTop: '2px solid #e87722', borderBottom: '1px solid #fde8d4', padding: '6px 40px', display: 'flex', alignItems: 'center', gap: 8 }}>
-      <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#e87722', display: 'inline-block', flexShrink: 0 }} />
-      <span style={{ fontSize: 11, fontWeight: 700, color: '#e87722', textTransform: 'uppercase', letterSpacing: '0.12em' }}>{label}</span>
-      <span style={{ fontSize: 11, color: '#f59e0b', marginLeft: 'auto' }}>✎ Click any text or image to edit</span>
+    <div id={id} style={{ background: 'linear-gradient(90deg, #fff7f0, #fff)', borderTop: '2px solid #e87722', padding: '8px 40px', display: 'flex', alignItems: 'center', gap: 10, scrollMarginTop: 56 }}>
+      <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e87722', flexShrink: 0 }} />
+      <span style={{ fontSize: 11, fontWeight: 800, color: '#e87722', textTransform: 'uppercase', letterSpacing: '0.14em' }}>{label}</span>
+      <span style={{ marginLeft: 'auto', fontSize: 11, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
+        <span style={{ fontSize: 12 }}>✎</span> Click any text or image to edit
+      </span>
     </div>
   );
 }
@@ -688,10 +763,13 @@ function CompaniesTab() {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-        <h2 style={{ color: '#1a2a4a', margin: 0, fontSize: 24 }}>Company Profiles</h2>
-        <button onClick={openAdd} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 20px', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>+ Add Company</button>
+        <div>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>Company Profiles</h1>
+          <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: 13 }}>Each company gets a unique URL to access their own portal.</p>
+        </div>
+        <button onClick={openAdd} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.3)' }}>+ Add Company</button>
       </div>
-      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 24 }}>Each company gets a unique URL to access their own portal.</p>
+      <div style={{ marginBottom: 24 }} />
 
       {companies.length === 0 ? (
         <div style={{ background: '#fff', borderRadius: 12, padding: 48, textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', color: '#94a3b8' }}>
@@ -795,25 +873,47 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       )}
 
       {/* ── Sticky Publish Bar ── */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 50, background: '#1a2a4a', padding: '12px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 12px rgba(0,0,0,0.25)' }}>
+      <div style={{ position: 'sticky', top: 0, zIndex: 50, background: '#0f1d33', padding: '11px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 16px rgba(0,0,0,0.3)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontWeight: 800, color: '#fff', fontSize: 15, letterSpacing: '0.05em' }}>EDIT WEBSITE</span>
-          <span style={{ background: 'rgba(232,119,34,0.2)', color: '#e87722', borderRadius: 6, padding: '3px 10px', fontSize: 12, fontWeight: 600 }}>Live Edit</span>
-          <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13 }}>Scroll to edit every section</span>
+          <span style={{ fontWeight: 800, color: '#fff', fontSize: 14, letterSpacing: '0.06em' }}>EDIT WEBSITE</span>
+          <span style={{ background: 'rgba(232,119,34,0.18)', color: '#e87722', borderRadius: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>Live Edit</span>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <PublishStatus saved={saved} />
-          <a href="/" target="_blank" style={{ padding: '8px 14px', background: 'rgba(255,255,255,0.1)', color: '#fff', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.2)' }}>↗ View Site</a>
-          <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 24px', fontWeight: 700, fontSize: 14, cursor: saved === 'saving' ? 'wait' : 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.4)', transition: 'background 0.2s' }}>
+          <a href="/" target="_blank" style={{ padding: '7px 14px', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.12)' }}>↗ View Site</a>
+          <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 22px', fontWeight: 700, fontSize: 13, cursor: saved === 'saving' ? 'wait' : 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.4)', transition: 'background 0.2s' }}>
             {saved === 'saving' ? 'Publishing…' : saved === 'saved' ? '✓ Published!' : 'Publish Changes'}
           </button>
         </div>
       </div>
 
+      {/* ── Section Jump Nav ── */}
+      <div style={{ position: 'sticky', top: 46, zIndex: 49, background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '0 32px', display: 'flex', gap: 0, overflowX: 'auto', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+        {[
+          { id: 'ew-hero', label: 'Hero' },
+          { id: 'ew-about', label: 'About' },
+          { id: 'ew-why', label: 'Why Us' },
+          { id: 'ew-certs', label: 'Certifications' },
+          { id: 'ew-services', label: 'Services' },
+          { id: 'ew-products', label: 'Products' },
+          { id: 'ew-brands', label: 'Brands' },
+          { id: 'ew-cases', label: 'Case Studies' },
+          { id: 'ew-clients', label: 'Clients' },
+          { id: 'ew-contact', label: 'Contact' },
+          { id: 'ew-footer', label: 'Footer' },
+        ].map(s => (
+          <button key={s.id} onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })} style={{ padding: '10px 14px', background: 'none', border: 'none', borderBottom: '2px solid transparent', cursor: 'pointer', fontSize: 12, fontWeight: 600, color: '#64748b', whiteSpace: 'nowrap', transition: 'all 0.15s' }}
+            onMouseEnter={e => { e.currentTarget.style.color = '#e87722'; e.currentTarget.style.borderBottomColor = '#e87722'; }}
+            onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderBottomColor = 'transparent'; }}>
+            {s.label}
+          </button>
+        ))}
+      </div>
+
       {/* ════════════════════════════════════════
            HERO SECTION
       ════════════════════════════════════════ */}
-      <SectionBanner label="Hero Section" />
+      <SectionBanner label="Hero Section" id="ew-hero" />
       <div style={{ background: 'linear-gradient(135deg, #1a2a4a 0%, #0f1d33 100%)', padding: '72px 40px 56px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -80, right: -80, width: 400, height: 400, borderRadius: '50%', background: 'rgba(232,119,34,0.06)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 700 }}>
@@ -844,7 +944,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ════════════════════════════════════════
            ABOUT SECTION
       ════════════════════════════════════════ */}
-      <SectionBanner label="About Section" />
+      <SectionBanner label="About Section" id="ew-about" />
       <div style={{ background: '#fff', padding: '56px 40px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, maxWidth: 1000, margin: '0 auto' }}>
           <div>
@@ -884,7 +984,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ════════════════════════════════════════
            WHY CHOOSE US
       ════════════════════════════════════════ */}
-      <SectionBanner label="Why Choose Us" />
+      <SectionBanner label="Why Choose Us" id="ew-why" />
       <div style={{ background: '#1a2a4a', padding: '56px 40px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
@@ -907,7 +1007,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ════════════════════════════════════════
            CERTIFICATIONS
       ════════════════════════════════════════ */}
-      <SectionBanner label="Certifications" />
+      <SectionBanner label="Certifications" id="ew-certs" />
       <div style={{ background: '#fff', padding: '56px 40px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
@@ -931,7 +1031,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ════════════════════════════════════════
            SERVICE EXCELLENCE
       ════════════════════════════════════════ */}
-      <SectionBanner label="Service Excellence" />
+      <SectionBanner label="Service Excellence" id="ew-services" />
       <div style={{ background: '#f8fafc', padding: '56px 40px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }}>
           <div>
@@ -958,7 +1058,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ════════════════════════════════════════
            PRODUCTS (with image editing!)
       ════════════════════════════════════════ */}
-      <SectionBanner label="Products Section — Hover image to change URL" />
+      <SectionBanner label="Products Section — Hover image to change URL" id="ew-products" />
       <div style={{ background: '#fff', padding: '56px 40px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
@@ -1005,7 +1105,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ════════════════════════════════════════
            BRANDS
       ════════════════════════════════════════ */}
-      <SectionBanner label="Brands Section" />
+      <SectionBanner label="Brands Section" id="ew-brands" />
       <div style={{ background: 'linear-gradient(135deg, #1a2a4a, #2a3c5a)', padding: '56px 40px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 8 }}>Brands We Deal</p>
@@ -1025,7 +1125,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ════════════════════════════════════════
            CASE STUDIES
       ════════════════════════════════════════ */}
-      <SectionBanner label="Case Studies" />
+      <SectionBanner label="Case Studies" id="ew-cases" />
       <div style={{ background: '#f8fafc', padding: '56px 40px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 36 }}>
@@ -1049,7 +1149,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ════════════════════════════════════════
            CLIENTS
       ════════════════════════════════════════ */}
-      <SectionBanner label="Clients Section" />
+      <SectionBanner label="Clients Section" id="ew-clients" />
       <div style={{ background: '#1a2a4a', padding: '56px 40px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
           <p style={{ color: '#e87722', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.12em', marginBottom: 8 }}>Our Clients</p>
@@ -1069,7 +1169,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ════════════════════════════════════════
            CONTACT
       ════════════════════════════════════════ */}
-      <SectionBanner label="Contact Section" />
+      <SectionBanner label="Contact Section" id="ew-contact" />
       <div style={{ background: '#0f1d33', padding: '56px 40px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }}>
           <div>
@@ -1104,7 +1204,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ════════════════════════════════════════
            FOOTER
       ════════════════════════════════════════ */}
-      <SectionBanner label="Footer" />
+      <SectionBanner label="Footer" id="ew-footer" />
       <div style={{ background: '#0d1b30', padding: '40px 40px 20px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 32, marginBottom: 28 }}>
@@ -1220,33 +1320,57 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: "'Inter', system-ui, sans-serif", background: '#f1f5f9' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', fontFamily: "'Inter', system-ui, sans-serif", background: '#f5f7fa' }}>
       {/* Sidebar */}
-      <aside style={{ width: 220, background: '#1a2a4a', display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 100, boxShadow: '4px 0 24px rgba(0,0,0,0.15)' }}>
-        <div style={{ padding: '28px 24px 24px', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-          <div style={{ fontWeight: 900, fontSize: 18, color: '#fff', letterSpacing: '0.08em' }}>NAMO</div>
-          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: 2 }}>Admin Panel</div>
+      <aside style={{ width: 240, background: '#0f1d33', display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 100, boxShadow: '4px 0 32px rgba(0,0,0,0.2)' }}>
+        {/* Logo */}
+        <div style={{ padding: '20px 20px 18px', borderBottom: '1px solid rgba(255,255,255,0.07)', display: 'flex', alignItems: 'center', gap: 12 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Namo Steel" style={{ width: 38, height: 38, objectFit: 'contain', borderRadius: 8, background: 'rgba(255,255,255,0.07)', padding: 4 }} />
+          <div>
+            <div style={{ fontWeight: 900, fontSize: 15, color: '#fff', letterSpacing: '0.07em' }}>NAMO STEEL</div>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.14em', marginTop: 1 }}>Admin Panel</div>
+          </div>
         </div>
-        <nav style={{ flex: 1, padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 4 }}>
-          {navItems.map(item => (
-            <button key={item.id} onClick={() => setTab(item.id)} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 10, border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%', background: tab === item.id ? 'rgba(232,119,34,0.18)' : 'transparent', color: tab === item.id ? '#e87722' : 'rgba(255,255,255,0.65)' }}>
-              <span style={{ fontSize: 16, width: 20, textAlign: 'center' }}>{item.emoji}</span>
-              <span style={{ fontWeight: tab === item.id ? 700 : 500, fontSize: 14, flex: 1 }}>{item.label}</span>
-              {item.count !== undefined && item.count > 0 && (
-                <span style={{ background: tab === item.id ? '#e87722' : 'rgba(255,255,255,0.15)', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 700 }}>{item.count}</span>
-              )}
-            </button>
-          ))}
+
+        {/* Nav */}
+        <nav style={{ flex: 1, padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'auto' }}>
+          {navItems.map((item, idx) => {
+            const isActive = tab === item.id;
+            const dividerBefore = idx === 4; // divider before Companies
+            return (
+              <div key={item.id}>
+                {dividerBefore && <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', margin: '6px 4px' }} />}
+                <button onClick={() => setTab(item.id)} style={{
+                  display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px 10px 10px',
+                  borderRadius: 9, border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%',
+                  background: isActive ? 'rgba(232,119,34,0.14)' : 'transparent',
+                  color: isActive ? '#e87722' : 'rgba(255,255,255,0.58)',
+                  borderLeft: `3px solid ${isActive ? '#e87722' : 'transparent'}`,
+                  transition: 'all 0.15s',
+                }}>
+                  <span style={{ fontSize: 15, width: 20, textAlign: 'center', flexShrink: 0 }}>{item.emoji}</span>
+                  <span style={{ fontWeight: isActive ? 700 : 500, fontSize: 13.5, flex: 1 }}>{item.label}</span>
+                  {item.count !== undefined && item.count > 0 && (
+                    <span style={{ background: isActive ? '#e87722' : 'rgba(255,255,255,0.1)', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 700 }}>{item.count}</span>
+                  )}
+                </button>
+              </div>
+            );
+          })}
         </nav>
-        <div style={{ padding: '16px 12px', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <a href="/" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 10, color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: 14, fontWeight: 500, border: '1px solid rgba(255,255,255,0.1)' }}>
-            <span>↗</span> View Website
+
+        {/* Bottom */}
+        <div style={{ padding: '14px 10px 18px', borderTop: '1px solid rgba(255,255,255,0.07)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <a href="/" target="_blank" style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '9px 12px', borderRadius: 9, color: 'rgba(255,255,255,0.45)', textDecoration: 'none', fontSize: 13, fontWeight: 500, border: '1px solid rgba(255,255,255,0.08)', transition: 'all 0.15s' }}>
+            <span style={{ fontSize: 14 }}>↗</span> View Website
           </a>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)', textAlign: 'center', paddingTop: 4 }}>Namo Steel Admin v2</div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main style={{ marginLeft: 220, flex: 1, padding: tab === 'website' ? 0 : '32px 36px', minHeight: '100vh', boxSizing: 'border-box' }}>
+      <main style={{ marginLeft: 240, flex: 1, padding: tab === 'website' ? 0 : '32px 36px', minHeight: '100vh', boxSizing: 'border-box', background: '#f5f7fa' }}>
         {tab === 'overview' && <OverviewTab leads={leads} customers={customers} />}
         {tab === 'leads' && <LeadsTab leads={leads} saveLeads={saveLeads} />}
         {tab === 'customers' && <CustomersTab customers={customers} saveCustomers={saveCustomers} />}
