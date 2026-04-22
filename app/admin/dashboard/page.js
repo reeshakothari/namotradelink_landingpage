@@ -443,16 +443,24 @@ function ProductsAdminTab({ draft, updateDraft }) {
 
 /* ─── Editable Field ─── */
 function EF({ value, onChange, multiline, fontSize = 15, fontWeight = 400, color = 'inherit', style = {}, placeholder, rows = 3 }) {
-  const [hov, setHov] = useState(false);
   const [focused, setFocused] = useState(false);
+  const [hov, setHov] = useState(false);
+  const { display, ...restStyle } = style;
   const base = {
-    background: 'transparent', border: '1.5px solid transparent', outline: 'none',
-    padding: '3px 6px', borderRadius: 6, fontFamily: 'inherit', color, fontSize, fontWeight,
-    width: '100%', resize: multiline ? 'vertical' : 'none', transition: 'all 0.15s',
-    boxSizing: 'border-box', lineHeight: 'inherit', ...style,
+    background: 'transparent',
+    border: 'none',
+    borderBottom: '1.5px solid transparent',
+    outline: 'none',
+    padding: '1px 0 3px',
+    borderRadius: 0,
+    fontFamily: 'inherit', color, fontSize, fontWeight,
+    width: '100%', resize: 'none',
+    transition: 'border-color 0.15s, background 0.15s',
+    boxSizing: 'border-box', lineHeight: 'inherit',
+    ...restStyle,
   };
-  const hovStyle = hov && !focused ? { borderColor: 'rgba(59,130,246,0.35)', background: 'rgba(59,130,246,0.04)' } : {};
-  const focusStyle = focused ? { borderColor: '#3b82f6', background: 'rgba(59,130,246,0.05)', borderStyle: 'solid' } : {};
+  const hovStyle = hov && !focused ? { borderBottomColor: 'rgba(232,119,34,0.5)', background: 'rgba(232,119,34,0.04)' } : {};
+  const focusStyle = focused ? { borderBottomColor: '#e87722', background: 'rgba(232,119,34,0.06)' } : {};
   const props = {
     value, onChange: e => onChange(e.target.value), placeholder,
     onMouseEnter: () => setHov(true), onMouseLeave: () => setHov(false),
@@ -460,10 +468,10 @@ function EF({ value, onChange, multiline, fontSize = 15, fontWeight = 400, color
     style: { ...base, ...hovStyle, ...focusStyle },
   };
   return (
-    <div style={{ position: 'relative', display: style.display || 'block' }}>
+    <div style={{ position: 'relative', display: display || 'block' }}>
       {multiline ? <textarea rows={rows} {...props} /> : <input {...props} />}
-      {hov && !focused && (
-        <span style={{ position: 'absolute', top: 4, right: 4, fontSize: 10, color: 'rgba(59,130,246,0.5)', pointerEvents: 'none', fontWeight: 600, background: 'rgba(255,255,255,0.7)', borderRadius: 3, padding: '1px 4px', lineHeight: 1.4 }}>✎</span>
+      {(hov || focused) && (
+        <span style={{ position: 'absolute', top: 2, right: 2, fontSize: 9, color: focused ? '#e87722' : 'rgba(232,119,34,0.5)', pointerEvents: 'none', fontWeight: 700, background: 'rgba(255,255,255,0.85)', borderRadius: 3, padding: '1px 5px', lineHeight: 1.5, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{focused ? 'editing' : '✎ edit'}</span>
       )}
     </div>
   );
@@ -575,12 +583,10 @@ function ImageUpload({ src, onChange, height = 150 }) {
 /* ─── Section Label Banner ─── */
 function SectionBanner({ label, id }) {
   return (
-    <div id={id} style={{ background: 'linear-gradient(90deg, #fff7f0, #fff)', borderTop: '2px solid #e87722', padding: '8px 40px', display: 'flex', alignItems: 'center', gap: 10, scrollMarginTop: 56 }}>
-      <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#e87722', flexShrink: 0 }} />
-      <span style={{ fontSize: 11, fontWeight: 800, color: '#e87722', textTransform: 'uppercase', letterSpacing: '0.14em' }}>{label}</span>
-      <span style={{ marginLeft: 'auto', fontSize: 11, color: '#94a3b8', display: 'flex', alignItems: 'center', gap: 4 }}>
-        <span style={{ fontSize: 12 }}>✎</span> Click any text or image to edit
-      </span>
+    <div id={id} style={{ background: '#fafafa', borderTop: '1px solid #e8e8e8', borderBottom: '1px solid #e8e8e8', padding: '7px 40px', display: 'flex', alignItems: 'center', gap: 10, scrollMarginTop: 88 }}>
+      <div style={{ width: 3, height: 14, borderRadius: 2, background: '#e87722', flexShrink: 0 }} />
+      <span style={{ fontSize: 10, fontWeight: 700, color: '#e87722', textTransform: 'uppercase', letterSpacing: '0.16em' }}>{label}</span>
+      <span style={{ marginLeft: 'auto', fontSize: 10, color: '#b0b8c4', letterSpacing: '0.04em' }}>Hover any text or image to edit</span>
     </div>
   );
 }
@@ -854,7 +860,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
   const catLabels = { flat: 'Flat Products', tubular: 'Tubular Products', structural: 'Structural Steel', roofing: 'Roofing & Sheets', accessories: 'Accessories & Others' };
 
   return (
-    <div style={{ margin: '-32px -36px', fontFamily: "'Inter', system-ui, sans-serif" }}>
+    <div style={{ margin: '-32px -36px', fontFamily: "'Inter', system-ui, sans-serif", background: '#f8f8f8' }}>
 
       {/* DB setup notice */}
       {saved === 'no_kv' && (
@@ -873,22 +879,22 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       )}
 
       {/* ── Sticky Publish Bar ── */}
-      <div style={{ position: 'sticky', top: 0, zIndex: 50, background: '#0f1d33', padding: '11px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 16px rgba(0,0,0,0.3)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ fontWeight: 800, color: '#fff', fontSize: 14, letterSpacing: '0.06em' }}>EDIT WEBSITE</span>
-          <span style={{ background: 'rgba(232,119,34,0.18)', color: '#e87722', borderRadius: 6, padding: '3px 10px', fontSize: 11, fontWeight: 700 }}>Live Edit</span>
+      <div style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(15,29,51,0.97)', backdropFilter: 'blur(12px)', padding: '10px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontWeight: 700, color: 'rgba(255,255,255,0.9)', fontSize: 13, letterSpacing: '0.08em' }}>EDIT WEBSITE</span>
+          <span style={{ background: 'rgba(232,119,34,0.15)', color: '#e87722', borderRadius: 5, padding: '2px 9px', fontSize: 10, fontWeight: 700, letterSpacing: '0.06em' }}>LIVE</span>
         </div>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
           <PublishStatus saved={saved} />
-          <a href="/" target="_blank" style={{ padding: '7px 14px', background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)', borderRadius: 8, fontSize: 13, fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.12)' }}>↗ View Site</a>
-          <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 22px', fontWeight: 700, fontSize: 13, cursor: saved === 'saving' ? 'wait' : 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.4)', transition: 'background 0.2s' }}>
+          <a href="/" target="_blank" style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.55)', borderRadius: 7, fontSize: 12, fontWeight: 500, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.09)', letterSpacing: '0.01em' }}>↗ Preview</a>
+          <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '7px 20px', fontWeight: 700, fontSize: 13, cursor: saved === 'saving' ? 'wait' : 'pointer', letterSpacing: '0.01em', transition: 'background 0.2s' }}>
             {saved === 'saving' ? 'Publishing…' : saved === 'saved' ? '✓ Published!' : 'Publish Changes'}
           </button>
         </div>
       </div>
 
       {/* ── Section Jump Nav ── */}
-      <div style={{ position: 'sticky', top: 46, zIndex: 49, background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '0 32px', display: 'flex', gap: 0, overflowX: 'auto', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+      <div style={{ position: 'sticky', top: 45, zIndex: 49, background: 'rgba(255,255,255,0.96)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #ebebeb', padding: '0 28px', display: 'flex', gap: 0, overflowX: 'auto' }}>
         {[
           { id: 'ew-hero', label: 'Hero' },
           { id: 'ew-about', label: 'About' },
@@ -902,9 +908,10 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
           { id: 'ew-contact', label: 'Contact' },
           { id: 'ew-footer', label: 'Footer' },
         ].map(s => (
-          <button key={s.id} onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })} style={{ padding: '10px 14px', background: 'none', border: 'none', borderBottom: '2px solid transparent', cursor: 'pointer', fontSize: 12, fontWeight: 600, color: '#64748b', whiteSpace: 'nowrap', transition: 'all 0.15s' }}
+          <button key={s.id} onClick={() => document.getElementById(s.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            style={{ padding: '9px 13px', background: 'none', border: 'none', borderBottom: '2px solid transparent', cursor: 'pointer', fontSize: 11, fontWeight: 600, color: '#8898aa', whiteSpace: 'nowrap', transition: 'all 0.15s', letterSpacing: '0.03em' }}
             onMouseEnter={e => { e.currentTarget.style.color = '#e87722'; e.currentTarget.style.borderBottomColor = '#e87722'; }}
-            onMouseLeave={e => { e.currentTarget.style.color = '#64748b'; e.currentTarget.style.borderBottomColor = 'transparent'; }}>
+            onMouseLeave={e => { e.currentTarget.style.color = '#8898aa'; e.currentTarget.style.borderBottomColor = 'transparent'; }}>
             {s.label}
           </button>
         ))}
@@ -1235,12 +1242,12 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       </div>
 
       {/* Bottom publish bar */}
-      <div style={{ background: '#0d1b30', padding: '28px 40px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 14 }}>
+      <div style={{ background: 'rgba(15,29,51,0.97)', padding: '22px 40px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 12 }}>
         <PublishStatus saved={saved} dark />
-        <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '14px 48px', fontWeight: 700, fontSize: 16, cursor: saved === 'saving' ? 'wait' : 'pointer', boxShadow: '0 4px 16px rgba(232,119,34,0.35)', transition: 'background 0.2s' }}>
+        <button onClick={publish} disabled={saved === 'saving'} style={{ background: saved === 'saved' ? '#22c55e' : '#e87722', color: '#fff', border: 'none', borderRadius: 9, padding: '11px 40px', fontWeight: 700, fontSize: 14, cursor: saved === 'saving' ? 'wait' : 'pointer', transition: 'background 0.2s' }}>
           {saved === 'saving' ? 'Publishing…' : saved === 'saved' ? '✓ Published!' : 'Publish Changes'}
         </button>
-        <a href="/" target="_blank" style={{ padding: '14px 20px', background: 'rgba(255,255,255,0.08)', color: '#fff', borderRadius: 10, fontSize: 14, fontWeight: 600, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.15)' }}>↗ View Site</a>
+        <a href="/" target="_blank" style={{ padding: '11px 18px', background: 'rgba(255,255,255,0.07)', color: 'rgba(255,255,255,0.6)', borderRadius: 9, fontSize: 13, fontWeight: 500, textDecoration: 'none', border: '1px solid rgba(255,255,255,0.1)' }}>↗ View Site</a>
       </div>
     </div>
   );
@@ -1309,14 +1316,19 @@ export default function AdminDashboard() {
     return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', fontFamily: 'system-ui, sans-serif', color: '#64748b', fontSize: 16 }}>Loading admin panel…</div>;
   }
 
+  const SvgIcon = ({ d, d2, viewBox = '0 0 24 24' }) => (
+    <svg width="16" height="16" viewBox={viewBox} fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d={d} />{d2 && <path d={d2} />}
+    </svg>
+  );
   const navItems = [
-    { id: 'overview',   label: 'Overview',     emoji: '▦' },
-    { id: 'leads',      label: 'Leads',        emoji: '◈', count: leads.length },
-    { id: 'customers',  label: 'Customers',    emoji: '◉', count: customers.length },
-    { id: 'companies',  label: 'Companies',    emoji: '🏢' },
-    { id: 'products',   label: 'Products',     emoji: '⬡' },
-    { id: 'theme',      label: 'Theme',        emoji: '🎨' },
-    { id: 'website',    label: 'Edit Website', emoji: '✎' },
+    { id: 'overview',   label: 'Overview',     icon: <SvgIcon d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z" /> },
+    { id: 'leads',      label: 'Leads',        icon: <SvgIcon d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />, count: leads.length },
+    { id: 'customers',  label: 'Customers',    icon: <SvgIcon d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />, count: customers.length },
+    { id: 'companies',  label: 'Companies',    icon: <SvgIcon d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" d2="M9 22V12h6v10" /> },
+    { id: 'products',   label: 'Products',     icon: <SvgIcon d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /> },
+    { id: 'theme',      label: 'Theme',        icon: <SvgIcon d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /> },
+    { id: 'website',    label: 'Edit Website', icon: <SvgIcon d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /> },
   ];
 
   return (
@@ -1324,12 +1336,12 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <aside style={{ width: 240, background: '#0f1d33', display: 'flex', flexDirection: 'column', position: 'fixed', top: 0, left: 0, bottom: 0, zIndex: 100, boxShadow: '4px 0 32px rgba(0,0,0,0.2)' }}>
         {/* Logo */}
-        <div style={{ padding: '20px 20px 18px', borderBottom: '1px solid rgba(255,255,255,0.07)', display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ padding: '18px 20px 16px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', gap: 11 }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Namo Steel" style={{ width: 38, height: 38, objectFit: 'contain', borderRadius: 8, background: 'rgba(255,255,255,0.07)', padding: 4 }} />
+          <img src="/logo.png" alt="Namo Steel" style={{ width: 34, height: 34, objectFit: 'contain', flexShrink: 0 }} />
           <div>
-            <div style={{ fontWeight: 900, fontSize: 15, color: '#fff', letterSpacing: '0.07em' }}>NAMO STEEL</div>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.14em', marginTop: 1 }}>Admin Panel</div>
+            <div style={{ fontWeight: 700, fontSize: 14, color: '#fff', letterSpacing: '0.06em' }}>NAMO STEEL</div>
+            <div style={{ fontSize: 9.5, color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase', letterSpacing: '0.16em', marginTop: 1 }}>Admin Panel</div>
           </div>
         </div>
 
@@ -1342,17 +1354,17 @@ export default function AdminDashboard() {
               <div key={item.id}>
                 {dividerBefore && <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', margin: '6px 4px' }} />}
                 <button onClick={() => setTab(item.id)} style={{
-                  display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px 10px 10px',
-                  borderRadius: 9, border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%',
-                  background: isActive ? 'rgba(232,119,34,0.14)' : 'transparent',
-                  color: isActive ? '#e87722' : 'rgba(255,255,255,0.58)',
-                  borderLeft: `3px solid ${isActive ? '#e87722' : 'transparent'}`,
+                  display: 'flex', alignItems: 'center', gap: 11, padding: '9px 12px 9px 11px',
+                  borderRadius: 8, border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%',
+                  background: isActive ? 'rgba(232,119,34,0.12)' : 'transparent',
+                  color: isActive ? '#e87722' : 'rgba(255,255,255,0.52)',
+                  borderLeft: `2px solid ${isActive ? '#e87722' : 'transparent'}`,
                   transition: 'all 0.15s',
                 }}>
-                  <span style={{ fontSize: 15, width: 20, textAlign: 'center', flexShrink: 0 }}>{item.emoji}</span>
-                  <span style={{ fontWeight: isActive ? 700 : 500, fontSize: 13.5, flex: 1 }}>{item.label}</span>
+                  <span style={{ width: 18, flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{item.icon}</span>
+                  <span style={{ fontWeight: isActive ? 600 : 400, fontSize: 13, flex: 1, letterSpacing: '0.01em' }}>{item.label}</span>
                   {item.count !== undefined && item.count > 0 && (
-                    <span style={{ background: isActive ? '#e87722' : 'rgba(255,255,255,0.1)', color: '#fff', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 700 }}>{item.count}</span>
+                    <span style={{ background: isActive ? '#e87722' : 'rgba(255,255,255,0.08)', color: isActive ? '#fff' : 'rgba(255,255,255,0.5)', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 600 }}>{item.count}</span>
                   )}
                 </button>
               </div>
