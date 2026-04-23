@@ -4,7 +4,7 @@ import { useSiteContent } from '@/lib/useSiteContent';
 export default function CaseStudies() {
   const { caseStudies } = useSiteContent();
   return (
-    <section className="cases section" id="case-studies">
+    <section className="cases section" id="cases">
       <div className="container">
         <div className="section-header">
           <span className="section-label">Case Studies</span>

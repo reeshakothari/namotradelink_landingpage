@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { getSiteContent, setSiteContent } from '@/lib/siteContent';
-import { LayoutDashboard, Users, UserCheck, Building2, Package, Palette, Pencil, ExternalLink, AlertTriangle } from 'lucide-react';
+import { LayoutDashboard, Users, UserCheck, Building2, Package, Palette, Pencil, ExternalLink, AlertTriangle, Layers } from 'lucide-react';
 
 /* ─── localStorage helpers ─── */
 const LEADS_KEY = 'ntl_leads';
@@ -595,16 +595,97 @@ function SectionBanner({ label, id }) {
   );
 }
 
+/* ─── Steel Brand Palettes (from brand proposal) ─── */
+const STEEL_PALETTES = [
+  {
+    id: 'steel-midnight',
+    name: 'Steel & Midnight',
+    tagline: 'Strength, Authority & Precision',
+    badge: 'INDUSTRIAL POWER',
+    bestFor: 'Infrastructure, construction & government contracts',
+    keywords: ['Authority', 'Trust', 'Precision', 'Corporate'],
+    primary: '#4A6FA5', primaryDark: '#2D5585', secondary: '#1B2A3B', secondaryLight: '#243550',
+    swatches: [
+      { hex: '#1B2A3B', name: 'Midnight Navy', role: 'Primary / Brand' },
+      { hex: '#4A6FA5', name: 'Steel Blue', role: 'Secondary / Accent' },
+      { hex: '#8AAECF', name: 'Cold Chrome', role: 'Tertiary / Support' },
+      { hex: '#D4D8DE', name: 'Polished Steel', role: 'Neutral / Background' },
+      { hex: '#F5F7FA', name: 'Forge White', role: 'Base / Canvas' },
+    ],
+  },
+  {
+    id: 'molten-forge',
+    name: 'Molten & Forge',
+    tagline: 'Heat, Energy & Raw Industrial Power',
+    badge: 'INDUSTRIAL HERITAGE',
+    bestFor: 'Trade fairs, bold brand identity & marketing materials',
+    keywords: ['Energy', 'Bold', 'Heritage', 'Powerful'],
+    primary: '#B84B1A', primaryDark: '#8B3612', secondary: '#1A1A1A', secondaryLight: '#2A2A2A',
+    swatches: [
+      { hex: '#1A1A1A', name: 'Smelter Black', role: 'Primary / Brand' },
+      { hex: '#B84B1A', name: 'Molten Iron', role: 'Secondary / Accent' },
+      { hex: '#E87C35', name: 'Forge Glow', role: 'Tertiary / Support' },
+      { hex: '#9E9EA0', name: 'Cast Grey', role: 'Neutral / Background' },
+      { hex: '#F2F0ED', name: 'Ash White', role: 'Base / Canvas' },
+    ],
+  },
+  {
+    id: 'graphite-green',
+    name: 'Graphite & Green',
+    tagline: 'Reliability, Sustainability & Forward Progress',
+    badge: 'SUSTAINABLE STRENGTH',
+    bestFor: 'ESG-focused clients, green steel & sustainability reports',
+    keywords: ['Sustainable', 'Future', 'Reliable', 'Green'],
+    primary: '#3A7D5A', primaryDark: '#2B5E43', secondary: '#2C3E35', secondaryLight: '#3A4F43',
+    swatches: [
+      { hex: '#2C3E35', name: 'Deep Graphite', role: 'Primary / Brand' },
+      { hex: '#3A7D5A', name: 'Industrial Green', role: 'Secondary / Accent' },
+      { hex: '#72B08A', name: 'Eco Steel', role: 'Tertiary / Support' },
+      { hex: '#A8B0AB', name: 'Raw Metal', role: 'Neutral / Background' },
+      { hex: '#EDF2EF', name: 'Clean Air', role: 'Base / Canvas' },
+    ],
+  },
+  {
+    id: 'monochrome',
+    name: 'Monochrome Steel',
+    tagline: 'Precision, Innovation & Minimal Confidence',
+    badge: 'MODERN PRECISION',
+    bestFor: 'Advanced manufacturing, aerospace steel & tech clients',
+    keywords: ['Premium', 'Innovation', 'Modern', 'Precise'],
+    primary: '#5B4FCF', primaryDark: '#4638A8', secondary: '#0D0D0D', secondaryLight: '#1F1F1F',
+    swatches: [
+      { hex: '#0D0D0D', name: 'Carbon Black', role: 'Primary / Brand' },
+      { hex: '#3B3B3B', name: 'Dark Steel', role: 'Secondary / Accent' },
+      { hex: '#7A7A7A', name: 'Brushed Metal', role: 'Tertiary / Support' },
+      { hex: '#C0C0C0', name: 'Silver Grade', role: 'Neutral / Background' },
+      { hex: '#5B4FCF', name: 'Tech Accent', role: 'Base / Canvas' },
+    ],
+  },
+];
+
+const FONTS = [
+  { value: 'Inter', label: 'Inter — Modern & Clean' },
+  { value: 'Roboto', label: 'Roboto — Versatile & Professional' },
+  { value: 'Poppins', label: 'Poppins — Geometric & Friendly' },
+  { value: 'Montserrat', label: 'Montserrat — Bold & Contemporary' },
+  { value: 'Open Sans', label: 'Open Sans — Readable & Neutral' },
+  { value: 'Raleway', label: 'Raleway — Elegant & Refined' },
+  { value: 'Oswald', label: 'Oswald — Strong & Impactful' },
+  { value: 'Barlow', label: 'Barlow — Industrial & Modern' },
+  { value: 'Lato', label: 'Lato — Professional & Clear' },
+  { value: 'Nunito', label: 'Nunito — Rounded & Approachable' },
+];
+
 /* ─── Theme Tab ─── */
 const PRESETS = [
-  { name: 'Steel Orange',   primary: '#e87722', primaryDark: '#c96310', secondary: '#1a2a4a', secondaryLight: '#243557' },
-  { name: 'Royal Blue',     primary: '#2563eb', primaryDark: '#1d4ed8', secondary: '#0f172a', secondaryLight: '#1e293b' },
-  { name: 'Forest Green',   primary: '#16a34a', primaryDark: '#15803d', secondary: '#14532d', secondaryLight: '#166534' },
-  { name: 'Deep Purple',    primary: '#7c3aed', primaryDark: '#6d28d9', secondary: '#1e1b4b', secondaryLight: '#312e81' },
-  { name: 'Crimson Red',    primary: '#dc2626', primaryDark: '#b91c1c', secondary: '#1c1917', secondaryLight: '#292524' },
-  { name: 'Teal',           primary: '#0d9488', primaryDark: '#0f766e', secondary: '#134e4a', secondaryLight: '#115e59' },
-  { name: 'Amber Gold',     primary: '#d97706', primaryDark: '#b45309', secondary: '#1c1917', secondaryLight: '#292524' },
-  { name: 'Slate Dark',     primary: '#475569', primaryDark: '#334155', secondary: '#0f172a', secondaryLight: '#1e293b' },
+  { name: 'Steel & Midnight', primary: '#4A6FA5', primaryDark: '#2D5585', secondary: '#1B2A3B', secondaryLight: '#243550' },
+  { name: 'Molten & Forge',   primary: '#B84B1A', primaryDark: '#8B3612', secondary: '#1A1A1A', secondaryLight: '#2A2A2A' },
+  { name: 'Graphite & Green', primary: '#3A7D5A', primaryDark: '#2B5E43', secondary: '#2C3E35', secondaryLight: '#3A4F43' },
+  { name: 'Monochrome Steel', primary: '#5B4FCF', primaryDark: '#4638A8', secondary: '#0D0D0D', secondaryLight: '#1F1F1F' },
+  { name: 'Steel Orange',     primary: '#e87722', primaryDark: '#c96310', secondary: '#1a2a4a', secondaryLight: '#243557' },
+  { name: 'Royal Blue',       primary: '#2563eb', primaryDark: '#1d4ed8', secondary: '#0f172a', secondaryLight: '#1e293b' },
+  { name: 'Forest Green',     primary: '#16a34a', primaryDark: '#15803d', secondary: '#14532d', secondaryLight: '#166534' },
+  { name: 'Deep Purple',      primary: '#7c3aed', primaryDark: '#6d28d9', secondary: '#1e1b4b', secondaryLight: '#312e81' },
 ];
 
 function ThemeTab({ draft, updateDraft, publish, saved }) {
@@ -719,6 +800,220 @@ function ThemeTab({ draft, updateDraft, publish, saved }) {
             style={{ background: saved === 'saved' ? '#22c55e' : theme.primary, color: '#fff', border: 'none', borderRadius: 10, padding: '12px 32px', fontWeight: 700, fontSize: 14, cursor: saved === 'saving' ? 'wait' : 'pointer', whiteSpace: 'nowrap', transition: 'background 0.2s' }}
           >
             {saved === 'saving' ? 'Publishing…' : saved === 'saved' ? '✓ Live!' : 'Publish Theme →'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Branding Tab ─── */
+function BrandingTab({ draft, updateDraft, publish, saved }) {
+  const theme = draft?.theme || {};
+  const branding = draft?.branding || {};
+  const selectedPaletteId = branding.selectedPalette || 'steel-midnight';
+
+  function applyPalette(palette) {
+    updateDraft('branding.selectedPalette', palette.id);
+    updateDraft('theme.primary', palette.primary);
+    updateDraft('theme.primaryDark', palette.primaryDark);
+    updateDraft('theme.secondary', palette.secondary);
+    updateDraft('theme.secondaryLight', palette.secondaryLight);
+    document.documentElement.style.setProperty('--orange', palette.primary);
+    document.documentElement.style.setProperty('--orange-dark', palette.primaryDark);
+    document.documentElement.style.setProperty('--navy', palette.secondary);
+    document.documentElement.style.setProperty('--navy-light', palette.secondaryLight);
+  }
+
+  function handleColor(key, cssVar, value) {
+    updateDraft(`theme.${key}`, value);
+    document.documentElement.style.setProperty(cssVar, value);
+  }
+
+  function handleFont(key, value) {
+    updateDraft(`branding.${key}`, value);
+    if (value && value !== 'Inter') {
+      const id = `gfont-${value.replace(/\s+/g, '-')}`;
+      if (!document.getElementById(id)) {
+        const link = document.createElement('link');
+        link.id = id; link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(value)}:wght@400;500;600;700;900&display=swap`;
+        document.head.appendChild(link);
+      }
+    }
+    const prop = key === 'headingFont' ? '--font-heading' : '--font-body';
+    document.documentElement.style.setProperty(prop, `'${value}', system-ui, sans-serif`);
+  }
+
+  const activePalette = STEEL_PALETTES.find(p => p.id === selectedPaletteId) || STEEL_PALETTES[0];
+
+  return (
+    <div>
+      <h2 style={{ color: '#1a2a4a', margin: '0 0 6px', fontSize: 24 }}>Brand Identity</h2>
+      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 36 }}>Manage your brand's visual identity — colour palette, typography, and logo. Publish to go live.</p>
+
+      {/* ── LOGO ── */}
+      <section style={{ marginBottom: 44 }}>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 4, marginTop: 0 }}>Logo</h3>
+        <p style={{ fontSize: 13, color: '#64748b', marginBottom: 16, marginTop: 0 }}>Upload a logo via URL or use a text-based logo displayed in the navbar and footer.</p>
+        <div style={{ background: '#fff', borderRadius: 14, padding: '24px 28px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+          <div>
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Logo Image URL (optional)</label>
+            <input
+              type="url"
+              value={branding.logoUrl || ''}
+              onChange={e => updateDraft('branding.logoUrl', e.target.value)}
+              placeholder="https://example.com/logo.png"
+              style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none', marginBottom: 14 }}
+            />
+            <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Brand Name (text fallback)</label>
+            <input
+              type="text"
+              value={branding.logoText || draft?.footer?.brandName || 'NAMO STEEL'}
+              onChange={e => updateDraft('branding.logoText', e.target.value)}
+              placeholder="NAMO STEEL"
+              style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none' }}
+            />
+          </div>
+          <div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Navbar Preview</div>
+            <div style={{ background: theme.secondary || '#1B2A3B', borderRadius: 10, padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
+              {branding.logoUrl
+                ? <img src={branding.logoUrl} alt="Logo" style={{ height: 30, objectFit: 'contain' }} />
+                : <>
+                    <div style={{ width: 26, height: 26, borderRadius: 6, background: theme.primary || '#4A6FA5', flexShrink: 0 }} />
+                    <span style={{ color: '#fff', fontWeight: 900, fontSize: 14, letterSpacing: '0.08em' }}>{branding.logoText || draft?.footer?.brandName || 'NAMO STEEL'}</span>
+                  </>
+              }
+              <div style={{ marginLeft: 'auto', display: 'flex', gap: 12 }}>
+                {['About', 'Products', 'Contact'].map(l => <span key={l} style={{ color: 'rgba(255,255,255,0.55)', fontSize: 12 }}>{l}</span>)}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TYPOGRAPHY ── */}
+      <section style={{ marginBottom: 44 }}>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 4, marginTop: 0 }}>Typography</h3>
+        <p style={{ fontSize: 13, color: '#64748b', marginBottom: 16, marginTop: 0 }}>Select fonts for headings and body text. Fonts load from Google Fonts automatically.</p>
+        <div style={{ background: '#fff', borderRadius: 14, padding: '24px 28px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
+            {[
+              { key: 'headingFont', label: 'Heading Font', desc: 'Titles and section headers' },
+              { key: 'bodyFont', label: 'Body Font', desc: 'Paragraphs and descriptions' },
+            ].map(({ key, label, desc }) => (
+              <div key={key}>
+                <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</label>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 8 }}>{desc}</div>
+                <select
+                  value={branding[key] || 'Inter'}
+                  onChange={e => handleFont(key, e.target.value)}
+                  style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none', background: '#fff', cursor: 'pointer' }}
+                >
+                  {FONTS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
+                </select>
+              </div>
+            ))}
+          </div>
+          <div style={{ background: '#f8fafc', borderRadius: 10, padding: '20px 24px', border: '1px solid #e2e8f0' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Font Preview</div>
+            <div style={{ fontFamily: `'${branding.headingFont || 'Inter'}', system-ui, sans-serif`, fontSize: 20, fontWeight: 700, color: theme.secondary || '#1B2A3B', marginBottom: 6 }}>Steel Solutions for Solid Foundations</div>
+            <div style={{ fontFamily: `'${branding.bodyFont || 'Inter'}', system-ui, sans-serif`, fontSize: 14, color: '#64748b', lineHeight: 1.6 }}>Trusted dealers in construction and industrial steel products, serving the industry for over 30 years. Known for quality, reliability, and competitive pricing.</div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── COLOUR PALETTES ── */}
+      <section style={{ marginBottom: 44 }}>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 4, marginTop: 0 }}>Brand Colour Palette</h3>
+        <p style={{ fontSize: 13, color: '#64748b', marginBottom: 20, marginTop: 0 }}>Four curated palettes for your steel brand identity. Select one, then fine-tune individual colours below.</p>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20, marginBottom: 28 }}>
+          {STEEL_PALETTES.map(palette => {
+            const isSelected = selectedPaletteId === palette.id;
+            return (
+              <div key={palette.id} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', border: isSelected ? `3px solid ${palette.primary}` : '2px solid #e2e8f0', boxShadow: isSelected ? `0 6px 24px ${palette.primary}33` : '0 1px 6px rgba(0,0,0,0.06)', transition: 'all 0.2s' }}>
+                <div style={{ background: palette.secondary, padding: '8px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: 10, fontWeight: 700, color: palette.primary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{palette.badge}</span>
+                  {isSelected && <span style={{ fontSize: 10, fontWeight: 700, color: '#fff', background: palette.primary, borderRadius: 99, padding: '2px 8px' }}>✓ Active</span>}
+                </div>
+                <div style={{ display: 'flex', height: 60 }}>
+                  {palette.swatches.map((s, i) => <div key={i} style={{ flex: 1, background: s.hex }} title={`${s.name}: ${s.hex}`} />)}
+                </div>
+                <div style={{ padding: '16px 20px' }}>
+                  <div style={{ fontSize: 17, fontWeight: 800, color: '#1a2a4a', marginBottom: 2 }}>{palette.name}</div>
+                  <div style={{ fontSize: 12, color: '#64748b', marginBottom: 10 }}>{palette.tagline}</div>
+                  <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 12 }}>
+                    {palette.keywords.map(k => <span key={k} style={{ background: `${palette.primary}18`, color: palette.primary, fontSize: 10, fontWeight: 600, borderRadius: 99, padding: '2px 8px', border: `1px solid ${palette.primary}30` }}>{k}</span>)}
+                  </div>
+                  <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
+                    {palette.swatches.map((s, i) => (
+                      <div key={i} style={{ textAlign: 'center', flex: 1 }}>
+                        <div style={{ width: 18, height: 18, borderRadius: '50%', background: s.hex, margin: '0 auto 3px', border: '1.5px solid rgba(0,0,0,0.1)' }} />
+                        <div style={{ fontSize: 8, color: '#94a3b8', lineHeight: 1.2, fontFamily: 'monospace' }}>{s.hex}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 12, borderTop: '1px solid #f1f5f9', paddingTop: 8 }}>
+                    Best for: <span style={{ color: '#64748b', fontWeight: 500 }}>{palette.bestFor}</span>
+                  </div>
+                  <button
+                    onClick={() => applyPalette(palette)}
+                    style={{ width: '100%', background: isSelected ? palette.primary : '#f8fafc', color: isSelected ? '#fff' : '#64748b', border: `2px solid ${isSelected ? palette.primary : '#e2e8f0'}`, borderRadius: 8, padding: '10px', fontWeight: 700, fontSize: 13, cursor: 'pointer', transition: 'all 0.15s' }}
+                  >
+                    {isSelected ? '✓ Selected' : 'Select This Palette'}
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Fine-tune colours */}
+        <div style={{ background: '#fff', borderRadius: 14, padding: '24px 28px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', border: `2px solid ${activePalette.primary}22` }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+            <div style={{ width: 10, height: 10, borderRadius: '50%', background: activePalette.primary, flexShrink: 0 }} />
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#1a2a4a' }}>Fine-tune: {activePalette.name}</div>
+            <div style={{ fontSize: 12, color: '#94a3b8' }}>— adjust individual colours below</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
+            {[
+              { label: 'Accent / Buttons', key: 'primary', cssVar: '--orange', desc: 'Buttons, badges, highlights' },
+              { label: 'Accent Dark (Hover)', key: 'primaryDark', cssVar: '--orange-dark', desc: 'Button hover & active states' },
+              { label: 'Dark Background', key: 'secondary', cssVar: '--navy', desc: 'Navbar, headings, footer' },
+              { label: 'Mid Dark', key: 'secondaryLight', cssVar: '--navy-light', desc: 'Sidebar, dark card sections' },
+            ].map(({ label, key, cssVar, desc }) => (
+              <div key={key} style={{ background: '#f8fafc', borderRadius: 10, padding: '14px 16px', border: '1px solid #e2e8f0' }}>
+                <div style={{ fontWeight: 700, fontSize: 12, color: '#1a2a4a', marginBottom: 2 }}>{label}</div>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 10 }}>{desc}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <input type="color" value={theme[key] || '#000000'} onChange={e => handleColor(key, cssVar, e.target.value)} style={{ width: 40, height: 40, border: '2px solid #e2e8f0', borderRadius: 8, cursor: 'pointer', padding: 2, background: 'none' }} />
+                  <div>
+                    <div style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 700, color: '#334155' }}>{theme[key] || '#000000'}</div>
+                    <div style={{ fontSize: 10, color: '#94a3b8' }}>Click to change</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Publish bar */}
+      <div style={{ background: '#1a2a4a', borderRadius: 14, padding: '20px 28px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+        <div>
+          <div style={{ fontWeight: 700, color: '#fff', fontSize: 15 }}>Publish Brand Identity</div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', marginTop: 2 }}>Makes your chosen palette, fonts, and logo live for all visitors instantly.</div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <PublishStatus saved={saved} dark />
+          <button
+            onClick={publish}
+            disabled={saved === 'saving'}
+            style={{ background: saved === 'saved' ? '#22c55e' : (theme.primary || '#4A6FA5'), color: '#fff', border: 'none', borderRadius: 10, padding: '12px 32px', fontWeight: 700, fontSize: 14, cursor: saved === 'saving' ? 'wait' : 'pointer', whiteSpace: 'nowrap', transition: 'background 0.2s' }}
+          >
+            {saved === 'saving' ? 'Publishing…' : saved === 'saved' ? '✓ Live!' : 'Publish Brand →'}
           </button>
         </div>
       </div>
@@ -1440,6 +1735,7 @@ export default function AdminDashboard() {
     { id: 'customers', label: 'Customers',    icon: <UserCheck size={15} />,   count: customers.length },
     { id: 'companies', label: 'Companies',    icon: <Building2 size={15} /> },
     { id: 'products',  label: 'Products',     icon: <Package size={15} /> },
+    { id: 'branding',  label: 'Branding',     icon: <Layers size={15} /> },
     { id: 'theme',     label: 'Theme',        icon: <Palette size={15} /> },
     { id: 'website',   label: 'Edit Website', icon: <Pencil size={15} /> },
   ];
@@ -1552,6 +1848,7 @@ export default function AdminDashboard() {
           {tab === 'leads'     && <LeadsTab leads={leads} saveLeads={saveLeads} />}
           {tab === 'customers' && <CustomersTab customers={customers} saveCustomers={saveCustomers} />}
           {tab === 'companies' && <CompaniesTab />}
+          {tab === 'branding'  && <BrandingTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}
           {tab === 'theme'     && <ThemeTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}
           {tab === 'products'  && <ProductsAdminTab draft={draft} updateDraft={updateDraft} />}
           {tab === 'website'   && <EditWebsiteTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}

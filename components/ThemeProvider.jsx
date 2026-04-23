@@ -26,6 +26,7 @@ function lighten(hex, amount = 20) {
 export default function ThemeProvider() {
   const content = useSiteContent();
   const theme = content?.theme;
+  const branding = content?.branding;
 
   useEffect(() => {
     if (!theme?.primary || !theme?.secondary) return;
@@ -35,6 +36,25 @@ export default function ThemeProvider() {
     root.style.setProperty('--navy', theme.secondary);
     root.style.setProperty('--navy-light', theme.secondaryLight || lighten(theme.secondary));
   }, [theme]);
+
+  useEffect(() => {
+    if (!branding) return;
+    const root = document.documentElement;
+    const headingFont = branding.headingFont || 'Inter';
+    const bodyFont = branding.bodyFont || 'Inter';
+    root.style.setProperty('--font-heading', `'${headingFont}', system-ui, sans-serif`);
+    root.style.setProperty('--font-body', `'${bodyFont}', system-ui, sans-serif`);
+    [headingFont, bodyFont].filter(f => f && f !== 'Inter').forEach(font => {
+      const id = `gfont-${font.replace(/\s+/g, '-')}`;
+      if (!document.getElementById(id)) {
+        const link = document.createElement('link');
+        link.id = id;
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font)}:wght@400;500;600;700;900&display=swap`;
+        document.head.appendChild(link);
+      }
+    });
+  }, [branding]);
 
   return null;
 }

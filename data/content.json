@@ -1,9 +1,16 @@
 {
   "theme": {
-    "primary": "#e87722",
-    "primaryDark": "#c96310",
-    "secondary": "#1a2a4a",
-    "secondaryLight": "#243557"
+    "primary": "#4A6FA5",
+    "primaryDark": "#2D5585",
+    "secondary": "#1B2A3B",
+    "secondaryLight": "#243550"
+  },
+  "branding": {
+    "logoUrl": "",
+    "logoText": "NAMO STEEL",
+    "headingFont": "Inter",
+    "bodyFont": "Inter",
+    "selectedPalette": "steel-midnight"
   },
   "hero": {
     "badge": "SINCE 1995",

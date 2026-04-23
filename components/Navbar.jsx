@@ -4,11 +4,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const links = [
-  { href: '/about', label: 'About' },
-  { href: '/products', label: 'Products' },
-  { href: '/brands', label: 'Brands' },
-  { href: '/case-studies', label: 'Case Studies' },
-  { href: '/clients', label: 'Clients' },
+  { href: '#about', label: 'About' },
+  { href: '#products', label: 'Products' },
+  { href: '#brands', label: 'Brands' },
+  { href: '#cases', label: 'Case Studies' },
+  { href: '#clients', label: 'Clients' },
 ];
 
 export default function Navbar() {
@@ -23,11 +23,12 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="nav" style={{ boxShadow: scrolled ? '0 4px 24px rgba(0,0,0,0.3)' : 'none' }}>
+      <header className="nav" style={{ boxShadow: scrolled ? '0 4px 32px rgba(0,0,0,0.4)' : 'none' }}>
+        <div className="nav-accent-line" />
         <div className="container nav-inner">
           <Link href="/" className="logo">
             <div className="logo-icon">
-              <Image src="/logo.png" alt="Namo Steel" width={40} height={40} style={{ objectFit: 'contain' }} />
+              <Image src="/logo.png" alt="Namo Steel" width={36} height={36} style={{ objectFit: 'contain' }} />
             </div>
             <div className="logo-text">
               <span className="logo-name">NAMO STEEL</span>
@@ -39,7 +40,7 @@ export default function Navbar() {
             {links.map(l => (
               <Link key={l.href} href={l.href}>{l.label}</Link>
             ))}
-            <Link href="/contact" className="btn-nav">Contact Us</Link>
+            <Link href="#contact" className="btn-nav">Contact Us</Link>
           </nav>
 
           <button className="hamburger" onClick={() => setMenuOpen(o => !o)} aria-label="Toggle menu">
@@ -54,7 +55,7 @@ export default function Navbar() {
         {links.map(l => (
           <Link key={l.href} href={l.href} onClick={() => setMenuOpen(false)}>{l.label}</Link>
         ))}
-        <Link href="/contact" onClick={() => setMenuOpen(false)} style={{ color: 'var(--orange)', fontWeight: 700 }}>Contact Us</Link>
+        <Link href="#contact" onClick={() => setMenuOpen(false)} style={{ color: 'var(--orange)', fontWeight: 700 }}>Contact Us</Link>
       </div>
     </>
   );
