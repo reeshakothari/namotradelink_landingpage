@@ -1,33 +1,24 @@
 'use client';
 import { useState } from 'react';
+import { useSiteContent } from '@/lib/useSiteContent';
 
-const PRODUCT_OPTIONS = [
-  'M.S-HRC Plate',
-  'CRC Plate',
-  'Sheet',
-  'GP Plate',
-  'M.S Pipes',
-  'GP Pipes',
-  'CRC Pipes',
-  'Angles (Z, T, Equal)',
-  'Flats',
-  'Beams',
-  'Channels',
-  'TMT Bars',
-  'CRC Coils',
-  'Polycarbonate Sheets',
-  'GI Corrugated & Perforated Sheets',
-  'Colour Coated Sheets',
-  'Deck Sheets',
-  'Weld Mesh & Chain Link',
-  'Self Tapping Screws',
-  'Binding Wire',
-  'Cement Sheet',
-  'Plate Cutting',
-  'Foundation Bolts',
-];
+const PRODUCT_KEYS = ['flat', 'tubular', 'structural', 'roofing', 'accessories'];
 
 export default function Contact() {
+  const content = useSiteContent();
+  const contactData = content?.contact || {};
+  const products = content?.products || {};
+
+  const productOptions = PRODUCT_KEYS.flatMap(k => (products[k] || []).map(p => p.title));
+  const sectionLabel = contactData.sectionLabel || 'Get In Touch';
+  const heading = contactData.heading || "Let's Build Something Strong Together";
+  const subheading = contactData.subheading || 'Reach out to us for inquiries, quotes, or customized steel solutions. We\'re ready to serve your project needs.';
+  const phone = contactData.phone || '+91 98604 89490';
+  const email = contactData.email || 'namotradelink@gmail.com';
+  const address = contactData.address || 'Office No. 801, Apex Business Court,\nNear Gangadham, Pune 411037';
+  const businessType = contactData.businessType || 'Iron & Steel Merchants';
+  const waPhone = phone.replace(/\D/g, '');
+
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(false);
   const [selected, setSelected] = useState([]);
@@ -71,9 +62,9 @@ export default function Contact() {
     <section className="contact section" id="contact">
       <div className="container contact-inner">
         <div className="contact-info">
-          <span className="section-label">Get In Touch</span>
-          <h2>Let&apos;s Build Something Strong Together</h2>
-          <p>Reach out to us for inquiries, quotes, or customized steel solutions. We&apos;re ready to serve your project needs.</p>
+          <span className="section-label">{sectionLabel}</span>
+          <h2>{heading}</h2>
+          <p>{subheading}</p>
           <div className="contact-items">
             <div className="contact-item">
               <div className="contact-icon">
@@ -83,7 +74,7 @@ export default function Contact() {
               </div>
               <div>
                 <span className="contact-label">Phone</span>
-                <a href="https://wa.me/919860489490" target="_blank" rel="noopener noreferrer">+91 98604 89490</a>
+                <a href={`https://wa.me/${waPhone}`} target="_blank" rel="noopener noreferrer">{phone}</a>
               </div>
             </div>
             <div className="contact-item">
@@ -95,7 +86,7 @@ export default function Contact() {
               </div>
               <div>
                 <span className="contact-label">Email</span>
-                <a href="mailto:namotradelink@gmail.com">namotradelink@gmail.com</a>
+                <a href={`mailto:${email}`}>{email}</a>
               </div>
             </div>
             <div className="contact-item">
@@ -107,7 +98,7 @@ export default function Contact() {
               </div>
               <div>
                 <span className="contact-label">Office</span>
-                <span>Office No. 801, Apex Business Court,<br/>Near Gangadham, Pune 411037</span>
+                <span style={{ whiteSpace: 'pre-line' }}>{address}</span>
               </div>
             </div>
             <div className="contact-item">
@@ -119,7 +110,7 @@ export default function Contact() {
               </div>
               <div>
                 <span className="contact-label">Business</span>
-                <span>Iron &amp; Steel Merchants</span>
+                <span>{businessType}</span>
               </div>
             </div>
           </div>
@@ -149,7 +140,7 @@ export default function Contact() {
                 border: '1.5px solid #e5e7eb', borderRadius: 8, padding: '10px 12px',
                 maxHeight: 200, overflowY: 'auto', display: 'flex', flexWrap: 'wrap', gap: '8px 12px',
               }}>
-                {PRODUCT_OPTIONS.map(p => (
+                {productOptions.map(p => (
                   <label key={p} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, color: selected.includes(p) ? 'var(--orange)' : '#374151', fontWeight: selected.includes(p) ? 600 : 400, whiteSpace: 'nowrap' }}>
                     <input
                       type="checkbox"

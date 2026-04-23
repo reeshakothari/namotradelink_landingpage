@@ -1229,7 +1229,9 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
       {/* ── Section Tab Nav ── */}
       <div style={{ position: 'sticky', top: 52, zIndex: 49, background: '#fff', borderBottom: '1px solid #f0f0f0', padding: '0 20px', display: 'flex', gap: 0, overflowX: 'auto' }}>
         {[
+          { id: 'ew-navbar', label: 'Navbar' },
           { id: 'ew-hero', label: 'Hero' },
+          { id: 'ew-categories', label: 'Categories' },
           { id: 'ew-about', label: 'About' },
           { id: 'ew-why', label: 'Why Us' },
           { id: 'ew-certs', label: 'Certifications' },
@@ -1252,6 +1254,63 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
             </button>
           );
         })}
+      </div>
+
+      {/* ════════════════════════════════════════
+           NAVBAR SECTION
+      ════════════════════════════════════════ */}
+      <SectionBanner label="Navbar" id="ew-navbar" />
+      <div style={{ background: '#fff', padding: '40px 40px' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+          <div>
+            <div style={{ marginBottom: 18 }}>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Brand Name <span style={{ color: '#94a3b8', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(also in Branding tab)</span></label>
+              <EF value={draft.branding?.logoText || 'NAMO STEEL'} onChange={up('branding.logoText')} fontSize={15} fontWeight={700} color="#1a2a4a" />
+            </div>
+            <div style={{ marginBottom: 18 }}>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Tagline</label>
+              <EF value={draft.navbar?.logoTagline || 'The Steel Hub'} onChange={up('navbar.logoTagline')} fontSize={14} color="#64748b" />
+            </div>
+            <div style={{ marginBottom: 18 }}>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>CTA Button Label</label>
+              <EF value={draft.navbar?.ctaLabel || 'Contact Us'} onChange={up('navbar.ctaLabel')} fontSize={14} color="#1a2a4a" fontWeight={600} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Navigation Links</label>
+              {(draft.navbar?.navLinks || []).map((link, i) => (
+                <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
+                  <div style={{ flex: 1, background: '#f8fafc', borderRadius: 8, padding: '8px 12px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ fontSize: 9, color: '#94a3b8', marginBottom: 3, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Label</div>
+                    <EF value={link.label} onChange={val => updateDraft('navbar.navLinks', (draft.navbar?.navLinks || []).map((l, j) => j === i ? { ...l, label: val } : l))} fontSize={13} fontWeight={600} color="#1a2a4a" />
+                  </div>
+                  <div style={{ flex: 1, background: '#f8fafc', borderRadius: 8, padding: '8px 12px', border: '1px solid #e2e8f0' }}>
+                    <div style={{ fontSize: 9, color: '#94a3b8', marginBottom: 3, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Href</div>
+                    <EF value={link.href} onChange={val => updateDraft('navbar.navLinks', (draft.navbar?.navLinks || []).map((l, j) => j === i ? { ...l, href: val } : l))} fontSize={13} color="#64748b" />
+                  </div>
+                  <button onClick={() => updateDraft('navbar.navLinks', (draft.navbar?.navLinks || []).filter((_, j) => j !== i))} style={{ background: '#fef2f2', border: 'none', borderRadius: 6, padding: '6px 10px', cursor: 'pointer', color: '#dc2626', fontSize: 16, flexShrink: 0, lineHeight: 1 }}>×</button>
+                </div>
+              ))}
+              <button onClick={() => updateDraft('navbar.navLinks', [...(draft.navbar?.navLinks || []), { href: '#section', label: 'New Link' }])}
+                style={{ marginTop: 4, background: 'none', border: `1.5px dashed ${orange}60`, borderRadius: 8, padding: '7px 18px', cursor: 'pointer', fontSize: 12, fontWeight: 600, color: orange }}>
+                + Add Link
+              </button>
+            </div>
+          </div>
+          <div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Navbar Preview</div>
+            <div style={{ background: navy, borderRadius: 12, padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
+              <div style={{ width: 28, height: 28, borderRadius: 6, background: orange, flexShrink: 0 }} />
+              <div>
+                <div style={{ color: '#fff', fontWeight: 900, fontSize: 13, letterSpacing: '0.1em' }}>{draft.branding?.logoText || 'NAMO STEEL'}</div>
+                <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 9, letterSpacing: '0.1em', marginTop: 1 }}>{draft.navbar?.logoTagline || 'The Steel Hub'}</div>
+              </div>
+              <div style={{ marginLeft: 'auto', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+                {(draft.navbar?.navLinks || []).map(l => <span key={l.href} style={{ color: 'rgba(255,255,255,0.55)', fontSize: 12 }}>{l.label}</span>)}
+                <span style={{ background: orange, color: '#fff', borderRadius: 20, padding: '5px 14px', fontSize: 12, fontWeight: 700 }}>{draft.navbar?.ctaLabel || 'Contact Us'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* ════════════════════════════════════════
@@ -1294,6 +1353,40 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
               <div key={i} style={{ flex: 1, paddingRight: 24, borderRight: i < draft.hero.stats.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none', marginRight: i < draft.hero.stats.length - 1 ? 24 : 0, animation: `ns-count 0.5s ease forwards`, animationDelay: `${i * 0.1}s`, opacity: 0 }}>
                 <EF value={s.num} onChange={val => updateDraft('hero.stats', draft.hero.stats.map((st, j) => j === i ? { ...st, num: val } : st))} fontSize={32} fontWeight={900} color={orange} style={{ width: 90, letterSpacing: '-0.02em', fontFamily: "'Barlow Condensed', system-ui, sans-serif" }} />
                 <EF value={s.label} onChange={val => updateDraft('hero.stats', draft.hero.stats.map((st, j) => j === i ? { ...st, label: val } : st))} fontSize={12} color="rgba(255,255,255,0.45)" style={{ width: 120, marginTop: 2, letterSpacing: '0.02em' }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════
+           CATEGORIES SECTION
+      ════════════════════════════════════════ */}
+      <SectionBanner label="Categories Section" id="ew-categories" />
+      <div style={{ background: '#f8fafc', padding: '48px 40px' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 28 }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>3 product category cards shown below the hero</div>
+            <div style={{ fontSize: 13, color: '#64748b' }}>Hover any image to change it · click any text to edit</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
+            {(draft.categories || []).map((c, i) => (
+              <div key={i} style={{ borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0' }}>
+                <ImageUpload src={c.img} onChange={val => updateListItem('categories', i, 'img', val)} height={160} />
+                <div style={{ padding: '16px 18px', background: '#fff' }}>
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>Label</div>
+                    <EF value={c.label} onChange={val => updateListItem('categories', i, 'label', val)} fontSize={12} fontWeight={700} color={orange} />
+                  </div>
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>Title</div>
+                    <EF value={c.title} onChange={val => updateListItem('categories', i, 'title', val)} fontSize={16} fontWeight={800} color={navy} multiline rows={2} />
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>Description</div>
+                    <EF value={c.desc} onChange={val => updateListItem('categories', i, 'desc', val)} multiline fontSize={12} color="#64748b" rows={2} style={{ lineHeight: 1.5 }} />
+                  </div>
+                </div>
               </div>
             ))}
           </div>

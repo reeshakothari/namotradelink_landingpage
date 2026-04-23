@@ -1,33 +1,16 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-
-const CATS = [
-  {
-    label: 'Flat Products',
-    title: 'Plates, Sheets\n& Coils',
-    img: '/products/ms-hrc-plate.jpeg',
-    desc: 'HRC plates, CRC sheets, GP plates and coils for heavy fabrication.',
-  },
-  {
-    label: 'Structural Steel',
-    title: 'Angles, Beams\n& Channels',
-    img: '/products/beams.jpeg',
-    desc: 'I-beams, H-beams, angles, channels and TMT bars for load-bearing structures.',
-  },
-  {
-    label: 'Roofing & Sheets',
-    title: 'Roofing &\nCladding',
-    img: '/products/colour-coated-sheets.jpeg',
-    desc: 'GI corrugated, colour-coated, polycarbonate and deck sheets for all roofing needs.',
-  },
-];
+import { useSiteContent } from '@/lib/useSiteContent';
 
 export default function Categories() {
+  const content = useSiteContent();
+  const cats = content?.categories || [];
+
   return (
     <section className="cats" id="categories">
       <div className="cats-grid">
-        {CATS.map((c, i) => (
+        {cats.map((c, i) => (
           <Link href="#products" key={i} className="cat-card">
             <div className="cat-img-wrap">
               <Image

@@ -1,4 +1,35 @@
 {
+  "navbar": {
+    "logoTagline": "The Steel Hub",
+    "navLinks": [
+      { "href": "#about", "label": "About" },
+      { "href": "#products", "label": "Products" },
+      { "href": "#brands", "label": "Brands" },
+      { "href": "#cases", "label": "Case Studies" },
+      { "href": "#clients", "label": "Clients" }
+    ],
+    "ctaLabel": "Contact Us"
+  },
+  "categories": [
+    {
+      "label": "Flat Products",
+      "title": "Plates, Sheets\n& Coils",
+      "img": "/products/ms-hrc-plate.jpeg",
+      "desc": "HRC plates, CRC sheets, GP plates and coils for heavy fabrication."
+    },
+    {
+      "label": "Structural Steel",
+      "title": "Angles, Beams\n& Channels",
+      "img": "/products/beams.jpeg",
+      "desc": "I-beams, H-beams, angles, channels and TMT bars for load-bearing structures."
+    },
+    {
+      "label": "Roofing & Sheets",
+      "title": "Roofing &\nCladding",
+      "img": "/products/colour-coated-sheets.jpeg",
+      "desc": "GI corrugated, colour-coated, polycarbonate and deck sheets for all roofing needs."
+    }
+  ],
   "theme": {
     "primary": "#4A6FA5",
     "primaryDark": "#2D5585",
