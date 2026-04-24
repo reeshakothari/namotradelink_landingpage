@@ -13,6 +13,8 @@ function getDB() {
 
 // POST /api/auth  { slug, password } → { token, company }
 export async function POST(request) {
+  if (!process.env.POSTGRES_URL)
+    return Response.json({ ok: false, error: 'DB_NOT_CONFIGURED' }, { status: 503 });
   try {
     const { slug, password } = await request.json();
     if (!slug || !password)
@@ -40,6 +42,8 @@ export async function POST(request) {
 
 // GET /api/auth?token=xxx → { ok, company }
 export async function GET(request) {
+  if (!process.env.POSTGRES_URL)
+    return Response.json({ ok: false }, { status: 401 });
   try {
     const { searchParams } = new URL(request.url);
     const token = searchParams.get('token');
