@@ -45,7 +45,7 @@ export default function About() {
         <div className="about-img-col">
           <div className="about-img-wrap">
             <Image
-              src="/products/beams.jpeg"
+              src={about.image || '/products/beams.jpeg'}
               alt="Steel Beams & Structural Products"
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"

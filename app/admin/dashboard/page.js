@@ -82,8 +82,8 @@ function OverviewTab({ leads, customers }) {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>Overview</h1>
-        <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: 13 }}>{new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#e2e8f0', letterSpacing: '-0.02em' }}>Overview</h1>
+        <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: 13 }}>{new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14, marginBottom: 24 }}>
@@ -159,10 +159,10 @@ function OverviewTab({ leads, customers }) {
 
 /* ─── Status colour config ─── */
 const STATUS_STYLE = {
-  new:       { bg: '#eff6ff', color: '#2563eb', border: '#bfdbfe', label: 'New' },
-  contacted: { bg: '#fffbeb', color: '#d97706', border: '#fde68a', label: 'Contacted' },
-  converted: { bg: '#f0fdf4', color: '#16a34a', border: '#bbf7d0', label: 'Converted' },
-  closed:    { bg: '#f8fafc', color: '#64748b', border: '#cbd5e1', label: 'Closed' },
+  new:       { bg: 'rgba(59,130,246,0.15)',  color: '#60a5fa', border: 'rgba(59,130,246,0.3)',  label: 'New' },
+  contacted: { bg: 'rgba(245,158,11,0.15)',  color: '#fbbf24', border: 'rgba(245,158,11,0.3)',  label: 'Contacted' },
+  converted: { bg: 'rgba(34,197,94,0.15)',   color: '#4ade80', border: 'rgba(34,197,94,0.3)',   label: 'Converted' },
+  closed:    { bg: 'rgba(100,116,139,0.15)', color: '#94a3b8', border: 'rgba(100,116,139,0.3)', label: 'Closed' },
 };
 
 const StatusSelect = ({ value, onChange }) => {
@@ -234,14 +234,14 @@ function LeadsTab({ leads, saveLeads }) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>Lead Management</h1>
-          <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: 13 }}>Track and manage all your inbound and outbound leads</p>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#e2e8f0', letterSpacing: '-0.02em' }}>Lead Management</h1>
+          <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: 13 }}>Track and manage all your inbound and outbound leads</p>
         </div>
         <button onClick={openAdd} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.3)' }}>+ Add Lead</button>
       </div>
-      <div style={{ display: 'flex', gap: 2, background: '#f1f5f9', borderRadius: 10, padding: 4, marginBottom: 24, width: 'fit-content' }}>
+      <div style={{ display: 'flex', gap: 2, background: '#0d1726', borderRadius: 10, padding: 4, marginBottom: 24, width: 'fit-content', border: '1px solid #1e2d42' }}>
         {[{ id: 'inbound', label: '↙ Inbound' }, { id: 'outbound', label: '↗ Outbound' }].map(t => (
-          <button key={t.id} onClick={() => setSubTab(t.id)} style={{ padding: '8px 20px', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 14, background: subTab === t.id ? '#fff' : 'transparent', color: subTab === t.id ? '#1a2a4a' : '#64748b', boxShadow: subTab === t.id ? '0 1px 4px rgba(0,0,0,0.12)' : 'none' }}>
+          <button key={t.id} onClick={() => setSubTab(t.id)} style={{ padding: '8px 20px', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 14, background: subTab === t.id ? '#1e2d42' : 'transparent', color: subTab === t.id ? '#e2e8f0' : '#4a5a6b', boxShadow: subTab === t.id ? '0 1px 4px rgba(0,0,0,0.3)' : 'none' }}>
             {t.label} ({leads.filter(l => l.type === t.id).length})
           </button>
         ))}
@@ -257,37 +257,37 @@ function LeadsTab({ leads, saveLeads }) {
         ].map(opt => (
           <button key={opt.value} onClick={() => setSortBy(opt.value)} style={{
             padding: '4px 12px', borderRadius: 6, fontSize: 12, fontWeight: 600, cursor: 'pointer',
-            background: sortBy === opt.value ? '#1a2a4a' : '#fff',
+            background: sortBy === opt.value ? '#e87722' : '#141e2e',
             color:      sortBy === opt.value ? '#fff'    : '#64748b',
-            border:     `1px solid ${sortBy === opt.value ? '#1a2a4a' : '#e2e8f0'}`,
+            border:     `1px solid ${sortBy === opt.value ? '#e87722' : '#1e2d42'}`,
           }}>{opt.label}</button>
         ))}
       </div>
-      <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', border: '1px solid #f1f5f9', overflow: 'hidden' }}>
+      <div style={{ background: '#141e2e', borderRadius: 16, border: '1px solid #1e2d42', overflow: 'hidden' }}>
         {sorted.length === 0 ? (
-          <div style={{ padding: 48, textAlign: 'center', color: '#94a3b8' }}>
+          <div style={{ padding: 48, textAlign: 'center', color: '#64748b' }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>◈</div>
             <div>No {subTab} leads yet. Click <strong style={{ color: '#e87722' }}>+ Add Lead</strong> to get started.</div>
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead><tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-              {['Name', 'Phone', 'Company', 'Requirement', 'Status', 'Date', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
+            <thead><tr style={{ background: '#0d1726', borderBottom: '2px solid #1e2d42' }}>
+              {['Name', 'Phone', 'Company', 'Requirement', 'Status', 'Date', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
             </tr></thead>
             <tbody>
               {sorted.map(l => (
-                <tr key={l.id} style={{ borderBottom: '1px solid #f1f5f9' }} onMouseEnter={e => e.currentTarget.style.background = '#fafbff'} onMouseLeave={e => e.currentTarget.style.background = ''}>
-                  <td style={{ padding: '12px 16px', fontWeight: 600, color: '#1a2a4a', fontSize: 14 }}>{l.name}</td>
-                  <td style={{ padding: '12px 16px', color: '#334155', fontSize: 14 }}>{l.phone}</td>
+                <tr key={l.id} style={{ borderBottom: '1px solid #1a2538' }} onMouseEnter={e => e.currentTarget.style.background = '#1e2d42'} onMouseLeave={e => e.currentTarget.style.background = ''}>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, color: '#e2e8f0', fontSize: 14 }}>{l.name}</td>
+                  <td style={{ padding: '12px 16px', color: '#94a3b8', fontSize: 14 }}>{l.phone}</td>
                   <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 14 }}>{l.company || '—'}</td>
                   <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 13, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.requirement || '—'}</td>
                   <td style={{ padding: '12px 16px' }}>
                     <StatusSelect value={l.status} onChange={status => updateStatus(l.id, status)} />
                   </td>
-                  <td style={{ padding: '12px 16px', color: '#94a3b8', fontSize: 13, whiteSpace: 'nowrap' }}>{l.date}</td>
+                  <td style={{ padding: '12px 16px', color: '#4a5a6b', fontSize: 13, whiteSpace: 'nowrap' }}>{l.date}</td>
                   <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
-                    <button onClick={() => openEdit(l)} style={{ background: '#f1f5f9', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#334155', marginRight: 6 }}>Edit</button>
-                    <button onClick={() => del(l.id)} style={{ background: '#fef2f2', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#dc2626' }}>Del</button>
+                    <button onClick={() => openEdit(l)} style={{ background: '#1e2d42', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#94a3b8', marginRight: 6 }}>Edit</button>
+                    <button onClick={() => del(l.id)} style={{ background: 'rgba(220,38,38,0.12)', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#f87171' }}>Del</button>
                   </td>
                 </tr>
               ))}
@@ -306,7 +306,7 @@ function LeadsTab({ leads, saveLeads }) {
           <FSelect label="Type" value={form.type} onChange={f('type')} options={[{ value: 'inbound', label: 'Inbound (came to us)' }, { value: 'outbound', label: 'Outbound (we reached out)' }]} />
           <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
             <button type="submit" style={{ flex: 1, background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>{editId ? 'Save Changes' : 'Add Lead'}</button>
-            <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, background: '#f1f5f9', color: '#334155', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Cancel</button>
+            <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, background: '#1e2d42', color: '#94a3b8', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Cancel</button>
           </div>
         </form>
       </Modal>
@@ -335,37 +335,37 @@ function CustomersTab({ customers, saveCustomers }) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>Customer List</h1>
-          <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: 13 }}>Manage your existing customer relationships</p>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#e2e8f0', letterSpacing: '-0.02em' }}>Customer List</h1>
+          <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: 13 }}>Manage your existing customer relationships</p>
         </div>
         <button onClick={() => { setForm({ name: '', company: '', phone: '', city: '', products: '', notes: '' }); setEditId(null); setShowModal(true); }} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.3)' }}>+ Add Customer</button>
       </div>
-      <div style={{ background: '#fff', borderRadius: 16, boxShadow: '0 1px 6px rgba(0,0,0,0.06)', border: '1px solid #f1f5f9', overflow: 'hidden' }}>
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid #f1f5f9' }}>
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search customers..." style={{ border: '1.5px solid #e2e8f0', borderRadius: 8, padding: '8px 14px', fontSize: 14, width: 260, outline: 'none' }} />
+      <div style={{ background: '#141e2e', borderRadius: 16, border: '1px solid #1e2d42', overflow: 'hidden' }}>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid #1e2d42' }}>
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search customers..." style={{ border: '1.5px solid #1e2d42', borderRadius: 8, padding: '8px 14px', fontSize: 14, width: 260, outline: 'none', background: '#0e1a2b', color: '#e2e8f0' }} />
         </div>
         {filtered.length === 0 ? (
-          <div style={{ padding: 48, textAlign: 'center', color: '#94a3b8' }}>
+          <div style={{ padding: 48, textAlign: 'center', color: '#64748b' }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>◉</div>
             <div>{customers.length === 0 ? 'No customers yet. Add your first customer!' : 'No results found.'}</div>
           </div>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead><tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
-              {['Name', 'Company', 'Phone', 'City', 'Products', 'Since', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, color: '#64748b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
+            <thead><tr style={{ background: '#0d1726', borderBottom: '2px solid #1e2d42' }}>
+              {['Name', 'Company', 'Phone', 'City', 'Products', 'Since', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
             </tr></thead>
             <tbody>
               {filtered.map(c => (
-                <tr key={c.id} style={{ borderBottom: '1px solid #f1f5f9' }} onMouseEnter={e => e.currentTarget.style.background = '#fafbff'} onMouseLeave={e => e.currentTarget.style.background = ''}>
-                  <td style={{ padding: '12px 16px', fontWeight: 600, color: '#1a2a4a', fontSize: 14 }}>{c.name}</td>
+                <tr key={c.id} style={{ borderBottom: '1px solid #1a2538' }} onMouseEnter={e => e.currentTarget.style.background = '#1e2d42'} onMouseLeave={e => e.currentTarget.style.background = ''}>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, color: '#e2e8f0', fontSize: 14 }}>{c.name}</td>
                   <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 14 }}>{c.company || '—'}</td>
-                  <td style={{ padding: '12px 16px', color: '#334155', fontSize: 14 }}>{c.phone}</td>
+                  <td style={{ padding: '12px 16px', color: '#94a3b8', fontSize: 14 }}>{c.phone}</td>
                   <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 14 }}>{c.city || '—'}</td>
                   <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 13, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.products || '—'}</td>
-                  <td style={{ padding: '12px 16px', color: '#94a3b8', fontSize: 13 }}>{c.since}</td>
+                  <td style={{ padding: '12px 16px', color: '#4a5a6b', fontSize: 13 }}>{c.since}</td>
                   <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
-                    <button onClick={() => openEdit(c)} style={{ background: '#f1f5f9', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#334155', marginRight: 6 }}>Edit</button>
-                    <button onClick={() => del(c.id)} style={{ background: '#fef2f2', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#dc2626' }}>Del</button>
+                    <button onClick={() => openEdit(c)} style={{ background: '#1e2d42', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#94a3b8', marginRight: 6 }}>Edit</button>
+                    <button onClick={() => del(c.id)} style={{ background: 'rgba(220,38,38,0.12)', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#f87171' }}>Del</button>
                   </td>
                 </tr>
               ))}
@@ -383,7 +383,7 @@ function CustomersTab({ customers, saveCustomers }) {
           <FInput label="Notes" value={form.notes} onChange={f('notes')} placeholder="Notes..." multiline rows={2} />
           <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
             <button type="submit" style={{ flex: 1, background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>{editId ? 'Save Changes' : 'Add Customer'}</button>
-            <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, background: '#f1f5f9', color: '#334155', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Cancel</button>
+            <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, background: '#1e2d42', color: '#94a3b8', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Cancel</button>
           </div>
         </form>
       </Modal>
@@ -403,36 +403,36 @@ function ProductsAdminTab({ draft, updateDraft }) {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>Product List</h1>
-          <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: 13 }}>Edit product cards shown on the website</p>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#e2e8f0', letterSpacing: '-0.02em' }}>Product List</h1>
+          <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: 13 }}>Edit product cards shown on the website</p>
         </div>
         <button onClick={addProduct} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.3)' }}>+ Add Product</button>
       </div>
       <div style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}>
         {categories.map(c => (
-          <button key={c} onClick={() => setActiveTab(c)} style={{ padding: '8px 16px', borderRadius: 8, border: '1.5px solid', cursor: 'pointer', fontWeight: 600, fontSize: 13, borderColor: activeTab === c ? '#e87722' : '#e2e8f0', background: activeTab === c ? '#fff7f0' : '#fff', color: activeTab === c ? '#e87722' : '#64748b' }}>
+          <button key={c} onClick={() => setActiveTab(c)} style={{ padding: '8px 16px', borderRadius: 8, border: '1.5px solid', cursor: 'pointer', fontWeight: 600, fontSize: 13, borderColor: activeTab === c ? '#e87722' : '#1e2d42', background: activeTab === c ? 'rgba(232,119,34,0.12)' : '#141e2e', color: activeTab === c ? '#e87722' : '#64748b' }}>
             {catLabels[c]} ({(draft.products[c] || []).length})
           </button>
         ))}
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
         {(draft.products[activeTab] || []).map((p, i) => (
-          <div key={i} style={{ background: '#fff', borderRadius: 12, overflow: 'hidden', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', border: '1px solid #f1f5f9' }}>
+          <div key={i} style={{ background: '#141e2e', borderRadius: 12, overflow: 'hidden', border: '1px solid #1e2d42' }}>
             <div style={{ position: 'relative' }}>
               <ImageUpload src={p.img} onChange={val => updateProduct(i, 'img', val)} height={140} />
               <button onClick={() => removeProduct(i)} style={{ position: 'absolute', top: 8, right: 8, background: '#dc2626', color: '#fff', border: 'none', borderRadius: 6, padding: '3px 10px', cursor: 'pointer', fontSize: 12, fontWeight: 600, zIndex: 5 }}>Remove</button>
             </div>
             <div style={{ padding: 16 }}>
-              <div style={{ marginBottom: 8, background: '#f8fafc', borderRadius: 6, padding: '6px 10px', border: '1px solid #e2e8f0' }}>
-                <p style={{ margin: 0, fontSize: 10, color: '#94a3b8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Image — hover to upload or change</p>
+              <div style={{ marginBottom: 8, background: '#0d1726', borderRadius: 6, padding: '6px 10px', border: '1px solid #1e2d42' }}>
+                <p style={{ margin: 0, fontSize: 10, color: '#4a5a6b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Image — hover to upload or change</p>
               </div>
               <div style={{ marginBottom: 8 }}>
-                <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: 3 }}>Name</label>
-                <input value={p.title} onChange={e => updateProduct(i, 'title', e.target.value)} style={{ width: '100%', border: '1.5px solid #e2e8f0', borderRadius: 6, padding: '6px 10px', fontSize: 14, fontWeight: 600, color: '#1a2a4a', boxSizing: 'border-box', outline: 'none' }} />
+                <label style={{ fontSize: 10, fontWeight: 700, color: '#4a5a6b', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: 3 }}>Name</label>
+                <input value={p.title} onChange={e => updateProduct(i, 'title', e.target.value)} style={{ width: '100%', border: '1.5px solid #1e2d42', borderRadius: 6, padding: '6px 10px', fontSize: 14, fontWeight: 600, color: '#e2e8f0', background: '#0e1a2b', boxSizing: 'border-box', outline: 'none' }} />
               </div>
               <div>
-                <label style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: 3 }}>Description</label>
-                <textarea value={p.desc} onChange={e => updateProduct(i, 'desc', e.target.value)} rows={2} style={{ width: '100%', border: '1.5px solid #e2e8f0', borderRadius: 6, padding: '6px 10px', fontSize: 12, color: '#64748b', resize: 'vertical', fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none' }} />
+                <label style={{ fontSize: 10, fontWeight: 700, color: '#4a5a6b', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: 3 }}>Description</label>
+                <textarea value={p.desc} onChange={e => updateProduct(i, 'desc', e.target.value)} rows={2} style={{ width: '100%', border: '1.5px solid #1e2d42', borderRadius: 6, padding: '6px 10px', fontSize: 12, color: '#94a3b8', background: '#0e1a2b', resize: 'vertical', fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none' }} />
               </div>
             </div>
           </div>
@@ -712,26 +712,25 @@ function ThemeTab({ draft, updateDraft, publish, saved }) {
 
   return (
     <div>
-      <h2 style={{ color: '#1a2a4a', margin: '0 0 6px', fontSize: 24 }}>Theme & Colours</h2>
-      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 32 }}>Changes apply instantly for preview. Click <strong>Publish Changes</strong> in the Edit Website tab to go live.</p>
+      <h2 style={{ color: '#e2e8f0', margin: '0 0 6px', fontSize: 24 }}>Theme & Colours</h2>
+      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 32 }}>Changes apply instantly for preview. Click <strong style={{ color: '#94a3b8' }}>Publish Changes</strong> in the Edit Website tab to go live.</p>
 
       {/* Preset themes */}
-      <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 16 }}>Preset Themes</h3>
+      <h3 style={{ fontSize: 15, fontWeight: 700, color: '#94a3b8', marginBottom: 16 }}>Preset Themes</h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))', gap: 12, marginBottom: 40 }}>
         {PRESETS.map(p => (
           <button key={p.name} onClick={() => applyPreset(p)} style={{
-            border: isActive(p) ? `3px solid ${p.primary}` : '2px solid #e2e8f0',
-            borderRadius: 14, overflow: 'hidden', cursor: 'pointer', background: '#fff',
-            boxShadow: isActive(p) ? `0 4px 16px ${p.primary}44` : '0 1px 4px rgba(0,0,0,0.06)',
+            border: isActive(p) ? `3px solid ${p.primary}` : '2px solid #1e2d42',
+            borderRadius: 14, overflow: 'hidden', cursor: 'pointer', background: '#141e2e',
+            boxShadow: isActive(p) ? `0 4px 16px ${p.primary}44` : 'none',
             transition: 'all 0.15s', padding: 0,
           }}>
-            {/* Colour swatch */}
             <div style={{ display: 'flex', height: 56 }}>
               <div style={{ flex: 1, background: p.secondary }} />
               <div style={{ flex: 1, background: p.primary }} />
             </div>
             <div style={{ padding: '10px 12px', textAlign: 'left' }}>
-              <div style={{ fontWeight: 700, fontSize: 13, color: '#1a2a4a' }}>{p.name}</div>
+              <div style={{ fontWeight: 700, fontSize: 13, color: '#e2e8f0' }}>{p.name}</div>
               {isActive(p) && <div style={{ fontSize: 11, color: p.primary, fontWeight: 600, marginTop: 2 }}>✓ Active</div>}
             </div>
           </button>
@@ -739,7 +738,7 @@ function ThemeTab({ draft, updateDraft, publish, saved }) {
       </div>
 
       {/* Custom pickers */}
-      <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 16 }}>Custom Colours</h3>
+      <h3 style={{ fontSize: 15, fontWeight: 700, color: '#94a3b8', marginBottom: 16 }}>Custom Colours</h3>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 32 }}>
         {[
           { label: 'Accent / Primary', key: 'primary', cssVar: '--orange', desc: 'Buttons, highlights, badges' },
@@ -747,19 +746,19 @@ function ThemeTab({ draft, updateDraft, publish, saved }) {
           { label: 'Dark / Secondary', key: 'secondary', cssVar: '--navy', desc: 'Navbar, headings, footer' },
           { label: 'Secondary Light', key: 'secondaryLight', cssVar: '--navy-light', desc: 'Sidebar, dark backgrounds' },
         ].map(({ label, key, cssVar, desc }) => (
-          <div key={key} style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
-            <div style={{ fontWeight: 700, fontSize: 13, color: '#1a2a4a', marginBottom: 4 }}>{label}</div>
-            <div style={{ fontSize: 12, color: '#94a3b8', marginBottom: 12 }}>{desc}</div>
+          <div key={key} style={{ background: '#141e2e', borderRadius: 12, padding: '18px 20px', border: '1px solid #1e2d42' }}>
+            <div style={{ fontWeight: 700, fontSize: 13, color: '#e2e8f0', marginBottom: 4 }}>{label}</div>
+            <div style={{ fontSize: 12, color: '#64748b', marginBottom: 12 }}>{desc}</div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <input
                 type="color"
                 value={theme[key] || '#000000'}
                 onChange={e => handleColor(key, cssVar, e.target.value)}
-                style={{ width: 44, height: 44, border: '2px solid #e2e8f0', borderRadius: 8, cursor: 'pointer', padding: 2, background: 'none' }}
+                style={{ width: 44, height: 44, border: '2px solid #1e2d42', borderRadius: 8, cursor: 'pointer', padding: 2, background: 'none' }}
               />
               <div>
-                <div style={{ fontFamily: 'monospace', fontSize: 14, fontWeight: 700, color: '#334155' }}>{theme[key] || '#000000'}</div>
-                <div style={{ fontSize: 11, color: '#94a3b8' }}>Click to change</div>
+                <div style={{ fontFamily: 'monospace', fontSize: 14, fontWeight: 700, color: '#94a3b8' }}>{theme[key] || '#000000'}</div>
+                <div style={{ fontSize: 11, color: '#64748b' }}>Click to change</div>
               </div>
             </div>
           </div>
@@ -767,7 +766,7 @@ function ThemeTab({ draft, updateDraft, publish, saved }) {
       </div>
 
       {/* Live preview strip */}
-      <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 16 }}>Live Preview</h3>
+      <h3 style={{ fontSize: 15, fontWeight: 700, color: '#94a3b8', marginBottom: 16 }}>Live Preview</h3>
       <div style={{ borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.1)' }}>
         <div style={{ background: theme.secondary, padding: '14px 24px', display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 28, height: 28, borderRadius: 6, background: theme.primary }} />
@@ -849,14 +848,14 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
 
   return (
     <div>
-      <h2 style={{ color: '#1a2a4a', margin: '0 0 6px', fontSize: 24 }}>Brand Identity</h2>
+      <h2 style={{ color: '#e2e8f0', margin: '0 0 6px', fontSize: 24 }}>Brand Identity</h2>
       <p style={{ color: '#64748b', fontSize: 13, marginBottom: 36 }}>Manage your brand's visual identity — colour palette, typography, and logo. Publish to go live.</p>
 
       {/* ── LOGO ── */}
       <section style={{ marginBottom: 44 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 4, marginTop: 0 }}>Logo</h3>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#94a3b8', marginBottom: 4, marginTop: 0 }}>Logo</h3>
         <p style={{ fontSize: 13, color: '#64748b', marginBottom: 16, marginTop: 0 }}>Upload a logo via URL or use a text-based logo displayed in the navbar and footer.</p>
-        <div style={{ background: '#fff', borderRadius: 14, padding: '24px 28px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+        <div style={{ background: '#141e2e', borderRadius: 14, padding: '24px 28px', border: '1px solid #1e2d42', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
           <div>
             <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Logo Image URL (optional)</label>
             <input
@@ -864,7 +863,7 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
               value={branding.logoUrl || ''}
               onChange={e => updateDraft('branding.logoUrl', e.target.value)}
               placeholder="https://example.com/logo.png"
-              style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none', marginBottom: 14 }}
+              style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #1e2d42', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none', marginBottom: 14, background: '#0e1a2b', color: '#e2e8f0' }}
             />
             <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Brand Name (text fallback)</label>
             <input
@@ -872,7 +871,7 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
               value={branding.logoText || draft?.footer?.brandName || 'NAMO STEEL'}
               onChange={e => updateDraft('branding.logoText', e.target.value)}
               placeholder="NAMO STEEL"
-              style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none' }}
+              style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #1e2d42', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none', background: '#0e1a2b', color: '#e2e8f0' }}
             />
           </div>
           <div>
@@ -895,9 +894,9 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
 
       {/* ── TYPOGRAPHY ── */}
       <section style={{ marginBottom: 44 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 4, marginTop: 0 }}>Typography</h3>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#94a3b8', marginBottom: 4, marginTop: 0 }}>Typography</h3>
         <p style={{ fontSize: 13, color: '#64748b', marginBottom: 16, marginTop: 0 }}>Select fonts for headings and body text. Fonts load from Google Fonts automatically.</p>
-        <div style={{ background: '#fff', borderRadius: 14, padding: '24px 28px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)' }}>
+        <div style={{ background: '#141e2e', borderRadius: 14, padding: '24px 28px', border: '1px solid #1e2d42' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
             {[
               { key: 'headingFont', label: 'Heading Font', desc: 'Titles and section headers' },
@@ -905,20 +904,20 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
             ].map(({ key, label, desc }) => (
               <div key={key}>
                 <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 2, textTransform: 'uppercase', letterSpacing: '0.04em' }}>{label}</label>
-                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 8 }}>{desc}</div>
+                <div style={{ fontSize: 11, color: '#4a5a6b', marginBottom: 8 }}>{desc}</div>
                 <select
                   value={branding[key] || 'Inter'}
                   onChange={e => handleFont(key, e.target.value)}
-                  style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none', background: '#fff', cursor: 'pointer' }}
+                  style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #1e2d42', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none', background: '#0e1a2b', color: '#e2e8f0', cursor: 'pointer' }}
                 >
                   {FONTS.map(f => <option key={f.value} value={f.value}>{f.label}</option>)}
                 </select>
               </div>
             ))}
           </div>
-          <div style={{ background: '#f8fafc', borderRadius: 10, padding: '20px 24px', border: '1px solid #e2e8f0' }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Font Preview</div>
-            <div style={{ fontFamily: `'${branding.headingFont || 'Inter'}', system-ui, sans-serif`, fontSize: 20, fontWeight: 700, color: theme.secondary || '#1B2A3B', marginBottom: 6 }}>Steel Solutions for Solid Foundations</div>
+          <div style={{ background: '#0d1726', borderRadius: 10, padding: '20px 24px', border: '1px solid #1e2d42' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#4a5a6b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Font Preview</div>
+            <div style={{ fontFamily: `'${branding.headingFont || 'Inter'}', system-ui, sans-serif`, fontSize: 20, fontWeight: 700, color: '#e2e8f0', marginBottom: 6 }}>Steel Solutions for Solid Foundations</div>
             <div style={{ fontFamily: `'${branding.bodyFont || 'Inter'}', system-ui, sans-serif`, fontSize: 14, color: '#64748b', lineHeight: 1.6 }}>Trusted dealers in construction and industrial steel products, serving the industry for over 30 years. Known for quality, reliability, and competitive pricing.</div>
           </div>
         </div>
@@ -926,14 +925,14 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
 
       {/* ── COLOUR PALETTES ── */}
       <section style={{ marginBottom: 44 }}>
-        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a2a4a', marginBottom: 4, marginTop: 0 }}>Brand Colour Palette</h3>
+        <h3 style={{ fontSize: 15, fontWeight: 700, color: '#94a3b8', marginBottom: 4, marginTop: 0 }}>Brand Colour Palette</h3>
         <p style={{ fontSize: 13, color: '#64748b', marginBottom: 20, marginTop: 0 }}>Four curated palettes for your steel brand identity. Select one, then fine-tune individual colours below.</p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20, marginBottom: 28 }}>
           {STEEL_PALETTES.map(palette => {
             const isSelected = selectedPaletteId === palette.id;
             return (
-              <div key={palette.id} style={{ background: '#fff', borderRadius: 16, overflow: 'hidden', border: isSelected ? `3px solid ${palette.primary}` : '2px solid #e2e8f0', boxShadow: isSelected ? `0 6px 24px ${palette.primary}33` : '0 1px 6px rgba(0,0,0,0.06)', transition: 'all 0.2s' }}>
+              <div key={palette.id} style={{ background: '#141e2e', borderRadius: 16, overflow: 'hidden', border: isSelected ? `3px solid ${palette.primary}` : '2px solid #1e2d42', boxShadow: isSelected ? `0 6px 24px ${palette.primary}33` : 'none', transition: 'all 0.2s' }}>
                 <div style={{ background: palette.secondary, padding: '8px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span style={{ fontSize: 10, fontWeight: 700, color: palette.primary, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{palette.badge}</span>
                   {isSelected && <span style={{ fontSize: 10, fontWeight: 700, color: '#fff', background: palette.primary, borderRadius: 99, padding: '2px 8px' }}>✓ Active</span>}
@@ -942,7 +941,7 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
                   {palette.swatches.map((s, i) => <div key={i} style={{ flex: 1, background: s.hex }} title={`${s.name}: ${s.hex}`} />)}
                 </div>
                 <div style={{ padding: '16px 20px' }}>
-                  <div style={{ fontSize: 17, fontWeight: 800, color: '#1a2a4a', marginBottom: 2 }}>{palette.name}</div>
+                  <div style={{ fontSize: 17, fontWeight: 800, color: '#e2e8f0', marginBottom: 2 }}>{palette.name}</div>
                   <div style={{ fontSize: 12, color: '#64748b', marginBottom: 10 }}>{palette.tagline}</div>
                   <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 12 }}>
                     {palette.keywords.map(k => <span key={k} style={{ background: `${palette.primary}18`, color: palette.primary, fontSize: 10, fontWeight: 600, borderRadius: 99, padding: '2px 8px', border: `1px solid ${palette.primary}30` }}>{k}</span>)}
@@ -955,12 +954,12 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
                       </div>
                     ))}
                   </div>
-                  <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 12, borderTop: '1px solid #f1f5f9', paddingTop: 8 }}>
-                    Best for: <span style={{ color: '#64748b', fontWeight: 500 }}>{palette.bestFor}</span>
+                  <div style={{ fontSize: 11, color: '#64748b', marginBottom: 12, borderTop: '1px solid #1e2d42', paddingTop: 8 }}>
+                    Best for: <span style={{ color: '#94a3b8', fontWeight: 500 }}>{palette.bestFor}</span>
                   </div>
                   <button
                     onClick={() => applyPalette(palette)}
-                    style={{ width: '100%', background: isSelected ? palette.primary : '#f8fafc', color: isSelected ? '#fff' : '#64748b', border: `2px solid ${isSelected ? palette.primary : '#e2e8f0'}`, borderRadius: 8, padding: '10px', fontWeight: 700, fontSize: 13, cursor: 'pointer', transition: 'all 0.15s' }}
+                    style={{ width: '100%', background: isSelected ? palette.primary : '#1e2d42', color: isSelected ? '#fff' : '#64748b', border: `2px solid ${isSelected ? palette.primary : '#1e2d42'}`, borderRadius: 8, padding: '10px', fontWeight: 700, fontSize: 13, cursor: 'pointer', transition: 'all 0.15s' }}
                   >
                     {isSelected ? '✓ Selected' : 'Select This Palette'}
                   </button>
@@ -971,11 +970,11 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
         </div>
 
         {/* Fine-tune colours */}
-        <div style={{ background: '#fff', borderRadius: 14, padding: '24px 28px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', border: `2px solid ${activePalette.primary}22` }}>
+        <div style={{ background: '#141e2e', borderRadius: 14, padding: '24px 28px', border: `2px solid ${activePalette.primary}33` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
             <div style={{ width: 10, height: 10, borderRadius: '50%', background: activePalette.primary, flexShrink: 0 }} />
-            <div style={{ fontSize: 14, fontWeight: 700, color: '#1a2a4a' }}>Fine-tune: {activePalette.name}</div>
-            <div style={{ fontSize: 12, color: '#94a3b8' }}>— adjust individual colours below</div>
+            <div style={{ fontSize: 14, fontWeight: 700, color: '#e2e8f0' }}>Fine-tune: {activePalette.name}</div>
+            <div style={{ fontSize: 12, color: '#64748b' }}>— adjust individual colours below</div>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 14 }}>
             {[
@@ -984,14 +983,14 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
               { label: 'Dark Background', key: 'secondary', cssVar: '--navy', desc: 'Navbar, headings, footer' },
               { label: 'Mid Dark', key: 'secondaryLight', cssVar: '--navy-light', desc: 'Sidebar, dark card sections' },
             ].map(({ label, key, cssVar, desc }) => (
-              <div key={key} style={{ background: '#f8fafc', borderRadius: 10, padding: '14px 16px', border: '1px solid #e2e8f0' }}>
-                <div style={{ fontWeight: 700, fontSize: 12, color: '#1a2a4a', marginBottom: 2 }}>{label}</div>
-                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 10 }}>{desc}</div>
+              <div key={key} style={{ background: '#0d1726', borderRadius: 10, padding: '14px 16px', border: '1px solid #1e2d42' }}>
+                <div style={{ fontWeight: 700, fontSize: 12, color: '#e2e8f0', marginBottom: 2 }}>{label}</div>
+                <div style={{ fontSize: 11, color: '#64748b', marginBottom: 10 }}>{desc}</div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                  <input type="color" value={theme[key] || '#000000'} onChange={e => handleColor(key, cssVar, e.target.value)} style={{ width: 40, height: 40, border: '2px solid #e2e8f0', borderRadius: 8, cursor: 'pointer', padding: 2, background: 'none' }} />
+                  <input type="color" value={theme[key] || '#000000'} onChange={e => handleColor(key, cssVar, e.target.value)} style={{ width: 40, height: 40, border: '2px solid #1e2d42', borderRadius: 8, cursor: 'pointer', padding: 2, background: 'none' }} />
                   <div>
-                    <div style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 700, color: '#334155' }}>{theme[key] || '#000000'}</div>
-                    <div style={{ fontSize: 10, color: '#94a3b8' }}>Click to change</div>
+                    <div style={{ fontFamily: 'monospace', fontSize: 13, fontWeight: 700, color: '#94a3b8' }}>{theme[key] || '#000000'}</div>
+                    <div style={{ fontSize: 10, color: '#64748b' }}>Click to change</div>
                   </div>
                 </div>
               </div>
@@ -1069,40 +1068,40 @@ function CompaniesTab() {
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
         <div>
-          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#0f172a', letterSpacing: '-0.02em' }}>Company Profiles</h1>
-          <p style={{ margin: '4px 0 0', color: '#94a3b8', fontSize: 13 }}>Each company gets a unique URL to access their own portal.</p>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#e2e8f0', letterSpacing: '-0.02em' }}>Company Profiles</h1>
+          <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: 13 }}>Each company gets a unique URL to access their own portal.</p>
         </div>
         <button onClick={openAdd} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.3)' }}>+ Add Company</button>
       </div>
       <div style={{ marginBottom: 24 }} />
 
       {companies.length === 0 ? (
-        <div style={{ background: '#fff', borderRadius: 12, padding: 48, textAlign: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', color: '#94a3b8' }}>
+        <div style={{ background: '#141e2e', borderRadius: 12, padding: 48, textAlign: 'center', border: '1px solid #1e2d42', color: '#64748b' }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>🏢</div>
           <div>No companies yet. Click <strong style={{ color: '#e87722' }}>+ Add Company</strong> to onboard one.</div>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 16 }}>
           {companies.map(c => (
-            <div key={c.id} style={{ background: '#fff', borderRadius: 14, padding: '22px 24px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', border: '1px solid #f1f5f9' }}>
+            <div key={c.id} style={{ background: '#141e2e', borderRadius: 14, padding: '22px 24px', border: '1px solid #1e2d42' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 14 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <div style={{ width: 44, height: 44, borderRadius: 10, background: '#e87722', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 900, color: '#fff', flexShrink: 0 }}>
                     {c.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <div style={{ fontWeight: 700, color: '#1a2a4a', fontSize: 15 }}>{c.name}</div>
-                    {c.industry && <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2 }}>{c.industry}</div>}
+                    <div style={{ fontWeight: 700, color: '#e2e8f0', fontSize: 15 }}>{c.name}</div>
+                    {c.industry && <div style={{ fontSize: 12, color: '#64748b', marginTop: 2 }}>{c.industry}</div>}
                   </div>
                 </div>
                 <div style={{ display: 'flex', gap: 6 }}>
-                  <button onClick={() => openEdit(c)} style={{ background: '#f1f5f9', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 12, cursor: 'pointer', color: '#334155' }}>Edit</button>
-                  <button onClick={() => del(c.id)} style={{ background: '#fef2f2', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 12, cursor: 'pointer', color: '#dc2626' }}>Del</button>
+                  <button onClick={() => openEdit(c)} style={{ background: '#1e2d42', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 12, cursor: 'pointer', color: '#94a3b8' }}>Edit</button>
+                  <button onClick={() => del(c.id)} style={{ background: 'rgba(220,38,38,0.12)', border: 'none', borderRadius: 6, padding: '5px 10px', fontSize: 12, cursor: 'pointer', color: '#f87171' }}>Del</button>
                 </div>
               </div>
 
-              <div style={{ background: '#f8fafc', borderRadius: 8, padding: '10px 14px', marginBottom: 12 }}>
-                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Portal URL</div>
+              <div style={{ background: '#0d1726', borderRadius: 8, padding: '10px 14px', marginBottom: 12, border: '1px solid #1e2d42' }}>
+                <div style={{ fontSize: 11, color: '#4a5a6b', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Portal URL</div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
                   <span style={{ fontFamily: 'monospace', fontSize: 13, color: '#e87722', fontWeight: 600 }}>{origin}/{c.slug}</span>
                   <button onClick={() => navigator.clipboard.writeText(`${origin}/${c.slug}`)}
@@ -1123,20 +1122,20 @@ function CompaniesTab() {
           <FInput label="Company Name" value={form.name} onChange={f('name')} placeholder="Omkar Industries" required />
           <div style={{ marginBottom: 14 }}>
             <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Company ID (URL slug)</label>
-            <div style={{ display: 'flex', alignItems: 'center', border: `1.5px solid ${slugError ? '#fca5a5' : '#e2e8f0'}`, borderRadius: 8, overflow: 'hidden' }}>
-              <span style={{ padding: '8px 10px', background: '#f8fafc', fontSize: 14, color: '#94a3b8', borderRight: '1px solid #e2e8f0' }}>site.com/</span>
+            <div style={{ display: 'flex', alignItems: 'center', border: `1.5px solid ${slugError ? '#fca5a5' : '#1e2d42'}`, borderRadius: 8, overflow: 'hidden' }}>
+              <span style={{ padding: '8px 10px', background: '#0d1726', fontSize: 14, color: '#4a5a6b', borderRight: '1px solid #1e2d42' }}>site.com/</span>
               <input value={form.slug} onChange={e => { setForm(p => ({ ...p, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })); setSlugError(''); }}
                 placeholder="omkar-industries" required
-                style={{ flex: 1, padding: '8px 12px', border: 'none', fontSize: 14, outline: 'none', fontFamily: 'monospace' }} />
+                style={{ flex: 1, padding: '8px 12px', border: 'none', fontSize: 14, outline: 'none', fontFamily: 'monospace', background: '#0e1a2b', color: '#e2e8f0' }} />
             </div>
-            {slugError && <div style={{ fontSize: 12, color: '#dc2626', marginTop: 4 }}>{slugError}</div>}
+            {slugError && <div style={{ fontSize: 12, color: '#f87171', marginTop: 4 }}>{slugError}</div>}
           </div>
           <FInput label="Email" value={form.email} onChange={f('email')} placeholder="contact@company.com" />
           <FInput label="Industry" value={form.industry} onChange={f('industry')} placeholder="Steel Fabrication, Construction…" />
           <FInput label={editId ? 'New Password (leave blank to keep)' : 'Password'} value={form.password} onChange={f('password')} placeholder="Set access password" required={!editId} />
           <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
             <button type="submit" style={{ flex: 1, background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>{editId ? 'Save Changes' : 'Create Company'}</button>
-            <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, background: '#f1f5f9', color: '#334155', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Cancel</button>
+            <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, background: '#1e2d42', color: '#94a3b8', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Cancel</button>
           </div>
         </form>
       </Modal>
@@ -1150,9 +1149,6 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
   const [activeSection, setActiveSection] = useState('ew-hero');
   const [showBar, setShowBar] = useState(false);
   const up = path => val => updateDraft(path, val);
-  const orange = draft?.theme?.primary || '#f97316';
-  const navy   = draft?.theme?.secondary || '#0d1b2e';
-  const offWh  = '#f9f7f2';
 
   const scrollToSection = (id) => {
     setActiveSection(id);
@@ -1161,7 +1157,6 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
     setTimeout(() => setShowBar(false), 1000);
   };
 
-
   const updateListItem = (path, i, field, val) => {
     const arr = path.split('.').reduce((o, k) => o[k], draft);
     updateDraft(path, arr.map((it, j) => j === i ? { ...it, [field]: val } : it));
@@ -1169,11 +1164,9 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
 
   const catLabels = { flat: 'Flat Products', tubular: 'Tubular Products', structural: 'Structural Steel', roofing: 'Roofing & Sheets', accessories: 'Accessories & Others' };
 
-  const SL = ({ value, onChange, dark }) => (
-    <div style={{ marginBottom: 14 }}>
-      <EF value={value} onChange={onChange} style={{ display: 'inline-block', background: dark ? 'rgba(255,255,255,0.12)' : `${orange}1f`, color: orange, fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', padding: '6px 16px', borderRadius: 100, width: 'auto' }} />
-    </div>
-  );
+  /* Inline section-label style mirrors .section-label CSS class */
+  const slStyle = { display: 'inline-block', background: 'rgba(74,111,165,0.1)', color: 'var(--orange)', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', padding: '5px 14px', borderRadius: 3, marginBottom: 12, borderLeft: '3px solid var(--orange)', width: 'auto' };
+  const slDark  = { ...slStyle, background: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.7)' };
 
   return (
     <div style={{ margin: '-32px -36px', fontFamily: "'Inter', system-ui, sans-serif" }}>
@@ -1256,494 +1249,463 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
         })}
       </div>
 
-      {/* ════════════════════════════════════════
-           NAVBAR SECTION
-      ════════════════════════════════════════ */}
+      {/* Hint bar */}
+      <div style={{ background: '#fffbf5', borderBottom: '1.5px solid #fed7aa', padding: '7px 32px', fontSize: 12, color: '#92400e', display: 'flex', gap: 8, alignItems: 'center' }}>
+        <span>✎</span>
+        <span>Hover any <strong>text</strong> to edit inline — hover any <strong>image</strong> to replace it — click <strong>+</strong> to add or <strong>×</strong> to remove items</span>
+      </div>
+
+      {/* ════════ NAVBAR ════════ */}
       <SectionBanner label="Navbar" id="ew-navbar" />
-      <div style={{ background: '#fff', padding: '40px 40px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
-          <div>
-            <div style={{ marginBottom: 18 }}>
-              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Brand Name <span style={{ color: '#94a3b8', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(also in Branding tab)</span></label>
-              <EF value={draft.branding?.logoText || 'NAMO STEEL'} onChange={up('branding.logoText')} fontSize={15} fontWeight={700} color="#1a2a4a" />
-            </div>
-            <div style={{ marginBottom: 18 }}>
-              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Tagline</label>
-              <EF value={draft.navbar?.logoTagline || 'The Steel Hub'} onChange={up('navbar.logoTagline')} fontSize={14} color="#64748b" />
-            </div>
-            <div style={{ marginBottom: 18 }}>
-              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>CTA Button Label</label>
-              <EF value={draft.navbar?.ctaLabel || 'Contact Us'} onChange={up('navbar.ctaLabel')} fontSize={14} color="#1a2a4a" fontWeight={600} />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Navigation Links</label>
-              {(draft.navbar?.navLinks || []).map((link, i) => (
-                <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 8, alignItems: 'center' }}>
-                  <div style={{ flex: 1, background: '#f8fafc', borderRadius: 8, padding: '8px 12px', border: '1px solid #e2e8f0' }}>
-                    <div style={{ fontSize: 9, color: '#94a3b8', marginBottom: 3, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Label</div>
-                    <EF value={link.label} onChange={val => updateDraft('navbar.navLinks', (draft.navbar?.navLinks || []).map((l, j) => j === i ? { ...l, label: val } : l))} fontSize={13} fontWeight={600} color="#1a2a4a" />
-                  </div>
-                  <div style={{ flex: 1, background: '#f8fafc', borderRadius: 8, padding: '8px 12px', border: '1px solid #e2e8f0' }}>
-                    <div style={{ fontSize: 9, color: '#94a3b8', marginBottom: 3, fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>Href</div>
-                    <EF value={link.href} onChange={val => updateDraft('navbar.navLinks', (draft.navbar?.navLinks || []).map((l, j) => j === i ? { ...l, href: val } : l))} fontSize={13} color="#64748b" />
-                  </div>
-                  <button onClick={() => updateDraft('navbar.navLinks', (draft.navbar?.navLinks || []).filter((_, j) => j !== i))} style={{ background: '#fef2f2', border: 'none', borderRadius: 6, padding: '6px 10px', cursor: 'pointer', color: '#dc2626', fontSize: 16, flexShrink: 0, lineHeight: 1 }}>×</button>
-                </div>
-              ))}
-              <button onClick={() => updateDraft('navbar.navLinks', [...(draft.navbar?.navLinks || []), { href: '#section', label: 'New Link' }])}
-                style={{ marginTop: 4, background: 'none', border: `1.5px dashed ${orange}60`, borderRadius: 8, padding: '7px 18px', cursor: 'pointer', fontSize: 12, fontWeight: 600, color: orange }}>
-                + Add Link
-              </button>
+      <header className="nav" style={{ position: 'relative', zIndex: 1 }}>
+        <div className="nav-accent-line" />
+        <div className="container nav-inner">
+          <div className="logo">
+            <div style={{ width: 36, height: 36, background: 'var(--orange)', borderRadius: 6, flexShrink: 0 }} />
+            <div className="logo-text">
+              <EF value={draft.branding?.logoText || 'NAMO STEEL'} onChange={up('branding.logoText')} fontSize={13} fontWeight={900} color="var(--white)" style={{ letterSpacing: '0.08em', display: 'inline-block', width: 'auto', lineHeight: 1.1 }} />
+              <EF value={draft.navbar?.logoTagline || 'The Steel Hub'} onChange={up('navbar.logoTagline')} fontSize={10} fontWeight={500} color="var(--orange)" style={{ letterSpacing: '0.06em', textTransform: 'uppercase', display: 'inline-block', width: 'auto', lineHeight: 1.1, marginTop: 2 }} />
             </div>
           </div>
-          <div>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Navbar Preview</div>
-            <div style={{ background: navy, borderRadius: 12, padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.15)' }}>
-              <div style={{ width: 28, height: 28, borderRadius: 6, background: orange, flexShrink: 0 }} />
-              <div>
-                <div style={{ color: '#fff', fontWeight: 900, fontSize: 13, letterSpacing: '0.1em' }}>{draft.branding?.logoText || 'NAMO STEEL'}</div>
-                <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 9, letterSpacing: '0.1em', marginTop: 1 }}>{draft.navbar?.logoTagline || 'The Steel Hub'}</div>
-              </div>
-              <div style={{ marginLeft: 'auto', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-                {(draft.navbar?.navLinks || []).map(l => <span key={l.href} style={{ color: 'rgba(255,255,255,0.55)', fontSize: 12 }}>{l.label}</span>)}
-                <span style={{ background: orange, color: '#fff', borderRadius: 20, padding: '5px 14px', fontSize: 12, fontWeight: 700 }}>{draft.navbar?.ctaLabel || 'Contact Us'}</span>
-              </div>
-            </div>
-          </div>
+          <nav className="nav-links">
+            {(draft.navbar?.navLinks || []).map((link, i) => (
+              <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 2 }}>
+                <EF value={link.label} onChange={val => updateDraft('navbar.navLinks', (draft.navbar?.navLinks || []).map((l, j) => j === i ? { ...l, label: val } : l))} fontSize={13} fontWeight={500} color="rgba(255,255,255,0.65)" style={{ display: 'inline-block', width: 'auto', letterSpacing: '0.03em' }} />
+                <button onClick={() => updateDraft('navbar.navLinks', (draft.navbar?.navLinks || []).filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'rgba(255,100,100,0.7)', cursor: 'pointer', fontSize: 14, padding: 0, lineHeight: 1, flexShrink: 0 }}>×</button>
+              </span>
+            ))}
+            <button onClick={() => updateDraft('navbar.navLinks', [...(draft.navbar?.navLinks || []), { href: '#new', label: 'New Link' }])} style={{ background: 'none', border: '1px dashed rgba(255,255,255,0.3)', borderRadius: 3, padding: '4px 10px', cursor: 'pointer', fontSize: 11, color: 'rgba(255,255,255,0.45)', fontWeight: 600 }}>+</button>
+            <EF value={draft.navbar?.ctaLabel || 'Contact Us'} onChange={up('navbar.ctaLabel')} fontSize={12} fontWeight={700} color="var(--white)" style={{ display: 'inline-block', background: 'var(--orange)', padding: '9px 20px', borderRadius: 4, letterSpacing: '0.04em', width: 'auto' }} />
+          </nav>
         </div>
-      </div>
+      </header>
 
-      {/* ════════════════════════════════════════
-           HERO SECTION
-      ════════════════════════════════════════ */}
+      {/* ════════ HERO ════════ */}
       <SectionBanner label="Hero Section" id="ew-hero" />
-      <div style={{ background: `linear-gradient(135deg, ${navy} 0%, #0a1628 60%, #122038 100%)`, padding: '80px 48px 64px', position: 'relative', overflow: 'hidden', backgroundImage: `linear-gradient(135deg, ${navy} 0%, #0a1628 60%, #122038 100%), url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.018'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }}>
-        {/* Glow orbs */}
-        <div style={{ position: 'absolute', top: -100, right: -60, width: 500, height: 500, borderRadius: '50%', background: `radial-gradient(circle, ${orange}12 0%, transparent 65%)`, pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -80, left: '35%', width: 350, height: 350, borderRadius: '50%', background: `radial-gradient(circle, ${orange}07 0%, transparent 70%)`, pointerEvents: 'none' }} />
-        {/* Diagonal steel accent */}
-        <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '42%', background: 'linear-gradient(105deg, transparent 0%, rgba(255,255,255,0.012) 50%, rgba(255,255,255,0.025) 100%)', pointerEvents: 'none' }} />
-
-        <div style={{ maxWidth: 720, position: 'relative' }}>
-          {/* Badge */}
-          <div style={{ marginBottom: 22 }}>
-            <EF value={draft.hero.badge} onChange={up('hero.badge')} fontSize={11} fontWeight={700} color={orange} style={{ letterSpacing: '0.2em', textTransform: 'uppercase', display: 'inline-block', width: 'auto', background: `${orange}18`, borderRadius: 100, padding: '5px 18px', border: `1.5px solid ${orange}35` }} />
-          </div>
-
-          {/* Title */}
-          <EF value={draft.hero.title} onChange={up('hero.title')} multiline fontSize={52} fontWeight={900} color="#fff" style={{ lineHeight: 1.05, marginBottom: 18, display: 'block', letterSpacing: '-0.025em', fontFamily: "'Barlow Condensed', system-ui, sans-serif" }} rows={2} />
-
-          {/* Subtitle */}
-          <EF value={draft.hero.subtitle} onChange={up('hero.subtitle')} fontSize={18} color="rgba(255,255,255,0.55)" style={{ marginBottom: 36, display: 'block', lineHeight: 1.55, maxWidth: 520, fontFamily: "'DM Sans', system-ui, sans-serif" }} />
-
-          {/* CTAs */}
-          <div style={{ display: 'flex', gap: 12, marginBottom: 48, flexWrap: 'wrap' }}>
-            <div style={{ background: `linear-gradient(135deg, ${orange}, #ea580c)`, borderRadius: 10, padding: '13px 24px', display: 'flex', gap: 9, alignItems: 'center', boxShadow: `0 8px 24px ${orange}45, 0 2px 8px ${orange}30`, cursor: 'default' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" opacity="0.9"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a9 9 0 0 1-.57-.01c-.198 0-.52.074-.792.372C7.525 10.32 6.5 11.04 6.5 12.5c0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413z"/></svg>
-              <EF value={draft.hero.phone} onChange={up('hero.phone')} fontSize={15} fontWeight={700} color="#fff" style={{ width: 'auto' }} />
-            </div>
-            <div style={{ border: '1.5px solid rgba(255,255,255,0.22)', borderRadius: 10, padding: '13px 24px', backdropFilter: 'blur(8px)', background: 'rgba(255,255,255,0.05)', cursor: 'default' }}>
-              <EF value={draft.hero.ctaText} onChange={up('hero.ctaText')} fontSize={15} fontWeight={600} color="rgba(255,255,255,0.9)" style={{ width: 'auto' }} />
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div style={{ display: 'flex', gap: 0, paddingTop: 28, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-            {draft.hero.stats.map((s, i) => (
-              <div key={i} style={{ flex: 1, paddingRight: 24, borderRight: i < draft.hero.stats.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none', marginRight: i < draft.hero.stats.length - 1 ? 24 : 0, animation: `ns-count 0.5s ease forwards`, animationDelay: `${i * 0.1}s`, opacity: 0 }}>
-                <EF value={s.num} onChange={val => updateDraft('hero.stats', draft.hero.stats.map((st, j) => j === i ? { ...st, num: val } : st))} fontSize={32} fontWeight={900} color={orange} style={{ width: 90, letterSpacing: '-0.02em', fontFamily: "'Barlow Condensed', system-ui, sans-serif" }} />
-                <EF value={s.label} onChange={val => updateDraft('hero.stats', draft.hero.stats.map((st, j) => j === i ? { ...st, label: val } : st))} fontSize={12} color="rgba(255,255,255,0.45)" style={{ width: 120, marginTop: 2, letterSpacing: '0.02em' }} />
+      <section className="hero" style={{ minHeight: 'auto', paddingBottom: 40 }}>
+        <div className="hero-grid" />
+        <div className="container">
+          <div className="hero-split" style={{ minHeight: 'auto', paddingTop: 40, paddingBottom: 40 }}>
+            <div className="hero-content" style={{ paddingTop: 0 }}>
+              <div className="hero-eyebrow">
+                <EF value={draft.hero.badge} onChange={up('hero.badge')} fontSize={11} fontWeight={800} color="var(--orange)" style={{ letterSpacing: '0.2em', textTransform: 'uppercase', display: 'inline-block', width: 'auto' }} />
+                <span className="hero-sep">—</span>
+                <span className="hero-sub-tag">Iron &amp; Steel Merchants</span>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-           CATEGORIES SECTION
-      ════════════════════════════════════════ */}
-      <SectionBanner label="Categories Section" id="ew-categories" />
-      <div style={{ background: '#f8fafc', padding: '48px 40px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 28 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>3 product category cards shown below the hero</div>
-            <div style={{ fontSize: 13, color: '#64748b' }}>Hover any image to change it · click any text to edit</div>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
-            {(draft.categories || []).map((c, i) => (
-              <div key={i} style={{ borderRadius: 14, overflow: 'hidden', boxShadow: '0 2px 12px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0' }}>
-                <ImageUpload src={c.img} onChange={val => updateListItem('categories', i, 'img', val)} height={160} />
-                <div style={{ padding: '16px 18px', background: '#fff' }}>
-                  <div style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 9, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>Label</div>
-                    <EF value={c.label} onChange={val => updateListItem('categories', i, 'label', val)} fontSize={12} fontWeight={700} color={orange} />
+              <h1 className="hero-title" style={{ marginBottom: 22 }}>
+                {(() => {
+                  const lines = (draft.hero.title || '').split('\n');
+                  return lines.map((line, i) => i === 0
+                    ? <EF key={i} value={line} onChange={val => updateDraft('hero.title', [val, ...(draft.hero.title || '').split('\n').slice(1)].join('\n'))} fontSize={52} fontWeight={900} color="var(--white)" style={{ lineHeight: 1.0, letterSpacing: '-0.03em', display: 'block', width: '100%' }} />
+                    : <span key={i} className="hero-accent" style={{ display: 'block' }}><EF value={line} onChange={val => updateDraft('hero.title', [(draft.hero.title || '').split('\n')[0], val].join('\n'))} fontSize={52} fontWeight={900} color="var(--orange)" style={{ lineHeight: 1.0, letterSpacing: '-0.03em', display: 'block', width: '100%' }} /></span>
+                  );
+                })()}
+              </h1>
+              <EF value={draft.hero.subtitle} onChange={up('hero.subtitle')} fontSize={15} color="rgba(255,255,255,0.45)" style={{ lineHeight: 1.7, maxWidth: 440, display: 'block', marginBottom: 40, letterSpacing: '0.02em' }} />
+              <div className="hero-actions">
+                <span className="btn-primary" style={{ cursor: 'default', display: 'inline-flex', alignItems: 'center', gap: 7 }}>
+                  <svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17" style={{ flexShrink: 0 }}><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378L.436 23.03l1.621-5.942A9.91 9.91 0 01.75 12C.75 5.797 5.797.75 12 .75s11.25 5.047 11.25 11.25S18.203 23.25 12 23.25z"/></svg>
+                  <EF value={draft.hero.phone} onChange={up('hero.phone')} fontSize={14} fontWeight={700} color="var(--white)" style={{ display: 'inline-block', width: 'auto' }} />
+                </span>
+                <span className="btn-outline" style={{ cursor: 'default' }}>
+                  <EF value={draft.hero.ctaText} onChange={up('hero.ctaText')} fontSize={14} fontWeight={600} color="var(--white)" style={{ display: 'inline-block', width: 'auto' }} /> →
+                </span>
+              </div>
+              <div className="hero-stats-row">
+                {draft.hero.stats.map((s, i) => (
+                  <div key={i} className="h-stat">
+                    <EF value={s.num} onChange={val => updateDraft('hero.stats', draft.hero.stats.map((st, j) => j === i ? { ...st, num: val } : st))} fontSize={35} fontWeight={900} color="var(--white)" style={{ letterSpacing: '-0.02em', lineHeight: 1, display: 'block', fontFamily: 'inherit' }} />
+                    <EF value={s.label} onChange={val => updateDraft('hero.stats', draft.hero.stats.map((st, j) => j === i ? { ...st, label: val } : st))} fontSize={11} fontWeight={500} color="rgba(255,255,255,0.4)" style={{ textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: 6, display: 'block', fontFamily: 'inherit' }} />
                   </div>
-                  <div style={{ marginBottom: 10 }}>
-                    <div style={{ fontSize: 9, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>Title</div>
-                    <EF value={c.title} onChange={val => updateListItem('categories', i, 'title', val)} fontSize={16} fontWeight={800} color={navy} multiline rows={2} />
+                ))}
+              </div>
+            </div>
+            <div className="hero-visual">
+              <div className="hero-img-grid">
+                {[{ src: '/products/ms-hrc-plate.jpeg', label: 'Flat Products' }, { src: '/products/tmt-bars.jpeg', label: 'TMT Bars' }, { src: '/products/beams.jpeg', label: 'Structural Steel' }, { src: '/products/colour-coated-sheets.jpeg', label: 'Roofing Sheets' }].map((img, i) => (
+                  <div key={i} className="hero-img-cell">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={img.src} alt={img.label} className="hero-img" style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                    <div className="hero-img-overlay" />
+                    <span className="hero-img-label">{img.label}</span>
                   </div>
-                  <div>
-                    <div style={{ fontSize: 9, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>Description</div>
-                    <EF value={c.desc} onChange={val => updateListItem('categories', i, 'desc', val)} multiline fontSize={12} color="#64748b" rows={2} style={{ lineHeight: 1.5 }} />
-                  </div>
+                ))}
+              </div>
+              <div className="hero-float-badge">
+                <span className="hero-float-num">ISI</span>
+                <span className="hero-float-text">Certified Products</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="hero-bottom-line" />
+      </section>
+
+      {/* ════════ CATEGORIES ════════ */}
+      <SectionBanner label="Categories" id="ew-categories" />
+      <section className="cats">
+        <div className="cats-grid">
+          {(draft.categories || []).map((c, i) => (
+            <div key={i} style={{ position: 'relative' }}>
+              <div className="cat-card" style={{ display: 'block', cursor: 'default' }}>
+                <div style={{ position: 'relative', aspectRatio: '3/4', overflow: 'hidden', minHeight: 280 }}>
+                  <ImageUpload src={c.img} onChange={val => updateListItem('categories', i, 'img', val)} height={320} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,transparent 30%,rgba(11,22,34,0.5) 65%,rgba(11,22,34,0.92) 100%)', pointerEvents: 'none' }} />
                 </div>
+                <div className="cat-body">
+                  <EF value={c.label} onChange={val => updateListItem('categories', i, 'label', val)} fontSize={10} fontWeight={700} color="var(--orange)" style={{ letterSpacing: '0.16em', textTransform: 'uppercase', display: 'block', marginBottom: 8 }} />
+                  <EF value={c.title} onChange={val => updateListItem('categories', i, 'title', val)} multiline rows={2} fontSize={24} fontWeight={900} color="#fff" style={{ lineHeight: 1.1, letterSpacing: '-0.02em', marginBottom: 10, display: 'block' }} />
+                  <EF value={c.desc} onChange={val => updateListItem('categories', i, 'desc', val)} multiline rows={2} fontSize={13} color="rgba(255,255,255,0.55)" style={{ lineHeight: 1.55, marginBottom: 16, display: 'block', maxWidth: 260 }} />
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--orange)', letterSpacing: '0.06em' }}>Explore Range →</span>
+                </div>
+              </div>
+              <button onClick={() => updateDraft('categories', (draft.categories || []).filter((_, j) => j !== i))} style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.55)', border: 'none', borderRadius: '50%', width: 26, height: 26, color: '#fff', cursor: 'pointer', fontSize: 15, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 20, lineHeight: 1 }}>×</button>
+            </div>
+          ))}
+        </div>
+        <div style={{ background: '#0b1622', padding: '16px 0', display: 'flex', justifyContent: 'center', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <button onClick={() => updateDraft('categories', [...(draft.categories || []), { label: 'New Category', title: 'New\nTitle', img: 'https://picsum.photos/seed/newcat/400/500', desc: 'Category description here.' }])} style={{ background: 'none', border: '1.5px dashed rgba(74,111,165,0.45)', borderRadius: 4, padding: '7px 22px', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: 'rgba(74,111,165,0.8)' }}>+ Add Category</button>
+        </div>
+      </section>
+
+      {/* ════════ ABOUT ════════ */}
+      <SectionBanner label="About" id="ew-about" />
+      <section className="about">
+        <div className="metrics-strip">
+          <div className="container metrics-inner">
+            {[{ num: '30+', label: 'Years in Business' }, { num: '15+', label: 'Premium Brands' }, { num: 'ISI', label: 'Certified Products' }, { num: '₹10Cr+', label: 'Projects Delivered' }].map((m, i) => (
+              <div key={i} className="metric-item">
+                <span className="metric-num">{m.num}</span>
+                <span className="metric-label">{m.label}</span>
               </div>
             ))}
           </div>
         </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-           ABOUT SECTION
-      ════════════════════════════════════════ */}
-      <SectionBanner label="About Section" id="ew-about" />
-      <div style={{ background: offWh, padding: '56px 40px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, maxWidth: 1000, margin: '0 auto' }}>
-          <div>
-            <SL value={draft.about.sectionLabel} onChange={up('about.sectionLabel')} />
-            <EF value={draft.about.heading} onChange={up('about.heading')} fontSize={28} fontWeight={800} color={navy} style={{ marginBottom: 16, display: 'block', lineHeight: 1.25, letterSpacing: '-0.01em' }} multiline rows={2} />
-            <EF value={draft.about.description} onChange={up('about.description')} multiline fontSize={15} color="#64748b" style={{ lineHeight: 1.75, marginBottom: 24, display: 'block' }} rows={4} />
-            {draft.about.checklist.map((item, i) => (
-              <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10, alignItems: 'flex-start' }}>
-                <div style={{ width: 20, height: 20, borderRadius: '50%', background: orange, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 1 }}>
-                  <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><polyline points="2,6 5,9 10,3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        <div className="container about-grid section">
+          <div className="about-text">
+            <EF value={draft.about.sectionLabel} onChange={up('about.sectionLabel')} fontSize={11} fontWeight={700} color="var(--orange)" style={slStyle} />
+            <EF value={draft.about.heading} onChange={up('about.heading')} multiline rows={2} fontSize={36} fontWeight={800} color="var(--navy)" style={{ lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 20, display: 'block' }} />
+            <EF value={draft.about.description} onChange={up('about.description')} multiline rows={4} fontSize={15} color="var(--gray)" style={{ lineHeight: 1.8, marginBottom: 36, display: 'block' }} />
+            <div className="about-highlights">
+              {draft.about.checklist.map((item, i) => (
+                <div key={i} className="about-highlight-item">
+                  <span className="highlight-num">0{i + 1}</span>
+                  <EF value={item} onChange={val => updateDraft('about.checklist', draft.about.checklist.map((c, j) => j === i ? val : c))} fontSize={14} fontWeight={600} color="var(--navy)" style={{ flex: 1 }} />
+                  <button onClick={() => updateDraft('about.checklist', draft.about.checklist.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 13, opacity: 0.5, padding: 0, flexShrink: 0 }}>×</button>
                 </div>
-                <EF value={item} onChange={val => updateDraft('about.checklist', draft.about.checklist.map((c, j) => j === i ? val : c))} fontSize={14} color="#334155" fontWeight={500} />
-              </div>
-            ))}
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <div style={{ background: '#fff', borderRadius: 14, padding: '22px 24px', borderLeft: `4px solid ${orange}`, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: `${orange}18`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={orange} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/></svg>
-                </div>
-                <span style={{ fontWeight: 700, color: navy, fontSize: 15 }}>Our Vision</span>
-              </div>
-              <EF value={draft.about.vision} onChange={up('about.vision')} multiline fontSize={14} color="#64748b" rows={3} style={{ lineHeight: 1.65 }} />
-            </div>
-            <div style={{ background: navy, borderRadius: 14, padding: '22px 24px', boxShadow: '0 2px 12px rgba(26,42,74,0.15)' }}>
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 12 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: 'rgba(232,119,34,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <span style={{ color: orange, fontSize: 16 }}>🎯</span>
-                </div>
-                <span style={{ fontWeight: 700, color: '#fff', fontSize: 15 }}>Mission</span>
-              </div>
-              <EF value={draft.about.mission} onChange={up('about.mission')} multiline fontSize={13} color="rgba(255,255,255,0.75)" rows={3} style={{ lineHeight: 1.6 }} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-           WHY CHOOSE US
-      ════════════════════════════════════════ */}
-      <SectionBanner label="Why Choose Us" id="ew-why" />
-      <div style={{ background: '#fff', padding: '56px 40px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ display: 'flex', justifyContent: 'center' }}><SL value={draft.why.sectionLabel} onChange={up('why.sectionLabel')} /></div>
-            <EF value={draft.why.heading} onChange={up('why.heading')} fontSize={28} fontWeight={800} color={navy} style={{ textAlign: 'center', display: 'block', lineHeight: 1.25, letterSpacing: '-0.01em' }} />
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
-            {draft.why.items.map((item, i) => (
-              <div key={i} style={{ background: offWh, borderRadius: 14, padding: '24px 20px', border: '1px solid #ede8df', textAlign: 'center', transition: 'box-shadow 0.2s' }}>
-                <div style={{ width: 52, height: 52, borderRadius: '50%', background: `${orange}18`, margin: '0 auto 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: `1.5px solid ${orange}30` }}>
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={orange} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                </div>
-                <EF value={item.title} onChange={val => updateListItem('why.items', i, 'title', val)} fontSize={14} fontWeight={700} color={navy} style={{ textAlign: 'center', lineHeight: 1.4 }} />
-                <div style={{ marginTop: 8, display: 'flex', justifyContent: 'center' }}>
-                  <button onClick={() => updateDraft('why.items', draft.why.items.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 11, opacity: 0.5, padding: 0 }}>remove</button>
-                </div>
-              </div>
-            ))}
-            <div style={{ borderRadius: 14, border: `2px dashed ${orange}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 120, cursor: 'pointer', background: `${orange}05` }}
-              onClick={() => updateDraft('why.items', [...draft.why.items, { title: 'New reason to choose us' }])}>
-              <span style={{ color: orange, fontWeight: 700, fontSize: 13 }}>+ Add Item</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-           CERTIFICATIONS
-      ════════════════════════════════════════ */}
-      <SectionBanner label="Certifications" id="ew-certs" />
-      <div style={{ background: navy, padding: '56px 40px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
-              <div style={{ background: 'rgba(255,255,255,0.12)', color: orange, fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', padding: '6px 16px', borderRadius: 100 }}>
-                <EF value={draft.certifications.sectionLabel} onChange={up('certifications.sectionLabel')} fontSize={11} fontWeight={700} color={orange} style={{ letterSpacing: '0.12em', textTransform: 'uppercase', width: 'auto', display: 'inline-block' }} />
-              </div>
-            </div>
-            <EF value={draft.certifications.heading} onChange={up('certifications.heading')} fontSize={28} fontWeight={800} color="#fff" style={{ textAlign: 'center', display: 'block', letterSpacing: '-0.01em' }} />
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }}>
-            {draft.certifications.items.map((c, i) => (
-              <div key={i} style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 16, padding: '28px 24px', border: '1px solid rgba(255,255,255,0.1)', position: 'relative', overflow: 'hidden', backdropFilter: 'blur(8px)' }}>
-                <div style={{ fontSize: 56, fontWeight: 900, color: 'rgba(255,255,255,0.07)', position: 'absolute', top: 6, right: 14, lineHeight: 1, userSelect: 'none', pointerEvents: 'none' }}>{c.num}</div>
-                <div style={{ width: 52, height: 52, borderRadius: 12, background: `${orange}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16, border: `1px solid ${orange}30` }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={orange} strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
-                </div>
-                <EF value={c.title} onChange={val => updateListItem('certifications.items', i, 'title', val)} fontSize={14} fontWeight={600} color="#fff" style={{ lineHeight: 1.5 }} multiline rows={2} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-           SERVICE EXCELLENCE
-      ════════════════════════════════════════ */}
-      <SectionBanner label="Service Excellence" id="ew-services" />
-      <div style={{ background: offWh, padding: '56px 40px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56 }}>
-          <div>
-            <SL value={draft.services.sectionLabel} onChange={up('services.sectionLabel')} />
-            <EF value={draft.services.heading} onChange={up('services.heading')} fontSize={28} fontWeight={800} color={navy} style={{ display: 'block', marginBottom: 28, lineHeight: 1.25, letterSpacing: '-0.01em' }} multiline rows={2} />
-            {draft.services.items.map((s, i) => (
-              <div key={i} style={{ display: 'flex', gap: 16, marginBottom: 22, alignItems: 'flex-start' }}>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: `${orange}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: `1px solid ${orange}25` }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={orange} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                </div>
-                <div style={{ flex: 1 }}>
-                  <EF value={s.title} onChange={val => updateListItem('services.items', i, 'title', val)} fontSize={15} fontWeight={700} color={navy} />
-                  <EF value={s.desc} onChange={val => updateListItem('services.items', i, 'desc', val)} multiline fontSize={13} color="#64748b" rows={2} style={{ lineHeight: 1.65, marginTop: 4 }} />
-                </div>
-                <button onClick={() => updateDraft('services.items', draft.services.items.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 14, opacity: 0.4, flexShrink: 0, paddingTop: 2 }}>×</button>
-              </div>
-            ))}
-            <button onClick={() => updateDraft('services.items', [...draft.services.items, { title: 'New Service', desc: 'Service description.' }])}
-              style={{ marginTop: 4, background: 'none', border: `1.5px dashed ${orange}60`, borderRadius: 8, padding: '8px 20px', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: orange }}>
-              + Add Service
-            </button>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ position: 'relative', width: 260, height: 260 }}>
-              <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: `linear-gradient(135deg, ${navy} 0%, ${navy}cc 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 20px 60px ${navy}40` }}>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontSize: 48, fontWeight: 900, color: orange, lineHeight: 1 }}>30+</div>
-                  <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.7)', marginTop: 6, fontWeight: 600 }}>Years of Excellence</div>
-                </div>
-              </div>
-              <div style={{ position: 'absolute', inset: -12, borderRadius: '50%', border: `2px dashed ${orange}40`, animation: 'none' }} />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-           PRODUCTS (with image editing!)
-      ════════════════════════════════════════ */}
-      <SectionBanner label="Products Section — Hover image to change URL" id="ew-products" />
-      <div style={{ background: '#fff', padding: '56px 40px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}><SL value={draft.products.sectionLabel} onChange={up('products.sectionLabel')} /></div>
-            <EF value={draft.products.heading} onChange={up('products.heading')} fontSize={28} fontWeight={800} color={navy} style={{ textAlign: 'center', display: 'block', letterSpacing: '-0.01em' }} />
-          </div>
-
-          {/* Category tabs */}
-          <div style={{ display: 'flex', gap: 6, marginBottom: 28, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {Object.keys(catLabels).map(cat => (
-              <button key={cat} onClick={() => setProductTab(cat)} style={{ padding: '8px 16px', borderRadius: 8, border: '2px solid', cursor: 'pointer', fontWeight: 600, fontSize: 13, borderColor: productTab === cat ? '#e87722' : '#e2e8f0', background: productTab === cat ? '#e87722' : '#fff', color: productTab === cat ? '#fff' : '#64748b', transition: 'all 0.15s' }}>
-                {catLabels[cat]}
-              </button>
-            ))}
-          </div>
-
-          {/* Product cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 16 }}>
-            {(draft.products[productTab] || []).map((item, i) => (
-              <div key={i} style={{ borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', border: '1px solid #f1f5f9' }}>
-                <ImageUpload
-                  src={item.img}
-                  onChange={val => updateListItem(`products.${productTab}`, i, 'img', val)}
-                  height={150}
-                />
-                <div style={{ padding: '12px 14px', background: '#fff' }}>
-                  <EF value={item.title} onChange={val => updateListItem(`products.${productTab}`, i, 'title', val)} fontSize={14} fontWeight={700} color="#1a2a4a" />
-                  <EF value={item.desc} onChange={val => updateListItem(`products.${productTab}`, i, 'desc', val)} multiline fontSize={12} color="#64748b" rows={2} style={{ lineHeight: 1.5, marginTop: 4 }} />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Add product button */}
-          <div style={{ textAlign: 'center', marginTop: 20 }}>
-            <button onClick={() => updateDraft(`products.${productTab}`, [...(draft.products[productTab] || []), { title: 'New Product', desc: 'Product description.', img: `https://picsum.photos/seed/new-${Date.now()}/480/280` }])}
-              style={{ background: '#f1f5f9', border: '2px dashed #e2e8f0', borderRadius: 10, padding: '10px 24px', cursor: 'pointer', fontSize: 14, fontWeight: 600, color: '#64748b' }}>
-              + Add Product to {catLabels[productTab]}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-           BRANDS
-      ════════════════════════════════════════ */}
-      <SectionBanner label="Brands Section" id="ew-brands" />
-      <div style={{ background: offWh, padding: '56px 40px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}><SL value="Brands We Deal" onChange={() => {}} /></div>
-          <h2 style={{ color: navy, fontSize: 28, fontWeight: 800, marginBottom: 36, marginTop: 0, letterSpacing: '-0.01em' }}>Partnered with Industry&apos;s Best</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, marginBottom: 20 }}>
-            {draft.brands.map((b, i) => (
-              <div key={i} style={{ background: '#fff', borderRadius: 12, padding: '16px 12px', border: '1px solid #ede8df', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, position: 'relative' }}>
-                <div style={{ width: 40, height: 40, borderRadius: 8, background: offWh, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid #ede8df' }}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke={navy} strokeWidth="1.75" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                </div>
-                <EF value={b} onChange={val => updateDraft('brands', draft.brands.map((br, j) => j === i ? val : br))} fontSize={12} fontWeight={700} color={navy} style={{ textTransform: 'uppercase', letterSpacing: '0.06em', textAlign: 'center' }} />
-                <button onClick={() => updateDraft('brands', draft.brands.filter((_, j) => j !== i))} style={{ position: 'absolute', top: 6, right: 6, background: 'none', border: 'none', color: '#dc2626', cursor: 'pointer', fontSize: 14, opacity: 0.4, lineHeight: 1, padding: 0 }}>×</button>
-              </div>
-            ))}
-            <div onClick={() => updateDraft('brands', [...draft.brands, 'NEW BRAND'])}
-              style={{ background: 'none', border: `2px dashed ${orange}50`, borderRadius: 12, padding: '16px 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 90 }}>
-              <span style={{ color: orange, fontWeight: 700, fontSize: 13 }}>+ Add Brand</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-           CASE STUDIES
-      ════════════════════════════════════════ */}
-      <SectionBanner label="Case Studies" id="ew-cases" />
-      <div style={{ background: '#fff', padding: '56px 40px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ display: 'flex', justifyContent: 'center' }}><SL value={draft.caseStudies?.[0] ? 'Case Studies' : 'Case Studies'} onChange={() => {}} /></div>
-            <h2 style={{ color: navy, fontSize: 28, fontWeight: 800, margin: 0, letterSpacing: '-0.01em' }}>Real Projects, Real Results</h2>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(290px, 1fr))', gap: 20 }}>
-            {draft.caseStudies.map((c, i) => (
-              <div key={i} style={{ background: offWh, borderRadius: 16, padding: '24px 22px', border: '1px solid #ede8df', position: 'relative', overflow: 'hidden' }}>
-                <span style={{ fontSize: 52, fontWeight: 900, color: `${navy}0d`, position: 'absolute', top: 6, right: 14, lineHeight: 1, userSelect: 'none', pointerEvents: 'none' }}>{c.num}</span>
-                <div style={{ width: 36, height: 36, borderRadius: 8, background: `${orange}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14, border: `1px solid ${orange}25` }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={orange} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                </div>
-                <EF value={c.title} onChange={val => updateListItem('caseStudies', i, 'title', val)} fontSize={16} fontWeight={700} color={navy} style={{ marginBottom: 4, lineHeight: 1.3 }} />
-                <EF value={c.client} onChange={val => updateListItem('caseStudies', i, 'client', val)} fontSize={12} fontWeight={600} color={orange} style={{ marginBottom: 6 }} />
-                <EF value={c.project} onChange={val => updateListItem('caseStudies', i, 'project', val)} fontSize={13} fontWeight={600} color="#334155" style={{ marginBottom: 8 }} />
-                <EF value={c.desc} onChange={val => updateListItem('caseStudies', i, 'desc', val)} multiline fontSize={13} color="#64748b" rows={3} style={{ lineHeight: 1.65 }} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-           CLIENTS
-      ════════════════════════════════════════ */}
-      <SectionBanner label="Clients Section" id="ew-clients" />
-      <div style={{ background: navy, padding: '56px 40px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
-            <div style={{ background: 'rgba(255,255,255,0.12)', borderRadius: 100, padding: '6px 16px' }}>
-              <span style={{ color: orange, fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>Our Clients</span>
-            </div>
-          </div>
-          <h2 style={{ color: '#fff', fontSize: 28, fontWeight: 800, marginBottom: 32, marginTop: 0, letterSpacing: '-0.01em' }}>Trusted by Industry Leaders</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12, marginBottom: 20 }}>
-            {draft.clients.map((c, i) => (
-              <div key={i} style={{ background: 'rgba(255,255,255,0.07)', borderRadius: 10, padding: '12px 16px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: 8, position: 'relative' }}>
-                <div style={{ width: 28, height: 28, borderRadius: 6, background: `${orange}22`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={orange} strokeWidth="2" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                </div>
-                <EF value={c} onChange={val => updateDraft('clients', draft.clients.map((cl, j) => j === i ? val : cl))} fontSize={13} fontWeight={600} color="#fff" style={{ flex: 1 }} />
-                <button onClick={() => updateDraft('clients', draft.clients.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: 14, padding: 0, lineHeight: 1 }}>×</button>
-              </div>
-            ))}
-            <div onClick={() => updateDraft('clients', [...draft.clients, 'New Client'])}
-              style={{ background: 'none', border: '2px dashed rgba(255,255,255,0.2)', borderRadius: 10, padding: '12px 16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: 'rgba(255,255,255,0.5)', fontWeight: 600, fontSize: 13 }}>+ Add Client</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ════════════════════════════════════════
-           CONTACT
-      ════════════════════════════════════════ */}
-      <SectionBanner label="Contact Section" id="ew-contact" />
-      <div style={{ background: offWh, padding: '56px 40px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56 }}>
-          <div>
-            <SL value={draft.contact.sectionLabel} onChange={up('contact.sectionLabel')} />
-            <EF value={draft.contact.heading} onChange={up('contact.heading')} fontSize={28} fontWeight={800} color={navy} style={{ display: 'block', marginBottom: 14, lineHeight: 1.25, letterSpacing: '-0.01em' }} multiline rows={2} />
-            <EF value={draft.contact.subheading} onChange={up('contact.subheading')} multiline fontSize={15} color="#64748b" style={{ lineHeight: 1.75, marginBottom: 28, display: 'block' }} rows={3} />
-            {[
-              { label: 'Phone', key: 'phone', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1"/></svg> },
-              { label: 'Email', key: 'email', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> },
-              { label: 'Business', key: 'businessType', icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg> },
-            ].map(({ label, key, icon }) => (
-              <div key={key} style={{ display: 'flex', gap: 14, marginBottom: 14, alignItems: 'center', background: '#fff', borderRadius: 12, padding: '12px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', border: '1px solid #ede8df' }}>
-                <div style={{ width: 38, height: 38, borderRadius: 9, background: `${orange}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: orange, flexShrink: 0 }}>{icon}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>{label}</div>
-                  <EF value={draft.contact[key]} onChange={up(`contact.${key}`)} fontSize={14} color={navy} fontWeight={600} />
-                </div>
-              </div>
-            ))}
-            <div style={{ background: '#fff', borderRadius: 12, padding: '12px 16px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', border: '1px solid #ede8df', display: 'flex', gap: 14, alignItems: 'flex-start' }}>
-              <div style={{ width: 38, height: 38, borderRadius: 9, background: `${orange}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: orange, flexShrink: 0, marginTop: 2 }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 10, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>Office Address</div>
-                <EF value={draft.contact.address} onChange={up('contact.address')} multiline fontSize={13} color={navy} rows={2} style={{ lineHeight: 1.6 }} />
-              </div>
-            </div>
-          </div>
-          <div style={{ background: '#fff', borderRadius: 16, padding: '28px 24px', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid #ede8df' }}>
-            <h3 style={{ color: navy, margin: '0 0 20px', fontSize: 17, fontWeight: 800 }}>Send Us a Message</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
-              {['Your Name', 'Phone Number'].map(ph => (
-                <div key={ph} style={{ border: '1.5px solid #e2e8f0', borderRadius: 8, padding: '10px 14px', color: '#cbd5e1', fontSize: 13, background: '#f8fafc' }}>{ph}</div>
               ))}
             </div>
-            {['Email Address'].map(ph => (
-              <div key={ph} style={{ border: '1.5px solid #e2e8f0', borderRadius: 8, padding: '10px 14px', marginBottom: 10, color: '#cbd5e1', fontSize: 13, background: '#f8fafc' }}>{ph}</div>
-            ))}
-            <div style={{ border: '1.5px solid #e2e8f0', borderRadius: 8, padding: '10px 14px', marginBottom: 10, color: '#cbd5e1', fontSize: 13, height: 64, background: '#f8fafc' }}>Message…</div>
-            <div style={{ background: orange, borderRadius: 9, padding: '13px 0', textAlign: 'center', color: '#fff', fontWeight: 700, fontSize: 14 }}>Send Inquiry →</div>
+            <button onClick={() => updateDraft('about.checklist', [...draft.about.checklist, 'New highlight item'])} style={{ marginTop: 10, background: 'none', border: '1.5px dashed var(--orange)', borderRadius: 3, padding: '5px 14px', cursor: 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--orange)' }}>+ Add Point</button>
+          </div>
+          <div className="about-img-col">
+            <div className="about-img-wrap">
+              <ImageUpload src={draft.about?.image || '/products/beams.jpeg'} onChange={up('about.image')} height={420} />
+              <div className="about-img-tint" />
+              <div className="about-vm-stack">
+                <div className="about-vm-pill">
+                  <div className="about-vm-pill-title">Vision</div>
+                  <div className="about-vm-pill-text"><EF value={draft.about.vision} onChange={up('about.vision')} multiline rows={2} fontSize={12} color="rgba(255,255,255,0.75)" style={{ lineHeight: 1.4 }} /></div>
+                </div>
+                <div className="about-vm-pill about-vm-pill--alt">
+                  <div className="about-vm-pill-title">Mission</div>
+                  <div className="about-vm-pill-text"><EF value={draft.about.mission} onChange={up('about.mission')} multiline rows={2} fontSize={12} color="rgba(255,255,255,0.75)" style={{ lineHeight: 1.4 }} /></div>
+                </div>
+              </div>
+              <div className="about-corner-badge">
+                <span className="about-badge-num">30+</span>
+                <span className="about-badge-label">Years of Trust</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* ════════════════════════════════════════
-           FOOTER
-      ════════════════════════════════════════ */}
-      <SectionBanner label="Footer" id="ew-footer" />
-      <div style={{ background: navy, padding: '40px 40px 20px' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 32, marginBottom: 28 }}>
-            <div>
-              <EF value={draft.footer.brandName} onChange={up('footer.brandName')} fontSize={17} fontWeight={900} color="#fff" style={{ letterSpacing: '0.1em', display: 'block', marginBottom: 10 }} />
-              <EF value={draft.footer.tagline} onChange={up('footer.tagline')} multiline fontSize={13} color="rgba(255,255,255,0.55)" rows={3} style={{ lineHeight: 1.6 }} />
-            </div>
-            <div>
-              <div style={{ fontWeight: 700, color: '#fff', fontSize: 14, marginBottom: 12 }}>Quick Links</div>
-              {['About', 'Products', 'Brands', 'Contact'].map(l => <div key={l} style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, marginBottom: 6 }}>{l}</div>)}
-            </div>
-            <div>
-              <div style={{ fontWeight: 700, color: '#fff', fontSize: 14, marginBottom: 12 }}>Products</div>
-              {['Flat Products', 'Tubular', 'Structural', 'Roofing'].map(l => <div key={l} style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, marginBottom: 6 }}>{l}</div>)}
-            </div>
-            <div>
-              <div style={{ fontWeight: 700, color: '#fff', fontSize: 14, marginBottom: 12 }}>Contact</div>
-              <EF value={draft.footer.presentedPhone} onChange={up('footer.presentedPhone')} fontSize={13} color="rgba(255,255,255,0.65)" style={{ marginBottom: 6, display: 'block' }} />
-              <EF value={draft.footer.presentedEmail} onChange={up('footer.presentedEmail')} fontSize={13} color="rgba(255,255,255,0.65)" style={{ marginBottom: 6, display: 'block' }} />
-              <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 12, marginTop: 8 }}>Presented by:</div>
-              <EF value={draft.footer.presentedBy} onChange={up('footer.presentedBy')} fontSize={14} fontWeight={600} color="#fff" />
-            </div>
+      {/* ════════ WHY CHOOSE US ════════ */}
+      <SectionBanner label="Why Choose Us" id="ew-why" />
+      <section className="why">
+        <div className="container why-inner">
+          <div className="why-header">
+            <EF value={draft.why.sectionLabel} onChange={up('why.sectionLabel')} fontSize={11} fontWeight={700} color="rgba(255,255,255,0.7)" style={slDark} />
+            <EF value={draft.why.heading} onChange={up('why.heading')} fontSize={40} fontWeight={900} color="var(--white)" style={{ lineHeight: 1.1, letterSpacing: '-0.02em', maxWidth: 600, display: 'block', margin: '12px 0' }} />
+            <p className="why-sub">Built on three decades of supply chain excellence, technical knowledge, and client trust.</p>
           </div>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 16 }}>
-            <EF value={draft.footer.copyright} onChange={up('footer.copyright')} fontSize={12} color="rgba(255,255,255,0.35)" style={{ textAlign: 'center', display: 'block' }} />
+          <div className="why-num-grid">
+            {draft.why.items.map((r, i) => (
+              <div key={i} className="why-num-item">
+                <span className="why-num">{String(i + 1).padStart(2, '0')}</span>
+                <EF value={r.title} onChange={val => updateListItem('why.items', i, 'title', val)} fontSize={15} fontWeight={700} color="rgba(255,255,255,0.85)" style={{ lineHeight: 1.35, display: 'block' }} />
+                <button onClick={() => updateDraft('why.items', draft.why.items.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'rgba(255,80,80,0.55)', cursor: 'pointer', fontSize: 11, padding: '4px 0 0', marginTop: 6 }}>× remove</button>
+              </div>
+            ))}
+            <div className="why-num-item" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => updateDraft('why.items', [...draft.why.items, { title: 'New reason to choose us' }])}>
+              <span style={{ color: 'rgba(255,255,255,0.35)', fontWeight: 600, fontSize: 14 }}>+ Add Item</span>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* ════════ CERTIFICATIONS ════════ */}
+      <SectionBanner label="Certifications" id="ew-certs" />
+      <section className="certs">
+        <div className="certs-top">
+          <div className="container certs-top-inner" style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+            <EF value={draft.certifications.sectionLabel} onChange={up('certifications.sectionLabel')} fontSize={11} fontWeight={700} color="rgba(255,255,255,0.6)" style={slDark} />
+            <EF value={draft.certifications.heading} onChange={up('certifications.heading')} fontSize={36} fontWeight={800} color="var(--white)" style={{ letterSpacing: '-0.02em', display: 'block' }} />
+          </div>
+        </div>
+        <div className="certs-items container">
+          {draft.certifications.items.map((c, i) => (
+            <div key={i} className="cert-item">
+              <div className="cert-item-num">{c.num}</div>
+              <div className="cert-item-bar" />
+              <EF value={c.title} onChange={val => updateListItem('certifications.items', i, 'title', val)} fontSize={14} fontWeight={700} color="rgba(255,255,255,0.85)" style={{ lineHeight: 1.5, display: 'block' }} multiline rows={2} />
+              <button onClick={() => updateDraft('certifications.items', draft.certifications.items.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'rgba(255,80,80,0.5)', cursor: 'pointer', fontSize: 11, padding: '4px 0 0', marginTop: 4 }}>× remove</button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ════════ SERVICE EXCELLENCE ════════ */}
+      <SectionBanner label="Service Excellence" id="ew-services" />
+      <section className="service section">
+        <div className="container">
+          <div className="service-header">
+            <EF value={draft.services.sectionLabel} onChange={up('services.sectionLabel')} fontSize={11} fontWeight={700} color="var(--orange)" style={slStyle} />
+            <EF value={draft.services.heading} onChange={up('services.heading')} multiline rows={2} fontSize={36} fontWeight={800} color="var(--navy)" style={{ lineHeight: 1.15, letterSpacing: '-0.02em', display: 'block', marginTop: 10 }} />
+          </div>
+          <div className="service-process">
+            {draft.services.items.map((s, i) => (
+              <div key={i} className="process-step">
+                <div className="process-step-num">{String(i + 1).padStart(2, '0')}</div>
+                <div className="process-connector" />
+                <div className="process-step-body">
+                  <EF value={s.title} onChange={val => updateListItem('services.items', i, 'title', val)} fontSize={16} fontWeight={700} color="var(--navy)" style={{ lineHeight: 1.3, display: 'block', marginBottom: 10 }} />
+                  <EF value={s.desc} onChange={val => updateListItem('services.items', i, 'desc', val)} multiline rows={2} fontSize={13} color="var(--gray)" style={{ lineHeight: 1.7, display: 'block' }} />
+                  <button onClick={() => updateDraft('services.items', draft.services.items.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'rgba(200,0,0,0.5)', cursor: 'pointer', fontSize: 11, padding: '6px 0 0', marginTop: 4 }}>× remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 20 }}>
+            <button onClick={() => updateDraft('services.items', [...draft.services.items, { title: 'New Service', desc: 'Service description here.' }])} style={{ background: 'none', border: '1.5px dashed var(--orange)', borderRadius: 3, padding: '8px 20px', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: 'var(--orange)' }}>+ Add Service</button>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ PRODUCTS ════════ */}
+      <SectionBanner label="Products" id="ew-products" />
+      <section className="products section">
+        <div className="container">
+          <div className="section-header">
+            <EF value={draft.products.sectionLabel} onChange={up('products.sectionLabel')} fontSize={11} fontWeight={700} color="var(--orange)" style={slStyle} />
+            <EF value={draft.products.heading} onChange={up('products.heading')} fontSize={36} fontWeight={800} color="var(--navy)" style={{ display: 'block', letterSpacing: '-0.02em', lineHeight: 1.15, marginTop: 8 }} />
+          </div>
+          <div className="product-tabs">
+            {Object.entries(catLabels).map(([id, label]) => (
+              <button key={id} className={`tab-btn${productTab === id ? ' active' : ''}`} onClick={() => setProductTab(id)}>{label}</button>
+            ))}
+          </div>
+          <div className="product-grid">
+            {(draft.products[productTab] || []).map((item, i) => (
+              <div key={i} className="product-card">
+                <div className="product-img-wrap">
+                  <ImageUpload src={item.img} onChange={val => updateListItem(`products.${productTab}`, i, 'img', val)} height={180} />
+                  <div className="product-img-overlay" />
+                </div>
+                <div className="product-card-body">
+                  <EF value={item.title} onChange={val => updateListItem(`products.${productTab}`, i, 'title', val)} fontSize={14} fontWeight={700} color="var(--navy)" style={{ lineHeight: 1.3, display: 'block', marginBottom: 5 }} />
+                  <EF value={item.desc} onChange={val => updateListItem(`products.${productTab}`, i, 'desc', val)} multiline rows={2} fontSize={12} color="var(--gray)" style={{ lineHeight: 1.55, display: 'block' }} />
+                  <div style={{ marginTop: 12, width: '100%', padding: '9px 0', borderRadius: 8, border: 'none', fontWeight: 700, fontSize: 13, background: '#25d366', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, opacity: 0.8 }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                    Enquire on WhatsApp
+                  </div>
+                  <button onClick={() => updateDraft(`products.${productTab}`, (draft.products[productTab] || []).filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'rgba(200,0,0,0.5)', cursor: 'pointer', fontSize: 11, padding: '4px 0 0', marginTop: 4, display: 'block', width: '100%', textAlign: 'center' }}>× remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 24 }}>
+            <button onClick={() => updateDraft(`products.${productTab}`, [...(draft.products[productTab] || []), { title: 'New Product', desc: 'Product description.', img: 'https://picsum.photos/seed/prod/480/280' }])} style={{ border: '1.5px dashed var(--orange)', background: 'none', borderRadius: 3, padding: '10px 24px', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: 'var(--orange)' }}>+ Add Product to {catLabels[productTab]}</button>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ BRANDS ════════ */}
+      <SectionBanner label="Brands" id="ew-brands" />
+      <section className="brands">
+        <div className="brands-header container">
+          <span className="section-label brands-label">Brands We Deal</span>
+          <h2 className="brands-heading">Partnered with Industry&apos;s Best</h2>
+        </div>
+        <div className="marquee-wrapper">
+          <div className="marquee-fade-left" />
+          <div className="marquee-fade-right" />
+          <div className="marquee-row" style={{ overflow: 'visible' }}>
+            <div className="marquee-track" style={{ animation: 'none', flexWrap: 'wrap', width: 'auto', padding: '0 16px' }}>
+              {draft.brands.map((b, i) => (
+                <div key={i} className="marquee-item" style={{ display: 'inline-flex', alignItems: 'center', gap: 4, margin: 0 }}>
+                  <EF value={b} onChange={val => updateDraft('brands', draft.brands.map((br, j) => j === i ? val : br))} fontSize={12} fontWeight={700} color="rgba(255,255,255,0.6)" style={{ letterSpacing: '0.06em', textTransform: 'uppercase' }} />
+                  <button onClick={() => updateDraft('brands', draft.brands.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'rgba(255,100,100,0.55)', cursor: 'pointer', fontSize: 13, padding: 0, lineHeight: 1, flexShrink: 0 }}>×</button>
+                </div>
+              ))}
+              <div className="marquee-item" onClick={() => updateDraft('brands', [...draft.brands, 'NEW BRAND'])} style={{ cursor: 'pointer', border: '1.5px dashed rgba(74,111,165,0.45)', background: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', margin: 0 }}>
+                <span style={{ color: 'rgba(74,111,165,0.75)', fontWeight: 700, fontSize: 12 }}>+ Add</span>
+              </div>
+            </div>
+          </div>
+          <div className="marquee-row" style={{ overflow: 'visible' }}>
+            <div className="marquee-track marquee-track--reverse" style={{ animation: 'none', flexWrap: 'wrap', width: 'auto', padding: '0 16px' }}>
+              {[...draft.brands].reverse().map((b, i) => (
+                <div key={i} className="marquee-item marquee-item--alt" style={{ margin: 0 }}>{b}</div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ CASE STUDIES ════════ */}
+      <SectionBanner label="Case Studies" id="ew-cases" />
+      <section className="cases section">
+        <div className="container">
+          <div className="section-header">
+            <span className="section-label">Case Studies</span>
+            <h2>Real Projects, Real Results</h2>
+          </div>
+          <div className="cases-grid">
+            {draft.caseStudies.map((c, i) => (
+              <div key={i} className="case-card">
+                <div className="case-num">{c.num}</div>
+                <EF value={c.title} onChange={val => updateListItem('caseStudies', i, 'title', val)} fontSize={16} fontWeight={800} color="var(--navy)" style={{ lineHeight: 1.3, display: 'block', marginBottom: 6 }} />
+                <div className="case-meta">
+                  <EF value={c.client} onChange={val => updateListItem('caseStudies', i, 'client', val)} fontSize={11} fontWeight={700} color="var(--orange)" style={{ textTransform: 'uppercase', letterSpacing: '0.08em', display: 'inline-block', width: 'auto' }} />
+                </div>
+                <EF value={c.project} onChange={val => updateListItem('caseStudies', i, 'project', val)} fontSize={13} fontWeight={700} color="var(--navy)" style={{ display: 'block', marginBottom: 12, fontStyle: 'italic' }} />
+                <EF value={c.desc} onChange={val => updateListItem('caseStudies', i, 'desc', val)} multiline rows={3} fontSize={13} color="var(--gray)" style={{ lineHeight: 1.65, display: 'block' }} />
+                <button onClick={() => updateDraft('caseStudies', draft.caseStudies.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'rgba(200,0,0,0.5)', cursor: 'pointer', fontSize: 11, padding: '6px 0 0', marginTop: 4 }}>× remove</button>
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 20 }}>
+            <button onClick={() => updateDraft('caseStudies', [...draft.caseStudies, { num: String(draft.caseStudies.length + 1).padStart(2, '0'), title: 'New Case Study', client: 'Client Name', project: 'Project Type', desc: 'Project description.' }])} style={{ border: '1.5px dashed var(--orange)', background: 'none', borderRadius: 3, padding: '8px 20px', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: 'var(--orange)' }}>+ Add Case Study</button>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ CLIENTS ════════ */}
+      <SectionBanner label="Clients" id="ew-clients" />
+      <section className="clients section">
+        <div className="container">
+          <div className="section-header">
+            <span className="section-label">Our Clients</span>
+            <h2>Clients Through BNI</h2>
+          </div>
+          <div className="clients-grid">
+            {draft.clients.map((c, i) => (
+              <div key={i} className="client-pill" style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                <EF value={c} onChange={val => updateDraft('clients', draft.clients.map((cl, j) => j === i ? val : cl))} fontSize={13} fontWeight={600} color="rgba(255,255,255,0.7)" style={{ letterSpacing: '0.03em', display: 'inline-block', width: 'auto', minWidth: 60 }} />
+                <button onClick={() => updateDraft('clients', draft.clients.filter((_, j) => j !== i))} style={{ background: 'none', border: 'none', color: 'rgba(255,100,100,0.55)', cursor: 'pointer', fontSize: 14, padding: 0, lineHeight: 1, flexShrink: 0 }}>×</button>
+              </div>
+            ))}
+            <div className="client-pill" onClick={() => updateDraft('clients', [...draft.clients, 'New Client'])} style={{ cursor: 'pointer', borderStyle: 'dashed', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.4)', fontWeight: 700, fontSize: 13 }}>+ Add</div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ CONTACT ════════ */}
+      <SectionBanner label="Contact" id="ew-contact" />
+      <section className="contact section">
+        <div className="container contact-inner">
+          <div className="contact-info">
+            <EF value={draft.contact.sectionLabel} onChange={up('contact.sectionLabel')} fontSize={11} fontWeight={700} color="var(--orange)" style={slStyle} />
+            <EF value={draft.contact.heading} onChange={up('contact.heading')} multiline rows={2} fontSize={36} fontWeight={800} color="var(--navy)" style={{ lineHeight: 1.2, letterSpacing: '-0.02em', display: 'block', marginBottom: 16 }} />
+            <EF value={draft.contact.subheading} onChange={up('contact.subheading')} multiline rows={3} fontSize={14} color="var(--gray)" style={{ lineHeight: 1.7, display: 'block', marginBottom: 40 }} />
+            <div className="contact-items">
+              {[
+                { key: 'phone', label: 'Phone', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1"/></svg> },
+                { key: 'email', label: 'Email', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> },
+                { key: 'businessType', label: 'Business', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/></svg> },
+              ].map(({ key, label, icon }) => (
+                <div key={key} className="contact-item">
+                  <div className="contact-icon">{icon}</div>
+                  <div>
+                    <span className="contact-label">{label}</span>
+                    <EF value={draft.contact[key]} onChange={up(`contact.${key}`)} fontSize={14} fontWeight={500} color="var(--navy)" style={{ lineHeight: 1.5 }} />
+                  </div>
+                </div>
+              ))}
+              <div className="contact-item">
+                <div className="contact-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="20" height="20"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                </div>
+                <div>
+                  <span className="contact-label">Office</span>
+                  <EF value={draft.contact.address} onChange={up('contact.address')} multiline rows={2} fontSize={13} fontWeight={500} color="var(--navy)" style={{ lineHeight: 1.5, whiteSpace: 'pre-line' }} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="contact-form-wrap">
+            <div className="contact-form">
+              <h3>Send Us a Message</h3>
+              <div className="form-row">
+                <div className="form-group"><label>Your Name</label><div style={{ padding: '11px 14px', border: '1.5px solid #dde4ee', borderRadius: 8, fontSize: 14, color: '#9ca3af', background: 'var(--off-white)' }}>Rajesh Kumar</div></div>
+                <div className="form-group"><label>Phone Number</label><div style={{ padding: '11px 14px', border: '1.5px solid #dde4ee', borderRadius: 8, fontSize: 14, color: '#9ca3af', background: 'var(--off-white)' }}>+91 XXXXX XXXXX</div></div>
+              </div>
+              <div className="form-group"><label>Email Address</label><div style={{ padding: '11px 14px', border: '1.5px solid #dde4ee', borderRadius: 8, fontSize: 14, color: '#9ca3af', background: 'var(--off-white)' }}>you@company.com</div></div>
+              <div className="form-group">
+                <label>Products Required</label>
+                <div style={{ border: '1.5px solid #e5e7eb', borderRadius: 8, padding: '10px 12px', maxHeight: 200, overflowY: 'auto', display: 'flex', flexWrap: 'wrap', gap: '8px 12px', background: '#fff' }}>
+                  {['flat','tubular','structural','roofing','accessories'].flatMap(k => (draft.products?.[k] || []).map(p => p.title)).map(p => (
+                    <label key={p} style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'default', fontSize: 13, color: '#374151', fontWeight: 400, whiteSpace: 'nowrap' }}>
+                      <input type="checkbox" disabled style={{ accentColor: 'var(--orange)', width: 14, height: 14 }} />
+                      {p}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div className="form-group"><label>Message</label><div style={{ padding: '11px 14px', border: '1.5px solid #dde4ee', borderRadius: 8, fontSize: 14, color: '#9ca3af', minHeight: 72, background: 'var(--off-white)' }}>Describe your requirement, quantity, specifications…</div></div>
+              <div className="btn-primary btn-full" style={{ cursor: 'default', display: 'flex', justifyContent: 'center' }}>Send Inquiry →</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════ FOOTER ════════ */}
+      <SectionBanner label="Footer" id="ew-footer" />
+      <footer className="footer">
+        <div className="container footer-inner">
+          <div className="footer-brand">
+            <div className="logo">
+              <div style={{ width: 36, height: 36, background: 'var(--orange)', borderRadius: 6, flexShrink: 0 }} />
+              <div className="logo-text">
+                <EF value={draft.footer.brandName} onChange={up('footer.brandName')} fontSize={13} fontWeight={900} color="var(--white)" style={{ letterSpacing: '0.08em', display: 'inline-block', width: 'auto', lineHeight: 1.1 }} />
+                <span className="logo-tag">The Steel Hub</span>
+              </div>
+            </div>
+            <EF value={draft.footer.tagline} onChange={up('footer.tagline')} multiline rows={4} fontSize={13} color="rgba(255,255,255,0.45)" style={{ lineHeight: 1.75, display: 'block' }} />
+          </div>
+          <div className="footer-links">
+            <h4>Quick Links</h4>
+            <ul>{['About', 'Products', 'Brands', 'Case Studies', 'Clients', 'Contact'].map(l => <li key={l}><a>{l}</a></li>)}</ul>
+          </div>
+          <div className="footer-products">
+            <h4>Products</h4>
+            <ul>{['Flat Products', 'Tubular Products', 'Structural Steel', 'Roofing & Sheets', 'Accessories & Others'].map(l => <li key={l}>{l}</li>)}</ul>
+          </div>
+          <div className="footer-contact">
+            <h4>Contact</h4>
+            <EF value={draft.footer.presentedPhone} onChange={up('footer.presentedPhone')} fontSize={13} color="rgba(255,255,255,0.45)" style={{ display: 'block', marginBottom: 9 }} />
+            <EF value={draft.footer.presentedEmail} onChange={up('footer.presentedEmail')} fontSize={13} color="rgba(255,255,255,0.45)" style={{ display: 'block', marginBottom: 9 }} />
+            <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, marginBottom: 4 }}>Presented by:</div>
+            <EF value={draft.footer.presentedBy} onChange={up('footer.presentedBy')} fontSize={13} fontWeight={600} color="rgba(255,255,255,0.65)" style={{ display: 'block' }} />
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <div className="container">
+            <EF value={draft.footer.copyright} onChange={up('footer.copyright')} fontSize={12} color="rgba(255,255,255,0.25)" style={{ display: 'block', textAlign: 'center', letterSpacing: '0.04em' }} />
+          </div>
+        </div>
+      </footer>
 
       {/* Bottom publish bar */}
       <div style={{ background: '#0d1b2e', padding: '24px 48px', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 14, borderTop: '1px solid #1e2d42', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
@@ -1819,7 +1781,7 @@ export default function AdminDashboard() {
   }, []);
 
   if (!draft) {
-    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f5f9', fontFamily: 'system-ui, sans-serif', color: '#64748b', fontSize: 16 }}>Loading admin panel…</div>;
+    return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0b1622', fontFamily: 'system-ui, sans-serif', color: '#64748b', fontSize: 16 }}>Loading admin panel…</div>;
   }
 
   const navItems = [
@@ -1936,7 +1898,7 @@ export default function AdminDashboard() {
         </aside>
 
         {/* ═══════════════ MAIN CONTENT ═══════════════ */}
-        <main style={{ marginLeft: 220, flex: 1, minHeight: '100vh', padding: tab === 'website' ? 0 : '32px 36px', boxSizing: 'border-box', background: tab === 'website' ? '#f0f2f5' : '#f5f7fa', minWidth: 0 }}>
+        <main style={{ marginLeft: 220, flex: 1, minHeight: '100vh', padding: tab === 'website' ? 0 : '32px 36px', boxSizing: 'border-box', background: tab === 'website' ? '#f0f2f5' : '#0b1622', minWidth: 0 }}>
           {tab === 'overview'  && <OverviewTab leads={leads} customers={customers} />}
           {tab === 'leads'     && <LeadsTab leads={leads} saveLeads={saveLeads} />}
           {tab === 'customers' && <CustomersTab customers={customers} saveCustomers={saveCustomers} />}
