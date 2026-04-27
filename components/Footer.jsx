@@ -22,7 +22,9 @@ export default function Footer() {
       <div className="container footer-inner">
         <div className="footer-brand">
           <div className="logo" style={{ marginBottom: 20 }}>
-            <Image src="/logo.png" alt={brandName} width={36} height={36} style={{ objectFit: 'contain' }} />
+            <div style={{ background: '#fff', borderRadius: 8, padding: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, flexShrink: 0 }}>
+              <Image src="/logo.png" alt={brandName} width={38} height={38} style={{ objectFit: 'contain' }} />
+            </div>
             <div className="logo-text">
               <span className="logo-name">{brandName}</span>
               <span className="logo-tag">The Steel Hub</span>

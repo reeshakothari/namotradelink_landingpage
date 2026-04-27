@@ -28,8 +28,8 @@ export default function Navbar() {
         <div className="nav-accent-line" />
         <div className="container nav-inner">
           <Link href="/" className="logo">
-            <div className="logo-icon">
-              <Image src="/logo.png" alt={logoText} width={36} height={36} style={{ objectFit: 'contain' }} />
+            <div className="logo-icon" style={{ background: '#fff', borderRadius: 8, padding: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', width: 44, height: 44, flexShrink: 0 }}>
+              <Image src="/logo.png" alt={logoText} width={38} height={38} style={{ objectFit: 'contain' }} />
             </div>
             <div className="logo-text">
               <span className="logo-name">{logoText}</span>
