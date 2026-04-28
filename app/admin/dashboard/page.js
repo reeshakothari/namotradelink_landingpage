@@ -157,6 +157,17 @@ function OverviewTab({ leads, customers }) {
   );
 }
 
+/* ─── Quality config ─── */
+const QUALITY_STYLE = {
+  hot:  { bg: 'rgba(239,68,68,0.15)',  color: '#f87171', border: 'rgba(239,68,68,0.3)',  label: '🔥 Hot' },
+  warm: { bg: 'rgba(245,158,11,0.15)', color: '#fbbf24', border: 'rgba(245,158,11,0.3)', label: '✦ Warm' },
+  cold: { bg: 'rgba(99,102,241,0.15)', color: '#a5b4fc', border: 'rgba(99,102,241,0.3)', label: '❄ Cold' },
+};
+const QualityBadge = ({ value }) => {
+  const q = QUALITY_STYLE[value] || QUALITY_STYLE.warm;
+  return <span style={{ background: q.bg, color: q.color, border: `1px solid ${q.border}`, borderRadius: 99, padding: '2px 10px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' }}>{q.label}</span>;
+};
+
 /* ─── Status colour config ─── */
 const STATUS_STYLE = {
   new:       { bg: 'rgba(59,130,246,0.15)',  color: '#60a5fa', border: 'rgba(59,130,246,0.3)',  label: 'New' },
@@ -191,7 +202,7 @@ const StatusSelect = ({ value, onChange }) => {
 function LeadsTab({ leads, saveLeads }) {
   const [subTab, setSubTab] = useState('inbound');
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: 'inbound' });
+  const [form, setForm] = useState({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: 'inbound', quality: 'warm', ref_link: '' });
   const [editId, setEditId] = useState(null);
   const [sortBy, setSortBy] = useState('date_desc');
   const filtered = leads.filter(l => l.type === subTab);
@@ -216,10 +227,10 @@ function LeadsTab({ leads, saveLeads }) {
       saveLeads([...leads, newLead]);
     }
     setShowModal(false); setEditId(null);
-    setForm({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: subTab });
+    setForm({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: subTab, quality: 'warm', ref_link: '' });
   };
-  const openAdd = () => { setForm({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: subTab }); setEditId(null); setShowModal(true); };
-  const openEdit = l => { setForm({ name: l.name, phone: l.phone, company: l.company || '', requirement: l.requirement || '', notes: l.notes || '', status: l.status, type: l.type }); setEditId(l.id); setShowModal(true); };
+  const openAdd = () => { setForm({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: subTab, quality: 'warm', ref_link: '' }); setEditId(null); setShowModal(true); };
+  const openEdit = l => { setForm({ name: l.name, phone: l.phone, company: l.company || '', requirement: l.requirement || '', notes: l.notes || '', status: l.status, type: l.type, quality: l.quality || 'warm', ref_link: l.ref_link || '' }); setEditId(l.id); setShowModal(true); };
   const del = async id => {
     if (window.confirm('Delete this lead?')) {
       await fetch(`/api/leads?id=${id}`, { method: 'DELETE' });
@@ -272,18 +283,26 @@ function LeadsTab({ leads, saveLeads }) {
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead><tr style={{ background: '#0d1726', borderBottom: '2px solid #1e2d42' }}>
-              {['Name', 'Phone', 'Company', 'Requirement', 'Status', 'Date', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
+              {['Name', 'Phone', 'Requirement', 'Quality', 'Status', ...(subTab === 'outbound' ? ['Source'] : []), 'Date', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
             </tr></thead>
             <tbody>
               {sorted.map(l => (
                 <tr key={l.id} style={{ borderBottom: '1px solid #1a2538' }} onMouseEnter={e => e.currentTarget.style.background = '#1e2d42'} onMouseLeave={e => e.currentTarget.style.background = ''}>
-                  <td style={{ padding: '12px 16px', fontWeight: 600, color: '#e2e8f0', fontSize: 14 }}>{l.name}</td>
-                  <td style={{ padding: '12px 16px', color: '#94a3b8', fontSize: 14 }}>{l.phone}</td>
-                  <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 14 }}>{l.company || '—'}</td>
-                  <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 13, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.requirement || '—'}</td>
+                  <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
+                    <div style={{ fontWeight: 600, color: '#e2e8f0', fontSize: 14 }}>{l.name}</div>
+                    {l.company && <div style={{ fontSize: 11, color: '#4a5a6b', marginTop: 2 }}>{l.company}</div>}
+                  </td>
+                  <td style={{ padding: '12px 16px', color: '#94a3b8', fontSize: 14, whiteSpace: 'nowrap' }}>{l.phone}</td>
+                  <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 13, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.requirement || '—'}</td>
+                  <td style={{ padding: '12px 16px' }}><QualityBadge value={l.quality || 'warm'} /></td>
                   <td style={{ padding: '12px 16px' }}>
                     <StatusSelect value={l.status} onChange={status => updateStatus(l.id, status)} />
                   </td>
+                  {subTab === 'outbound' && (
+                    <td style={{ padding: '12px 16px', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {l.ref_link ? <a href={l.ref_link} target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa', fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>🔗 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 100, display: 'inline-block' }}>{l.ref_link.replace(/^https?:\/\//, '')}</span></a> : <span style={{ color: '#334155', fontSize: 13 }}>—</span>}
+                    </td>
+                  )}
                   <td style={{ padding: '12px 16px', color: '#4a5a6b', fontSize: 13, whiteSpace: 'nowrap' }}>{l.date}</td>
                   <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
                     <button onClick={() => openEdit(l)} style={{ background: '#1e2d42', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#94a3b8', marginRight: 6 }}>Edit</button>
@@ -302,8 +321,10 @@ function LeadsTab({ leads, saveLeads }) {
           <FInput label="Company" value={form.company} onChange={f('company')} placeholder="Company name" />
           <FInput label="Requirement" value={form.requirement} onChange={f('requirement')} placeholder="TMT Bars, Plates, etc." />
           <FInput label="Notes" value={form.notes} onChange={f('notes')} placeholder="Additional notes..." multiline rows={2} />
+          <FSelect label="Lead Quality" value={form.quality} onChange={f('quality')} options={[{ value: 'hot', label: '🔥 Hot — Ready to buy' }, { value: 'warm', label: '✦ Warm — Interested' }, { value: 'cold', label: '❄ Cold — Early stage' }]} />
           <FSelect label="Status" value={form.status} onChange={f('status')} options={[{ value: 'new', label: 'New' }, { value: 'contacted', label: 'Contacted' }, { value: 'converted', label: 'Converted' }, { value: 'closed', label: 'Closed' }]} />
           <FSelect label="Type" value={form.type} onChange={f('type')} options={[{ value: 'inbound', label: 'Inbound (came to us)' }, { value: 'outbound', label: 'Outbound (we reached out)' }]} />
+          {form.type === 'outbound' && <FInput label="Source / Reference Link" value={form.ref_link} onChange={f('ref_link')} placeholder="https://linkedin.com/in/..." />}
           <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
             <button type="submit" style={{ flex: 1, background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>{editId ? 'Save Changes' : 'Add Lead'}</button>
             <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, background: '#1e2d42', color: '#94a3b8', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Cancel</button>
@@ -1721,8 +1742,53 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
   );
 }
 
+/* ─── Login Gate ─── */
+const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'namo@2025';
+
+function LoginGate({ onAuth }) {
+  const [pw, setPw] = useState('');
+  const [err, setErr] = useState(false);
+  const submit = e => {
+    e.preventDefault();
+    if (pw === ADMIN_PASSWORD) { onAuth(); setErr(false); }
+    else { setErr(true); setTimeout(() => setErr(false), 2000); }
+  };
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0b1622', fontFamily: "'DM Sans', system-ui, sans-serif" }}>
+      <div style={{ background: '#141e2e', borderRadius: 20, padding: '44px 40px', width: 360, boxShadow: '0 32px 80px rgba(0,0,0,0.6)', border: '1px solid #1e2d42' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
+          <div style={{ width: 42, height: 42, borderRadius: '50%', background: 'linear-gradient(135deg,#f97316,#ea580c)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: 22, color: '#fff', fontFamily: "'Barlow Condensed', system-ui, sans-serif", boxShadow: '0 4px 14px rgba(249,115,22,0.45)' }}>N</div>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: 15, color: '#fff', letterSpacing: '0.12em', fontFamily: "'Barlow Condensed', system-ui, sans-serif" }}>NAMO STEEL</div>
+            <div style={{ fontSize: 10, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.2em' }}>Admin Panel</div>
+          </div>
+        </div>
+        <div style={{ fontSize: 20, fontWeight: 800, color: '#e2e8f0', marginBottom: 6 }}>Welcome back</div>
+        <div style={{ fontSize: 13, color: '#64748b', marginBottom: 28 }}>Enter your admin password to continue</div>
+        <form onSubmit={submit}>
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Password</label>
+            <input
+              type="password" value={pw} onChange={e => setPw(e.target.value)} autoFocus required
+              placeholder="Enter password"
+              style={{ width: '100%', padding: '11px 14px', border: `1.5px solid ${err ? '#f87171' : '#1e2d42'}`, borderRadius: 10, fontSize: 14, background: '#0e1a2b', color: '#e2e8f0', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.15s', fontFamily: 'inherit' }}
+              onFocus={e => e.target.style.borderColor = '#e87722'} onBlur={e => e.target.style.borderColor = err ? '#f87171' : '#1e2d42'}
+            />
+            {err && <div style={{ fontSize: 12, color: '#f87171', marginTop: 6 }}>Incorrect password. Try again.</div>}
+          </div>
+          <button type="submit" style={{ width: '100%', background: 'linear-gradient(135deg,#f97316,#ea580c)', color: '#fff', border: 'none', borderRadius: 10, padding: '12px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer', boxShadow: '0 4px 16px rgba(249,115,22,0.35)', marginTop: 4 }}>
+            Sign In →
+          </button>
+        </form>
+        <div style={{ marginTop: 20, fontSize: 11, color: '#334155', textAlign: 'center' }}>Default password: <code style={{ color: '#64748b' }}>namo@2025</code></div>
+      </div>
+    </div>
+  );
+}
+
 /* ─── Main Admin Dashboard ─── */
 export default function AdminDashboard() {
+  const [authed, setAuthed] = useState(false);
   const [tab, setTab] = useState('overview');
   const [leads, setLeadsState] = useState([]);
   const [customers, setCustomersState] = useState([]);
@@ -1730,6 +1796,7 @@ export default function AdminDashboard() {
   const [pubSaved, setPubSaved] = useState(false);
 
   useEffect(() => {
+    if (sessionStorage.getItem('namo_admin_auth') === '1') setAuthed(true);
     fetch('/api/leads')
       .then(r => r.json())
       .then(data => setLeadsState(Array.isArray(data) ? data : []))
@@ -1737,6 +1804,9 @@ export default function AdminDashboard() {
     setCustomersState(stored(CUSTOMERS_KEY, []));
     setDraft(getSiteContent());
   }, []);
+
+  const handleAuth = () => { sessionStorage.setItem('namo_admin_auth', '1'); setAuthed(true); };
+  if (!authed) return <LoginGate onAuth={handleAuth} />;
 
   const saveLeads = useCallback((l) => { setLeadsState(l); }, []);
   const saveCustomers = useCallback((c) => { setCustomersState(c); localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(c)); }, []);

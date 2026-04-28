@@ -22,6 +22,8 @@ async function ensureTable(db) {
       created_at timestamptz DEFAULT now()
     )
   `;
+  await db`ALTER TABLE leads ADD COLUMN IF NOT EXISTS quality  text DEFAULT 'warm'`;
+  await db`ALTER TABLE leads ADD COLUMN IF NOT EXISTS ref_link text`;
 }
 
 // GET /api/leads — fetch all leads
@@ -48,7 +50,7 @@ export async function POST(request) {
     const db = getDB();
     await ensureTable(db);
     const [row] = await db`
-      INSERT INTO leads (name, phone, email, company, requirement, notes, status, type, date)
+      INSERT INTO leads (name, phone, email, company, requirement, notes, status, type, date, quality, ref_link)
       VALUES (
         ${body.name ?? ''},
         ${body.phone ?? ''},
@@ -58,7 +60,9 @@ export async function POST(request) {
         ${body.notes ?? null},
         ${body.status ?? 'new'},
         ${body.type ?? 'inbound'},
-        ${body.date ?? new Date().toLocaleDateString('en-IN')}
+        ${body.date ?? new Date().toLocaleDateString('en-IN')},
+        ${body.quality ?? 'warm'},
+        ${body.ref_link ?? null}
       )
       RETURNING *
     `;
@@ -86,7 +90,9 @@ export async function PATCH(request) {
         requirement = COALESCE(${fields.requirement ?? null}, requirement),
         notes       = COALESCE(${fields.notes ?? null}, notes),
         status      = COALESCE(${fields.status ?? null}, status),
-        type        = COALESCE(${fields.type ?? null}, type)
+        type        = COALESCE(${fields.type ?? null}, type),
+        quality     = COALESCE(${fields.quality ?? null}, quality),
+        ref_link    = COALESCE(${fields.ref_link ?? null}, ref_link)
       WHERE id = ${id}
     `;
     await db.end();
