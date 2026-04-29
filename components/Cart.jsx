@@ -58,6 +58,7 @@ export default function Cart() {
               {items.map(item => (
                 <div key={item.id} style={{ display: 'flex', gap: 12, padding: '14px 0', borderBottom: '1px solid #f8fafc', alignItems: 'flex-start' }}>
                   {/* Thumbnail */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={item.img} alt={item.title} style={{ width: 60, height: 60, borderRadius: 8, objectFit: 'cover', flexShrink: 0, border: '1px solid #f1f5f9' }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 700, fontSize: 14, color: '#1a2a4a', marginBottom: 2 }}>{item.title}</div>

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 // Routes that are real pages — NOT company IDs
 const RESERVED = new Set(['about', 'products', 'brands', 'case-studies', 'clients', 'contact', 'admin', 'api', '_next', 'favicon.ico']);
 
-export function middleware(request) {
+export function proxy(request) {
   const { pathname } = request.nextUrl;
   const first = pathname.split('/')[1];
   if (RESERVED.has(first)) return NextResponse.next();

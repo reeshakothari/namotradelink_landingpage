@@ -901,6 +901,7 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
             <div style={{ fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Navbar Preview</div>
             <div style={{ background: theme.secondary || '#1B2A3B', borderRadius: 10, padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
               {branding.logoUrl
+                /* eslint-disable-next-line @next/next/no-img-element */
                 ? <img src={branding.logoUrl} alt="Logo" style={{ height: 30, objectFit: 'contain' }} />
                 : <>
                     <div style={{ width: 26, height: 26, borderRadius: 6, background: theme.primary || '#4A6FA5', flexShrink: 0 }} />
