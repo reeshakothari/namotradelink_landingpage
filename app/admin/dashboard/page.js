@@ -1797,6 +1797,17 @@ export default function AdminDashboard() {
   const [draft, setDraft] = useState(null);
   const [pubSaved, setPubSaved] = useState(false);
 
+  // Remove Next.js / Vercel dev overlay from admin panel
+  useEffect(() => {
+    const hide = () => {
+      document.querySelectorAll('nextjs-portal, [data-nextjs-dialog-overlay], #__next-build-watcher, vercel-live-feedback').forEach(el => el.remove());
+    };
+    hide();
+    const obs = new MutationObserver(hide);
+    obs.observe(document.body, { childList: true, subtree: false });
+    return () => obs.disconnect();
+  }, []);
+
   useEffect(() => {
     if (sessionStorage.getItem('namo_admin_auth') === '1') setAuthed(true);
     fetch('/api/leads')
