@@ -223,7 +223,9 @@ function LeadsTab({ leads, saveLeads }) {
       saveLeads(leads.map(l => l.id === editId ? { ...l, ...form } : l));
     } else {
       const res = await fetch('/api/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, date: new Date().toLocaleDateString('en-IN') }) });
-      const newLead = await res.json();
+      const data = await res.json();
+      // If DB is configured, use the returned row (has real id); otherwise create a local one
+      const newLead = res.ok && data.id ? data : { ...form, id: Date.now(), date: new Date().toLocaleDateString('en-IN') };
       saveLeads([...leads, newLead]);
     }
     setShowModal(false); setEditId(null);
@@ -1799,7 +1801,11 @@ export default function AdminDashboard() {
     if (sessionStorage.getItem('namo_admin_auth') === '1') setAuthed(true);
     fetch('/api/leads')
       .then(r => r.json())
-      .then(data => setLeadsState(Array.isArray(data) ? data : []))
+      .then(data => {
+        const apiLeads = Array.isArray(data) ? data : [];
+        // When DB is not configured, API returns [] — fall back to localStorage
+        setLeadsState(apiLeads.length > 0 ? apiLeads : stored(LEADS_KEY, []));
+      })
       .catch(() => setLeadsState(stored(LEADS_KEY, [])));
     setCustomersState(stored(CUSTOMERS_KEY, []));
     setDraft(getSiteContent());
@@ -1807,7 +1813,7 @@ export default function AdminDashboard() {
 
   const handleAuth = () => { sessionStorage.setItem('namo_admin_auth', '1'); setAuthed(true); };
 
-  const saveLeads = useCallback((l) => { setLeadsState(l); }, []);
+  const saveLeads = useCallback((l) => { setLeadsState(l); localStorage.setItem(LEADS_KEY, JSON.stringify(l)); }, []);
   const saveCustomers = useCallback((c) => { setCustomersState(c); localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(c)); }, []);
 
   const publishContent = useCallback(async () => {
