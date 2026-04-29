@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback, useRef } from 'react';
+import NextImage from 'next/image';
 import { getSiteContent, setSiteContent } from '@/lib/siteContent';
 import { LayoutDashboard, Users, UserCheck, Building2, Package, Palette, Pencil, ExternalLink, AlertTriangle, Layers } from 'lucide-react';
 
@@ -901,8 +902,7 @@ function BrandingTab({ draft, updateDraft, publish, saved }) {
             <div style={{ fontSize: 12, fontWeight: 600, color: '#64748b', marginBottom: 10, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Navbar Preview</div>
             <div style={{ background: theme.secondary || '#1B2A3B', borderRadius: 10, padding: '14px 20px', display: 'flex', alignItems: 'center', gap: 10 }}>
               {branding.logoUrl
-                /* eslint-disable-next-line @next/next/no-img-element */
-                ? <img src={branding.logoUrl} alt="Logo" style={{ height: 30, objectFit: 'contain' }} />
+                ? <NextImage unoptimized src={branding.logoUrl} alt="Logo" width={80} height={30} style={{ height: 30, width: 'auto', objectFit: 'contain' }} />
                 : <>
                     <div style={{ width: 26, height: 26, borderRadius: 6, background: theme.primary || '#4A6FA5', flexShrink: 0 }} />
                     <span style={{ color: '#fff', fontWeight: 900, fontSize: 14, letterSpacing: '0.08em' }}>{branding.logoText || draft?.footer?.brandName || 'NAMO STEEL'}</span>
@@ -1348,8 +1348,7 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
               <div className="hero-img-grid">
                 {[{ src: '/products/ms-hrc-plate.jpeg', label: 'Flat Products' }, { src: '/products/tmt-bars.jpeg', label: 'TMT Bars' }, { src: '/products/beams.jpeg', label: 'Structural Steel' }, { src: '/products/colour-coated-sheets.jpeg', label: 'Roofing Sheets' }].map((img, i) => (
                   <div key={i} className="hero-img-cell">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={img.src} alt={img.label} className="hero-img" style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                    <NextImage src={img.src} alt={img.label} fill className="hero-img" style={{ objectFit: 'cover' }} />
                     <div className="hero-img-overlay" />
                     <span className="hero-img-label">{img.label}</span>
                   </div>
