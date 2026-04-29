@@ -1806,14 +1806,12 @@ export default function AdminDashboard() {
   }, []);
 
   const handleAuth = () => { sessionStorage.setItem('namo_admin_auth', '1'); setAuthed(true); };
-  if (!authed) return <LoginGate onAuth={handleAuth} />;
 
   const saveLeads = useCallback((l) => { setLeadsState(l); }, []);
   const saveCustomers = useCallback((c) => { setCustomersState(c); localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(c)); }, []);
 
   const publishContent = useCallback(async () => {
     setPubSaved('saving');
-    // Update local preview immediately
     setSiteContent(draft);
     try {
       const res = await fetch('/api/content', {
@@ -1850,6 +1848,8 @@ export default function AdminDashboard() {
     });
   }, []);
 
+  // All hooks above — safe to conditionally return now
+  if (!authed) return <LoginGate onAuth={handleAuth} />;
   if (!draft) {
     return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0b1622', fontFamily: 'system-ui, sans-serif', color: '#64748b', fontSize: 16 }}>Loading admin panel…</div>;
   }
