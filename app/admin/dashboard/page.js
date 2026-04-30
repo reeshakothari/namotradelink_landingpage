@@ -1969,13 +1969,6 @@ export default function AdminDashboard() {
 
           {/* Bottom */}
           <div style={{ padding: '10px 8px 16px', borderTop: '1px solid #1e2d42' }}>
-            {/* Issues Badge */}
-            <div className="ns-issue" style={{ background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.18)', borderRadius: 8, padding: '9px 12px', marginBottom: 8, display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer', transition: 'all 0.15s' }}>
-              <AlertTriangle size={13} color="#ef4444" />
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#ef4444', flex: 1 }}>18 Issues</span>
-              <span style={{ fontSize: 13, color: 'rgba(239,68,68,0.6)', fontWeight: 700 }}>✕</span>
-            </div>
-
             <a href="/" target="_blank" rel="noopener" className="ns-viewsite" style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 12px', borderRadius: 8, color: 'rgba(255,255,255,0.38)', textDecoration: 'none', fontSize: 13, fontWeight: 500, border: '1px solid rgba(255,255,255,0.07)', transition: 'all 0.15s', marginBottom: 8 }}>
               <ExternalLink size={13} />
               <span>View Website</span>
