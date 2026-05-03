@@ -284,9 +284,10 @@ function LeadsTab({ leads, saveLeads }) {
             <div>No {subTab} leads yet. Click <strong style={{ color: '#e87722' }}>+ Add Lead</strong> to get started.</div>
           </div>
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
             <thead><tr style={{ background: '#0d1726', borderBottom: '2px solid #1e2d42' }}>
-              {['Name', 'Phone', 'Requirement', 'Quality', 'Status', ...(subTab === 'outbound' ? ['Source'] : []), 'Date', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
+              {['Name', 'Phone', 'Requirement', 'Quality', 'Status', 'Link', 'Date', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
             </tr></thead>
             <tbody>
               {sorted.map(l => (
@@ -301,11 +302,9 @@ function LeadsTab({ leads, saveLeads }) {
                   <td style={{ padding: '12px 16px' }}>
                     <StatusSelect value={l.status} onChange={status => updateStatus(l.id, status)} />
                   </td>
-                  {subTab === 'outbound' && (
-                    <td style={{ padding: '12px 16px', maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {l.ref_link ? <a href={l.ref_link} target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa', fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>🔗 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 100, display: 'inline-block' }}>{l.ref_link.replace(/^https?:\/\//, '')}</span></a> : <span style={{ color: '#334155', fontSize: 13 }}>—</span>}
-                    </td>
-                  )}
+                  <td style={{ padding: '12px 16px', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    {l.ref_link ? <a href={l.ref_link} target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa', fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>🔗 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 120, display: 'inline-block' }}>{l.ref_link.replace(/^https?:\/\//, '')}</span></a> : <span style={{ color: '#334155', fontSize: 13 }}>—</span>}
+                  </td>
                   <td style={{ padding: '12px 16px', color: '#4a5a6b', fontSize: 13, whiteSpace: 'nowrap' }}>{l.date}</td>
                   <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
                     <button onClick={() => openEdit(l)} style={{ background: '#1e2d42', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#94a3b8', marginRight: 6 }}>Edit</button>
@@ -315,6 +314,7 @@ function LeadsTab({ leads, saveLeads }) {
               ))}
             </tbody>
           </table>
+          </div>
         )}
       </div>
       <Modal open={showModal} onClose={() => setShowModal(false)} title={editId ? 'Edit Lead' : `Add ${subTab === 'inbound' ? 'Inbound' : 'Outbound'} Lead`}>
@@ -327,7 +327,7 @@ function LeadsTab({ leads, saveLeads }) {
           <FSelect label="Lead Quality" value={form.quality} onChange={f('quality')} options={[{ value: 'hot', label: '🔥 Hot — Ready to buy' }, { value: 'warm', label: '✦ Warm — Interested' }, { value: 'cold', label: '❄ Cold — Early stage' }]} />
           <FSelect label="Status" value={form.status} onChange={f('status')} options={[{ value: 'new', label: 'New' }, { value: 'contacted', label: 'Contacted' }, { value: 'converted', label: 'Converted' }, { value: 'closed', label: 'Closed' }]} />
           <FSelect label="Type" value={form.type} onChange={f('type')} options={[{ value: 'inbound', label: 'Inbound (came to us)' }, { value: 'outbound', label: 'Outbound (we reached out)' }]} />
-          {form.type === 'outbound' && <FInput label="Source / Reference Link" value={form.ref_link} onChange={f('ref_link')} placeholder="https://linkedin.com/in/..." />}
+          <FInput label="Lead URL / Reference Link" value={form.ref_link} onChange={f('ref_link')} placeholder="https://..." />
           <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
             <button type="submit" style={{ flex: 1, background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>{editId ? 'Save Changes' : 'Add Lead'}</button>
             <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, background: '#1e2d42', color: '#94a3b8', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Cancel</button>
