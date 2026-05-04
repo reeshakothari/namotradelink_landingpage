@@ -254,13 +254,13 @@ function LeadsTab({ leads, saveLeads }) {
         <button onClick={openAdd} style={{ background: '#e87722', color: '#fff', border: 'none', borderRadius: 10, padding: '10px 22px', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 2px 8px rgba(232,119,34,0.3)' }}>+ Add Lead</button>
       </div>
       <div style={{ display: 'flex', gap: 2, background: '#0d1726', borderRadius: 10, padding: 4, marginBottom: 24, width: 'fit-content', border: '1px solid #1e2d42' }}>
-        {[{ id: 'inbound', label: '↙ Inbound' }, { id: 'outbound', label: '↗ Outbound' }].map(t => (
+        {[{ id: 'inbound', label: '↙ Inbound' }, { id: 'outbound', label: '↗ Outbound' }, { id: 'prospect', label: '★ Prospects' }].map(t => (
           <button key={t.id} onClick={() => setSubTab(t.id)} style={{ padding: '8px 20px', borderRadius: 8, border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 14, background: subTab === t.id ? '#1e2d42' : 'transparent', color: subTab === t.id ? '#e2e8f0' : '#4a5a6b', boxShadow: subTab === t.id ? '0 1px 4px rgba(0,0,0,0.3)' : 'none' }}>
             {t.label} ({leads.filter(l => l.type === t.id).length})
           </button>
         ))}
       </div>
-      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 12, marginTop: -12 }}>{subTab === 'inbound' ? 'Leads coming in from your contact form, referrals, or inquiries.' : 'Prospects you are actively reaching out to.'}</p>
+      <p style={{ color: '#64748b', fontSize: 13, marginBottom: 12, marginTop: -12 }}>{subTab === 'inbound' ? 'Leads coming in from your contact form, referrals, or inquiries.' : subTab === 'outbound' ? 'Prospects you are actively reaching out to.' : 'Manually added prospects — saved here so nothing slips through the cracks.'}</p>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
         <span style={{ fontSize: 12, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Sort:</span>
         {[
@@ -281,7 +281,7 @@ function LeadsTab({ leads, saveLeads }) {
         {sorted.length === 0 ? (
           <div style={{ padding: 48, textAlign: 'center', color: '#64748b' }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>◈</div>
-            <div>No {subTab} leads yet. Click <strong style={{ color: '#e87722' }}>+ Add Lead</strong> to get started.</div>
+            <div>{subTab === 'prospect' ? 'No prospects yet. Click' : `No ${subTab} leads yet. Click`} <strong style={{ color: '#e87722' }}>+ Add Lead</strong> {subTab === 'prospect' ? 'to manually add a prospect.' : 'to get started.'}</div>
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
@@ -317,7 +317,7 @@ function LeadsTab({ leads, saveLeads }) {
           </div>
         )}
       </div>
-      <Modal open={showModal} onClose={() => setShowModal(false)} title={editId ? 'Edit Lead' : `Add ${subTab === 'inbound' ? 'Inbound' : 'Outbound'} Lead`}>
+      <Modal open={showModal} onClose={() => setShowModal(false)} title={editId ? 'Edit Lead' : subTab === 'prospect' ? 'Add Prospect' : `Add ${subTab === 'inbound' ? 'Inbound' : 'Outbound'} Lead`}>
         <form onSubmit={submit}>
           <FInput label="Full Name" value={form.name} onChange={f('name')} placeholder="Rajesh Kumar" required />
           <FInput label="Phone" value={form.phone} onChange={f('phone')} placeholder="+91 XXXXX XXXXX" required />
@@ -326,7 +326,7 @@ function LeadsTab({ leads, saveLeads }) {
           <FInput label="Notes" value={form.notes} onChange={f('notes')} placeholder="Additional notes..." multiline rows={2} />
           <FSelect label="Lead Quality" value={form.quality} onChange={f('quality')} options={[{ value: 'hot', label: '🔥 Hot — Ready to buy' }, { value: 'warm', label: '✦ Warm — Interested' }, { value: 'cold', label: '❄ Cold — Early stage' }]} />
           <FSelect label="Status" value={form.status} onChange={f('status')} options={[{ value: 'new', label: 'New' }, { value: 'contacted', label: 'Contacted' }, { value: 'converted', label: 'Converted' }, { value: 'closed', label: 'Closed' }]} />
-          <FSelect label="Type" value={form.type} onChange={f('type')} options={[{ value: 'inbound', label: 'Inbound (came to us)' }, { value: 'outbound', label: 'Outbound (we reached out)' }]} />
+          <FSelect label="Type" value={form.type} onChange={f('type')} options={[{ value: 'inbound', label: 'Inbound (came to us)' }, { value: 'outbound', label: 'Outbound (we reached out)' }, { value: 'prospect', label: 'Prospect (manual entry)' }]} />
           <FInput label="Lead URL / Reference Link" value={form.ref_link} onChange={f('ref_link')} placeholder="https://..." />
           <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
             <button type="submit" style={{ flex: 1, background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>{editId ? 'Save Changes' : 'Add Lead'}</button>
