@@ -203,7 +203,7 @@ const StatusSelect = ({ value, onChange }) => {
 function LeadsTab({ leads, saveLeads }) {
   const [subTab, setSubTab] = useState('inbound');
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: 'inbound', quality: 'warm', ref_link: '' });
+  const [form, setForm] = useState({ name: '', phone: '', email: '', company: '', company_website: '', requirement: '', notes: '', status: 'new', type: 'inbound', quality: 'warm', ref_link: '' });
   const [editId, setEditId] = useState(null);
   const [sortBy, setSortBy] = useState('date_desc');
   const filtered = leads.filter(l => l.type === subTab);
@@ -230,10 +230,10 @@ function LeadsTab({ leads, saveLeads }) {
       saveLeads([...leads, newLead]);
     }
     setShowModal(false); setEditId(null);
-    setForm({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: subTab, quality: 'warm', ref_link: '' });
+    setForm({ name: '', phone: '', email: '', company: '', company_website: '', requirement: '', notes: '', status: 'new', type: subTab, quality: 'warm', ref_link: '' });
   };
-  const openAdd = () => { setForm({ name: '', phone: '', company: '', requirement: '', notes: '', status: 'new', type: subTab, quality: 'warm', ref_link: '' }); setEditId(null); setShowModal(true); };
-  const openEdit = l => { setForm({ name: l.name, phone: l.phone, company: l.company || '', requirement: l.requirement || '', notes: l.notes || '', status: l.status, type: l.type, quality: l.quality || 'warm', ref_link: l.ref_link || '' }); setEditId(l.id); setShowModal(true); };
+  const openAdd = () => { setForm({ name: '', phone: '', email: '', company: '', company_website: '', requirement: '', notes: '', status: 'new', type: subTab, quality: 'warm', ref_link: '' }); setEditId(null); setShowModal(true); };
+  const openEdit = l => { setForm({ name: l.name, phone: l.phone || '', email: l.email || '', company: l.company || '', company_website: l.company_website || '', requirement: l.requirement || '', notes: l.notes || '', status: l.status, type: l.type, quality: l.quality || 'warm', ref_link: l.ref_link || '' }); setEditId(l.id); setShowModal(true); };
   const del = async id => {
     if (window.confirm('Delete this lead?')) {
       await fetch(`/api/leads?id=${id}`, { method: 'DELETE' });
@@ -284,50 +284,71 @@ function LeadsTab({ leads, saveLeads }) {
             <div>{subTab === 'prospect' ? 'No prospects yet. Click' : `No ${subTab} leads yet. Click`} <strong style={{ color: '#e87722' }}>+ Add Lead</strong> {subTab === 'prospect' ? 'to manually add a prospect.' : 'to get started.'}</div>
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead><tr style={{ background: '#0d1726', borderBottom: '2px solid #1e2d42' }}>
-              {['Name', 'Phone', 'Requirement', 'Quality', 'Status', 'Link', 'Date', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '12px 16px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
+              {['Name & Contact', 'Requirement', 'Quality', 'Status', 'Link', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '10px 14px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
             </tr></thead>
             <tbody>
               {sorted.map(l => (
                 <tr key={l.id} style={{ borderBottom: '1px solid #1a2538' }} onMouseEnter={e => e.currentTarget.style.background = '#1e2d42'} onMouseLeave={e => e.currentTarget.style.background = ''}>
-                  <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
-                    <div style={{ fontWeight: 600, color: '#e2e8f0', fontSize: 14 }}>{l.name}</div>
-                    {l.company && <div style={{ fontSize: 11, color: '#4a5a6b', marginTop: 2 }}>{l.company}</div>}
+                  <td style={{ padding: '10px 14px', maxWidth: 240 }}>
+                    <div style={{ fontWeight: 600, color: '#e2e8f0', fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.name}</div>
+                    {l.company && <div style={{ fontSize: 11, color: '#4a5a6b', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company}</div>}
+                    {l.phone && l.phone !== 'NOT_FOUND' && <a href={`tel:${l.phone}`} style={{ fontSize: 11, color: '#60a5fa', marginTop: 1, display: 'block', textDecoration: 'none' }}>{l.phone}</a>}
+                    {l.email && <a href={`mailto:${l.email}`} style={{ fontSize: 11, color: '#34d399', marginTop: 1, display: 'block', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.email}</a>}
+                    {l.company_website && <a href={l.company_website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: '#94a3b8', marginTop: 1, display: 'block', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company_website.replace(/^https?:\/\//, '')}</a>}
                   </td>
-                  <td style={{ padding: '12px 16px', color: '#94a3b8', fontSize: 14, whiteSpace: 'nowrap' }}>{l.phone}</td>
-                  <td style={{ padding: '12px 16px', color: '#64748b', fontSize: 13, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.requirement || '—'}</td>
-                  <td style={{ padding: '12px 16px' }}><QualityBadge value={l.quality || 'warm'} /></td>
-                  <td style={{ padding: '12px 16px' }}>
+                  <td style={{ padding: '10px 14px', color: '#64748b', fontSize: 13, maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.requirement || '—'}</td>
+                  <td style={{ padding: '10px 14px' }}><QualityBadge value={l.quality || 'warm'} /></td>
+                  <td style={{ padding: '10px 14px' }}>
                     <StatusSelect value={l.status} onChange={status => updateStatus(l.id, status)} />
                   </td>
-                  <td style={{ padding: '12px 16px', maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {l.ref_link ? <a href={l.ref_link} target="_blank" rel="noopener noreferrer" style={{ color: '#60a5fa', fontSize: 13, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}>🔗 <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 120, display: 'inline-block' }}>{l.ref_link.replace(/^https?:\/\//, '')}</span></a> : <span style={{ color: '#334155', fontSize: 13 }}>—</span>}
+                  <td style={{ padding: '10px 14px', textAlign: 'center' }}>
+                    {l.ref_link
+                      ? <a href={l.ref_link} target="_blank" rel="noopener noreferrer" title={l.ref_link} style={{ color: '#60a5fa', fontSize: 18, textDecoration: 'none' }}>🔗</a>
+                      : <span style={{ color: '#334155', fontSize: 13 }}>—</span>}
                   </td>
-                  <td style={{ padding: '12px 16px', color: '#4a5a6b', fontSize: 13, whiteSpace: 'nowrap' }}>{l.date}</td>
-                  <td style={{ padding: '12px 16px', whiteSpace: 'nowrap' }}>
-                    <button onClick={() => openEdit(l)} style={{ background: '#1e2d42', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#94a3b8', marginRight: 6 }}>Edit</button>
-                    <button onClick={() => del(l.id)} style={{ background: 'rgba(220,38,38,0.12)', border: 'none', borderRadius: 6, padding: '5px 12px', cursor: 'pointer', fontSize: 13, color: '#f87171' }}>Del</button>
+                  <td style={{ padding: '10px 14px', whiteSpace: 'nowrap' }}>
+                    <button onClick={() => openEdit(l)} style={{ background: '#1e2d42', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12, color: '#94a3b8', marginRight: 4 }}>Edit</button>
+                    <button onClick={() => del(l.id)} style={{ background: 'rgba(220,38,38,0.12)', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12, color: '#f87171' }}>Del</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          </div>
         )}
       </div>
       <Modal open={showModal} onClose={() => setShowModal(false)} title={editId ? 'Edit Lead' : subTab === 'prospect' ? 'Add Prospect' : `Add ${subTab === 'inbound' ? 'Inbound' : 'Outbound'} Lead`}>
+        {editId && (
+          <div style={{ background: '#0d1726', borderRadius: 10, padding: '12px 14px', marginBottom: 18, border: '1px solid #1e2d42' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#4a5a6b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Contact &amp; Source</div>
+            {[
+              { label: 'Phone',    value: form.phone,           href: form.phone           ? `tel:${form.phone}`           : null },
+              { label: 'Email',    value: form.email,           href: form.email           ? `mailto:${form.email}`        : null },
+              { label: 'Website',  value: form.company_website, href: form.company_website || null, external: true },
+              { label: 'Found at', value: form.ref_link,        href: form.ref_link        || null, external: true },
+            ].map(({ label, value, href, external }) => (
+              <div key={label} style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 5 }}>
+                <span style={{ fontSize: 11, color: '#4a5a6b', fontWeight: 600, minWidth: 62, flexShrink: 0 }}>{label}</span>
+                {value
+                  ? <a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} style={{ fontSize: 12, color: '#94a3b8', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{value}</a>
+                  : <span style={{ fontSize: 12, color: '#2d3f55' }}>—</span>}
+              </div>
+            ))}
+          </div>
+        )}
         <form onSubmit={submit}>
           <FInput label="Full Name" value={form.name} onChange={f('name')} placeholder="Rajesh Kumar" required />
           <FInput label="Phone" value={form.phone} onChange={f('phone')} placeholder="+91 XXXXX XXXXX" required />
+          <FInput label="Email" value={form.email} onChange={f('email')} placeholder="contact@company.com" />
           <FInput label="Company" value={form.company} onChange={f('company')} placeholder="Company name" />
+          <FInput label="Company Website" value={form.company_website} onChange={f('company_website')} placeholder="https://company.com" />
           <FInput label="Requirement" value={form.requirement} onChange={f('requirement')} placeholder="TMT Bars, Plates, etc." />
           <FInput label="Notes" value={form.notes} onChange={f('notes')} placeholder="Additional notes..." multiline rows={2} />
           <FSelect label="Lead Quality" value={form.quality} onChange={f('quality')} options={[{ value: 'hot', label: '🔥 Hot — Ready to buy' }, { value: 'warm', label: '✦ Warm — Interested' }, { value: 'cold', label: '❄ Cold — Early stage' }]} />
           <FSelect label="Status" value={form.status} onChange={f('status')} options={[{ value: 'new', label: 'New' }, { value: 'contacted', label: 'Contacted' }, { value: 'converted', label: 'Converted' }, { value: 'closed', label: 'Closed' }]} />
           <FSelect label="Type" value={form.type} onChange={f('type')} options={[{ value: 'inbound', label: 'Inbound (came to us)' }, { value: 'outbound', label: 'Outbound (we reached out)' }, { value: 'prospect', label: 'Prospect (manual entry)' }]} />
-          <FInput label="Lead URL / Reference Link" value={form.ref_link} onChange={f('ref_link')} placeholder="https://..." />
+          <FInput label="Found at (Reference URL)" value={form.ref_link} onChange={f('ref_link')} placeholder="https://..." />
           <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
             <button type="submit" style={{ flex: 1, background: '#e87722', color: '#fff', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>{editId ? 'Save Changes' : 'Add Lead'}</button>
             <button type="button" onClick={() => setShowModal(false)} style={{ flex: 1, background: '#1e2d42', color: '#94a3b8', border: 'none', borderRadius: 8, padding: '11px 0', fontWeight: 600, fontSize: 15, cursor: 'pointer' }}>Cancel</button>
@@ -1744,6 +1765,173 @@ function EditWebsiteTab({ draft, updateDraft, publish, saved }) {
   );
 }
 
+/* ─── Leads Pending Tab ─── */
+function LeadsPendingTab({ pendingLeads, setPendingLeads }) {
+  const [filter, setFilter]       = useState('pending');
+  const [detail, setDetail]       = useState(null);
+  const [reviewNotes, setReviewNotes] = useState('');
+  const [acting, setActing]       = useState(null);
+
+  const counts = {
+    all:       pendingLeads.length,
+    pending:   pendingLeads.filter(l => l.review_status === 'pending').length,
+    approved:  pendingLeads.filter(l => l.review_status === 'approved').length,
+    rejected:  pendingLeads.filter(l => l.review_status === 'rejected').length,
+    duplicate: pendingLeads.filter(l => l.review_status === 'duplicate').length,
+  };
+  const filtered = pendingLeads.filter(l => filter === 'all' || l.review_status === filter);
+
+  const statusColor = { pending: '#3b82f6', approved: '#22c55e', rejected: '#f87171', duplicate: '#64748b' };
+  const qualityColor = s => s >= 70 ? '#22c55e' : s >= 40 ? '#f59e0b' : '#64748b';
+
+  const act = async (id, action) => {
+    setActing(id);
+    const res = await fetch('/api/leads-pending', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, action, review_notes: reviewNotes || null }),
+    });
+    if (res.ok) {
+      const newStatus = action === 'approve' ? 'approved' : action === 'reject' ? 'rejected' : 'duplicate';
+      setPendingLeads(prev => prev.map(l => l.id === id ? { ...l, review_status: newStatus, reviewed_at: new Date().toISOString() } : l));
+      if (detail?.id === id) { setDetail(null); setReviewNotes(''); }
+    }
+    setActing(null);
+  };
+
+  const ContactSource = ({ lead }) => (
+    <div style={{ background: '#0d1726', borderRadius: 10, padding: '12px 14px', marginBottom: 16, border: '1px solid #1e2d42' }}>
+      <div style={{ fontSize: 10, fontWeight: 700, color: '#4a5a6b', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 10 }}>Contact &amp; Source</div>
+      {[
+        { label: 'Phone',    value: lead.phone,                          href: lead.phone           ? `tel:${lead.phone}`           : null },
+        { label: 'Email',    value: lead.email,                          href: lead.email           ? `mailto:${lead.email}`        : null },
+        { label: 'Website',  value: lead.company_website,                href: lead.company_website || null, external: true },
+        { label: 'Found at', value: lead.ref_link || lead.source_url,    href: lead.ref_link || lead.source_url || null, external: true },
+      ].map(({ label, value, href, external }) => (
+        <div key={label} style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 5 }}>
+          <span style={{ fontSize: 11, color: '#4a5a6b', fontWeight: 600, minWidth: 62, flexShrink: 0 }}>{label}</span>
+          {value
+            ? <a href={href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} style={{ fontSize: 12, color: '#94a3b8', textDecoration: 'none', wordBreak: 'break-all' }}>{value}</a>
+            : <span style={{ fontSize: 12, color: '#2d3f55' }}>—</span>}
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+        <div>
+          <h1 style={{ margin: 0, fontSize: 22, fontWeight: 800, color: '#e2e8f0', letterSpacing: '-0.02em' }}>Review Queue</h1>
+          <p style={{ margin: '4px 0 0', color: '#64748b', fontSize: 13 }}>Auto-discovered leads awaiting your approval</p>
+        </div>
+        {counts.pending > 0 && <div style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.25)', borderRadius: 10, padding: '8px 16px', fontSize: 13, fontWeight: 700, color: '#60a5fa' }}>{counts.pending} pending</div>}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 20 }}>
+        {[['Pending','pending','#3b82f6'],['Approved','approved','#22c55e'],['Rejected','rejected','#f87171'],['Duplicate','duplicate','#64748b']].map(([label,key,color]) => (
+          <div key={key} style={{ background: '#141e2e', borderRadius: 12, padding: '14px 16px', border: `1px solid ${color}22` }}>
+            <div style={{ fontSize: 28, fontWeight: 800, color, lineHeight: 1 }}>{counts[key]}</div>
+            <div style={{ fontSize: 12, color: '#64748b', marginTop: 4, fontWeight: 600 }}>{label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap' }}>
+        {['all','pending','approved','rejected','duplicate'].map(f => (
+          <button key={f} onClick={() => setFilter(f)} style={{ padding: '5px 14px', borderRadius: 6, border: `1px solid ${filter === f ? '#e87722' : '#1e2d42'}`, background: filter === f ? '#e87722' : '#141e2e', color: filter === f ? '#fff' : '#64748b', fontSize: 12, fontWeight: 600, cursor: 'pointer', textTransform: 'capitalize' }}>
+            {f} ({counts[f] ?? 0})
+          </button>
+        ))}
+      </div>
+
+      <div style={{ background: '#141e2e', borderRadius: 16, border: '1px solid #1e2d42', overflow: 'hidden' }}>
+        {filtered.length === 0 ? (
+          <div style={{ padding: 48, textAlign: 'center', color: '#64748b' }}>
+            <div style={{ fontSize: 36, marginBottom: 10 }}>✓</div>
+            <div>No {filter} leads in the queue.</div>
+          </div>
+        ) : (
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead><tr style={{ background: '#0d1726', borderBottom: '2px solid #1e2d42' }}>
+              {['Name & Contact','Signal / Source','Requirement','Score','Status','Actions'].map(h => (
+                <th key={h} style={{ textAlign: 'left', padding: '10px 14px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>
+              ))}
+            </tr></thead>
+            <tbody>
+              {filtered.map(l => (
+                <tr key={l.id} onClick={() => { setDetail(l); setReviewNotes(''); }}
+                  style={{ borderBottom: '1px solid #1a2538', cursor: 'pointer' }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#1e2d42'}
+                  onMouseLeave={e => e.currentTarget.style.background = ''}>
+                  <td style={{ padding: '10px 14px', maxWidth: 220 }}>
+                    <div style={{ fontWeight: 600, color: '#e2e8f0', fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.name || '—'}</div>
+                    {l.company && <div style={{ fontSize: 11, color: '#4a5a6b', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company}</div>}
+                    {l.phone && l.phone !== 'NOT_FOUND' && <a href={`tel:${l.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 11, color: '#60a5fa', marginTop: 1, display: 'block', textDecoration: 'none' }}>{l.phone}</a>}
+                    {l.email && <a href={`mailto:${l.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 11, color: '#34d399', marginTop: 1, display: 'block', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.email}</a>}
+                    {l.company_website && <a href={l.company_website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontSize: 11, color: '#94a3b8', marginTop: 1, display: 'block', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company_website.replace(/^https?:\/\//,'')}</a>}
+                  </td>
+                  <td style={{ padding: '10px 14px', maxWidth: 160 }}>
+                    {l.signal_type && <div style={{ fontSize: 11, fontWeight: 600, color: '#f59e0b', marginBottom: 2 }}>{l.signal_type}</div>}
+                    {l.source && <div style={{ fontSize: 11, color: '#4a5a6b', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.source}</div>}
+                    {(l.ref_link || l.source_url) && <a href={l.ref_link || l.source_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} title={l.ref_link || l.source_url} style={{ fontSize: 16, color: '#60a5fa', textDecoration: 'none' }}>🔗</a>}
+                  </td>
+                  <td style={{ padding: '10px 14px', color: '#64748b', fontSize: 13, maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.requirement || '—'}</td>
+                  <td style={{ padding: '10px 14px' }}>
+                    <span style={{ fontWeight: 700, fontSize: 15, color: qualityColor(l.quality_score ?? 0) }}>{l.quality_score ?? 0}</span>
+                  </td>
+                  <td style={{ padding: '10px 14px' }}>
+                    <span style={{ background: (statusColor[l.review_status]||'#64748b')+'22', color: statusColor[l.review_status]||'#64748b', border: `1px solid ${(statusColor[l.review_status]||'#64748b')}44`, borderRadius: 99, padding: '2px 10px', fontSize: 11, fontWeight: 600, textTransform: 'capitalize', whiteSpace: 'nowrap' }}>{l.review_status}</span>
+                  </td>
+                  <td style={{ padding: '10px 14px', whiteSpace: 'nowrap' }} onClick={e => e.stopPropagation()}>
+                    {l.review_status === 'pending' ? (
+                      <>
+                        <button onClick={() => act(l.id,'approve')} disabled={acting===l.id} style={{ background: 'rgba(34,197,94,0.12)', border: '1px solid rgba(34,197,94,0.25)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12, color: '#22c55e', marginRight: 4, fontWeight: 600 }}>✓</button>
+                        <button onClick={() => act(l.id,'reject')}  disabled={acting===l.id} style={{ background: 'rgba(248,113,113,0.1)', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12, color: '#f87171', marginRight: 4 }}>✕</button>
+                        <button onClick={() => act(l.id,'duplicate')} disabled={acting===l.id} style={{ background: '#1e2d42', border: 'none', borderRadius: 6, padding: '4px 10px', cursor: 'pointer', fontSize: 12, color: '#64748b' }}>Dup</button>
+                      </>
+                    ) : <span style={{ fontSize: 12, color: '#334155' }}>—</span>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <Modal open={!!detail} onClose={() => { setDetail(null); setReviewNotes(''); }} title="Lead Detail">
+        {detail && (
+          <>
+            <ContactSource lead={detail} />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+              {[['Name',detail.name],['Company',detail.company],['Signal',detail.signal_type],['Source',detail.source],['Quality Score',detail.quality_score??0],['Status',detail.review_status],['Requirement',detail.requirement],['Created',detail.created_at ? new Date(detail.created_at).toLocaleDateString('en-IN') : null]].map(([label,value]) => (
+                <div key={label}>
+                  <div style={{ fontSize: 10, fontWeight: 700, color: '#4a5a6b', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 3 }}>{label}</div>
+                  <div style={{ fontSize: 13, color: '#cbd5e1' }}>{value || '—'}</div>
+                </div>
+              ))}
+            </div>
+            {detail.notes && <div style={{ marginBottom: 16 }}><div style={{ fontSize: 10, fontWeight: 700, color: '#4a5a6b', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 4 }}>Notes</div><div style={{ fontSize: 13, color: '#94a3b8', background: '#0d1726', borderRadius: 8, padding: '8px 12px' }}>{detail.notes}</div></div>}
+            {detail.review_status === 'pending' && (
+              <>
+                <div style={{ marginBottom: 12 }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#64748b', marginBottom: 5, textTransform: 'uppercase', letterSpacing: '0.06em' }}>Review Notes (optional)</label>
+                  <textarea value={reviewNotes} onChange={e => setReviewNotes(e.target.value)} placeholder="Add a note…" rows={2} style={{ width: '100%', padding: '9px 12px', border: '1.5px solid #1e2d42', borderRadius: 9, fontSize: 14, fontFamily: 'inherit', boxSizing: 'border-box', outline: 'none', color: '#e2e8f0', background: '#0e1a2b', resize: 'vertical' }} />
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button onClick={() => act(detail.id,'approve')}   style={{ flex: 1, background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', color: '#22c55e', borderRadius: 8, padding: '10px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>✓ Approve</button>
+                  <button onClick={() => act(detail.id,'reject')}    style={{ flex: 1, background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.2)', color: '#f87171', borderRadius: 8, padding: '10px 0', fontWeight: 700, fontSize: 14, cursor: 'pointer' }}>✕ Reject</button>
+                  <button onClick={() => act(detail.id,'duplicate')} style={{ background: '#1e2d42', border: 'none', color: '#64748b', borderRadius: 8, padding: '10px 14px', fontWeight: 600, fontSize: 13, cursor: 'pointer' }}>Dup</button>
+                </div>
+              </>
+            )}
+          </>
+        )}
+      </Modal>
+    </div>
+  );
+}
+
 /* ─── Login Gate ─── */
 const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'namo@2025';
 
@@ -1794,6 +1982,7 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState('overview');
   const [leads, setLeadsState] = useState([]);
   const [customers, setCustomersState] = useState([]);
+  const [pendingLeads, setPendingLeads] = useState([]);
   const [draft, setDraft] = useState(null);
   const [pubSaved, setPubSaved] = useState(false);
 
@@ -1814,10 +2003,13 @@ export default function AdminDashboard() {
       .then(r => r.json())
       .then(data => {
         const apiLeads = Array.isArray(data) ? data : [];
-        // When DB is not configured, API returns [] — fall back to localStorage
         setLeadsState(apiLeads.length > 0 ? apiLeads : stored(LEADS_KEY, []));
       })
       .catch(() => setLeadsState(stored(LEADS_KEY, [])));
+    fetch('/api/leads-pending')
+      .then(r => r.json())
+      .then(data => setPendingLeads(Array.isArray(data) ? data : []))
+      .catch(() => setPendingLeads([]));
     setCustomersState(stored(CUSTOMERS_KEY, []));
     setDraft(getSiteContent());
   }, []);
@@ -1871,10 +2063,12 @@ export default function AdminDashboard() {
     return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0b1622', fontFamily: 'system-ui, sans-serif', color: '#64748b', fontSize: 16 }}>Loading admin panel…</div>;
   }
 
+  const pendingCount = pendingLeads.filter(l => l.review_status === 'pending').length;
   const navItems = [
     { id: 'overview',  label: 'Overview',     icon: <LayoutDashboard size={15} /> },
-    { id: 'leads',     label: 'Leads',        icon: <Users size={15} />,       count: leads.length },
-    { id: 'customers', label: 'Customers',    icon: <UserCheck size={15} />,   count: customers.length },
+    { id: 'leads',     label: 'Leads',        icon: <Users size={15} />,           count: leads.length },
+    { id: 'review',    label: 'Review',       icon: <AlertTriangle size={15} />,   count: pendingCount },
+    { id: 'customers', label: 'Customers',    icon: <UserCheck size={15} />,       count: customers.length },
     { id: 'companies', label: 'Companies',    icon: <Building2 size={15} /> },
     { id: 'products',  label: 'Products',     icon: <Package size={15} /> },
     { id: 'branding',  label: 'Branding',     icon: <Layers size={15} /> },
@@ -1936,7 +2130,7 @@ export default function AdminDashboard() {
               const isWebsite = item.id === 'website';
               return (
                 <div key={item.id}>
-                  {idx === 5 && <div style={{ height: 1, background: '#1e2d42', margin: '8px 4px 10px' }} />}
+                  {idx === 6 && <div style={{ height: 1, background: '#1e2d42', margin: '8px 4px 10px' }} />}
                   <button
                     className="ns-sidebar-btn"
                     data-active={String(isActive)}
@@ -1981,6 +2175,7 @@ export default function AdminDashboard() {
         <main style={{ marginLeft: 220, flex: 1, minHeight: '100vh', padding: tab === 'website' ? 0 : '32px 36px', boxSizing: 'border-box', background: tab === 'website' ? '#f0f2f5' : '#0b1622', minWidth: 0 }}>
           {tab === 'overview'  && <OverviewTab leads={leads} customers={customers} />}
           {tab === 'leads'     && <LeadsTab leads={leads} saveLeads={saveLeads} />}
+          {tab === 'review'    && <LeadsPendingTab pendingLeads={pendingLeads} setPendingLeads={setPendingLeads} />}
           {tab === 'customers' && <CustomersTab customers={customers} saveCustomers={saveCustomers} />}
           {tab === 'companies' && <CompaniesTab />}
           {tab === 'branding'  && <BrandingTab draft={draft} updateDraft={updateDraft} publish={publishContent} saved={pubSaved} />}

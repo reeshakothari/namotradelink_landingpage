@@ -11,3 +11,6 @@ out/
 # OS
 .DS_Store
 Thumbs.db
+
+# Template config — contains passwords; track per-client repo, not the template
+# content.md

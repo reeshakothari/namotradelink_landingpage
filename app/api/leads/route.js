@@ -31,17 +31,18 @@ export async function POST(request) {
     const { data, error } = await getSupabase()
       .from('leads')
       .insert({
-        name:        body.name        ?? '',
-        phone:       body.phone       ?? '',
-        email:       body.email       ?? null,
-        company:     body.company     ?? null,
-        requirement: body.requirement ?? null,
-        notes:       body.notes       ?? null,
-        status:      body.status      ?? 'new',
-        type:        body.type        ?? 'inbound',
-        date:        body.date        ?? new Date().toLocaleDateString('en-IN'),
-        quality:     body.quality     ?? 'warm',
-        ref_link:    body.ref_link    ?? null,
+        name:             body.name             ?? '',
+        phone:            body.phone            ?? '',
+        email:            body.email            ?? null,
+        company:          body.company          ?? null,
+        company_website:  body.company_website  ?? null,
+        requirement:      body.requirement      ?? null,
+        notes:            body.notes            ?? null,
+        status:           body.status           ?? 'new',
+        type:             body.type             ?? 'inbound',
+        date:             body.date             ?? new Date().toLocaleDateString('en-IN'),
+        quality:          body.quality          ?? 'warm',
+        ref_link:         body.ref_link         ?? null,
       })
       .select()
       .single();
@@ -59,7 +60,7 @@ export async function PATCH(request) {
     return Response.json({ ok: false, error: 'DB_NOT_CONFIGURED' }, { status: 500 });
   try {
     const { id, ...fields } = await request.json();
-    const allowed = ['name','phone','email','company','requirement','notes','status','type','quality','ref_link'];
+    const allowed = ['name','phone','email','company','company_website','requirement','notes','status','type','quality','ref_link'];
     const update = Object.fromEntries(
       allowed.filter(k => fields[k] !== undefined).map(k => [k, fields[k]])
     );
