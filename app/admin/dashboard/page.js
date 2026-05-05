@@ -286,7 +286,7 @@ function LeadsTab({ leads, saveLeads }) {
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead><tr style={{ background: '#0d1726', borderBottom: '2px solid #1e2d42' }}>
-              {['Name & Contact', 'Requirement', 'Quality', 'Status', 'Link', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '10px 14px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
+              {['Name & Contact', 'Website', 'Requirement', 'Quality', 'Status', 'Link', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '10px 14px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
             </tr></thead>
             <tbody>
               {sorted.map(l => (
@@ -296,7 +296,14 @@ function LeadsTab({ leads, saveLeads }) {
                     {l.company && <div style={{ fontSize: 11, color: '#4a5a6b', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company}</div>}
                     {l.phone && l.phone !== 'NOT_FOUND' && <a href={`tel:${l.phone}`} style={{ fontSize: 11, color: '#60a5fa', marginTop: 1, display: 'block', textDecoration: 'none' }}>{l.phone}</a>}
                     {l.email && <a href={`mailto:${l.email}`} style={{ fontSize: 11, color: '#34d399', marginTop: 1, display: 'block', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.email}</a>}
-                    {l.company_website && <a href={l.company_website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: '#94a3b8', marginTop: 1, display: 'block', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company_website.replace(/^https?:\/\//, '')}</a>}
+                  </td>
+                  <td style={{ padding: '10px 14px', maxWidth: 180 }} onClick={e => e.stopPropagation()}>
+                    {l.company_website
+                      ? <a href={l.company_website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: '#60a5fa', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5 }}>
+                          <span style={{ fontSize: 13 }}>🌐</span>
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company_website.replace(/^https?:\/\//, '')}</span>
+                        </a>
+                      : <span style={{ color: '#334155', fontSize: 13 }}>—</span>}
                   </td>
                   <td style={{ padding: '10px 14px', color: '#64748b', fontSize: 13, maxWidth: 140, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.requirement || '—'}</td>
                   <td style={{ padding: '10px 14px' }}><QualityBadge value={l.quality || 'warm'} /></td>
@@ -1854,7 +1861,7 @@ function LeadsPendingTab({ pendingLeads, setPendingLeads }) {
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead><tr style={{ background: '#0d1726', borderBottom: '2px solid #1e2d42' }}>
-              {['Name & Contact','Signal / Source','Requirement','Score','Status','Actions'].map(h => (
+              {['Name & Contact','Website','Signal / Source','Requirement','Score','Status','Actions'].map(h => (
                 <th key={h} style={{ textAlign: 'left', padding: '10px 14px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>
               ))}
             </tr></thead>
@@ -1869,7 +1876,14 @@ function LeadsPendingTab({ pendingLeads, setPendingLeads }) {
                     {l.company && <div style={{ fontSize: 11, color: '#4a5a6b', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company}</div>}
                     {l.phone && l.phone !== 'NOT_FOUND' && <a href={`tel:${l.phone}`} onClick={e => e.stopPropagation()} style={{ fontSize: 11, color: '#60a5fa', marginTop: 1, display: 'block', textDecoration: 'none' }}>{l.phone}</a>}
                     {l.email && <a href={`mailto:${l.email}`} onClick={e => e.stopPropagation()} style={{ fontSize: 11, color: '#34d399', marginTop: 1, display: 'block', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.email}</a>}
-                    {l.company_website && <a href={l.company_website} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontSize: 11, color: '#94a3b8', marginTop: 1, display: 'block', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company_website.replace(/^https?:\/\//,'')}</a>}
+                  </td>
+                  <td style={{ padding: '10px 14px', maxWidth: 180 }} onClick={e => e.stopPropagation()}>
+                    {l.company_website
+                      ? <a href={l.company_website} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: '#60a5fa', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 5 }}>
+                          <span style={{ fontSize: 13 }}>🌐</span>
+                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company_website.replace(/^https?:\/\//,'')}</span>
+                        </a>
+                      : <span style={{ color: '#334155', fontSize: 13 }}>—</span>}
                   </td>
                   <td style={{ padding: '10px 14px', maxWidth: 160 }}>
                     {l.signal_type && <div style={{ fontSize: 11, fontWeight: 600, color: '#f59e0b', marginBottom: 2 }}>{l.signal_type}</div>}
