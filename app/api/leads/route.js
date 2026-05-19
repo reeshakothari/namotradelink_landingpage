@@ -1,52 +1,32 @@
-import { createClient } from '@supabase/supabase-js';
-
 export const dynamic = 'force-dynamic';
 
-function getSupabase() {
-  return createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+// Proxy to the VAI platform — no Supabase credentials needed on the client site.
+// VAI_API_URL and VAI_SITE_ID are set as Vercel env vars during site creation.
+
+function getApiBase() {
+  return (process.env.VAI_API_URL ?? 'https://www.vai.ad').replace(/\/$/, '');
 }
 
-// GET /api/leads — fetch all leads
-export async function GET() {
-  if (!process.env.SUPABASE_URL) return Response.json([]);
-  try {
-    const { data, error } = await getSupabase()
-      .from('leads')
-      .select('*')
-      .order('created_at', { ascending: false });
-    if (error) throw error;
-    return Response.json(data ?? []);
-  } catch (err) {
-    console.error('[leads GET]', err);
-    return Response.json([]);
-  }
-}
-
-// POST /api/leads — insert a new lead
+// POST /api/leads — submit a new lead from the contact form
 export async function POST(request) {
-  if (!process.env.SUPABASE_URL)
-    return Response.json({ ok: false, error: 'DB_NOT_CONFIGURED' }, { status: 500 });
   try {
     const body = await request.json();
-    const { data, error } = await getSupabase()
-      .from('leads')
-      .insert({
-        name:             body.name             ?? '',
-        phone:            body.phone            ?? '',
-        email:            body.email            ?? null,
-        company:          body.company          ?? null,
-        company_website:  body.company_website  ?? null,
-        requirement:      body.requirement      ?? null,
-        notes:            body.notes            ?? null,
-        status:           body.status           ?? 'new',
-        type:             body.type             ?? 'inbound',
-        date:             body.date             ?? new Date().toLocaleDateString('en-IN'),
-        quality:          body.quality          ?? 'warm',
-        ref_link:         body.ref_link         ?? null,
-      })
-      .select()
-      .single();
-    if (error) throw error;
+    const res = await fetch(`${getApiBase()}/api/collect-lead`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        site_id:      process.env.VAI_SITE_ID ?? 'unknown',
+        company_name: process.env.VAI_COMPANY_NAME ?? null,
+        name:         body.name        ?? '',
+        phone:        body.phone       ?? '',
+        email:        body.email       ?? null,
+        requirement:  body.requirement ?? null,
+        notes:        body.notes       ?? null,
+        source:       'website_form',
+      }),
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error ?? 'Failed');
     return Response.json(data);
   } catch (err) {
     console.error('[leads POST]', err);
@@ -54,43 +34,34 @@ export async function POST(request) {
   }
 }
 
-// PATCH /api/leads — update a lead by id
-export async function PATCH(request) {
-  if (!process.env.SUPABASE_URL)
-    return Response.json({ ok: false, error: 'DB_NOT_CONFIGURED' }, { status: 500 });
+// GET /api/leads — fetch leads for this site (used by dashboard)
+export async function GET() {
   try {
-    const { id, ...fields } = await request.json();
-    const allowed = ['name','phone','email','company','company_website','requirement','notes','status','type','quality','ref_link'];
-    const update = Object.fromEntries(
-      allowed.filter(k => fields[k] !== undefined).map(k => [k, fields[k]])
+    const site_id = process.env.VAI_SITE_ID ?? 'unknown';
+    const res = await fetch(
+      `${getApiBase()}/api/collect-lead?site_id=${encodeURIComponent(site_id)}`,
+      { cache: 'no-store' }
     );
-    const { error } = await getSupabase()
-      .from('leads')
-      .update(update)
-      .eq('id', id);
-    if (error) throw error;
-    return Response.json({ ok: true });
+    const data = await res.json();
+    return Response.json(data.leads ?? []);
   } catch (err) {
-    console.error('[leads PATCH]', err);
-    return Response.json({ ok: false, error: String(err?.message ?? err) }, { status: 500 });
+    console.error('[leads GET]', err);
+    return Response.json([]);
   }
 }
 
-// DELETE /api/leads?id=X — delete a lead
-export async function DELETE(request) {
-  if (!process.env.SUPABASE_URL)
-    return Response.json({ ok: false, error: 'DB_NOT_CONFIGURED' }, { status: 500 });
+// PATCH /api/leads — update a lead
+export async function PATCH(request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
-    const { error } = await getSupabase()
-      .from('leads')
-      .delete()
-      .eq('id', id);
-    if (error) throw error;
-    return Response.json({ ok: true });
+    const body = await request.json();
+    const res = await fetch(`${getApiBase()}/api/collect-lead`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    return Response.json(data);
   } catch (err) {
-    console.error('[leads DELETE]', err);
     return Response.json({ ok: false, error: String(err?.message ?? err) }, { status: 500 });
   }
 }
