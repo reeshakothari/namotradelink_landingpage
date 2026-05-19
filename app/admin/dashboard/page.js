@@ -278,24 +278,30 @@ function LeadsTab({ leads, saveLeads }) {
         ))}
       </div>
       <div style={{ background: '#141e2e', borderRadius: 16, border: '1px solid #1e2d42', overflow: 'hidden' }}>
-        {sorted.length === 0 ? (
-          <div style={{ padding: 48, textAlign: 'center', color: '#64748b' }}>
-            <div style={{ fontSize: 40, marginBottom: 12 }}>◈</div>
-            <div>{subTab === 'prospect' ? 'No prospects yet. Click' : `No ${subTab} leads yet. Click`} <strong style={{ color: '#e87722' }}>+ Add Lead</strong> {subTab === 'prospect' ? 'to manually add a prospect.' : 'to get started.'}</div>
-          </div>
-        ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead><tr style={{ background: '#0d1726', borderBottom: '2px solid #1e2d42' }}>
-              {['Name & Contact', 'Website', 'Requirement', 'Quality', 'Status', 'Link', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '10px 14px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
+              {['Name', 'Contact', 'Date', 'Website', 'Requirement', 'Quality', 'Status', 'Link', 'Actions'].map(h => <th key={h} style={{ textAlign: 'left', padding: '10px 14px', fontSize: 11, color: '#4a5a6b', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', whiteSpace: 'nowrap' }}>{h}</th>)}
             </tr></thead>
             <tbody>
-              {sorted.map(l => (
+              {sorted.length === 0 ? (
+                <tr><td colSpan={9} style={{ padding: 48, textAlign: 'center', color: '#64748b' }}>
+                  <div style={{ fontSize: 40, marginBottom: 12 }}>◈</div>
+                  <div>{subTab === 'prospect' ? 'No prospects yet. Click' : `No ${subTab} leads yet. Click`} <strong style={{ color: '#e87722' }}>+ Add Lead</strong> {subTab === 'prospect' ? 'to manually add a prospect.' : 'to get started.'}</div>
+                </td></tr>
+              ) : sorted.map(l => (
                 <tr key={l.id} style={{ borderBottom: '1px solid #1a2538' }} onMouseEnter={e => e.currentTarget.style.background = '#1e2d42'} onMouseLeave={e => e.currentTarget.style.background = ''}>
-                  <td style={{ padding: '10px 14px', maxWidth: 240 }}>
+                  <td style={{ padding: '10px 14px', maxWidth: 200 }}>
                     <div style={{ fontWeight: 600, color: '#e2e8f0', fontSize: 13, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.name}</div>
                     {l.company && <div style={{ fontSize: 11, color: '#4a5a6b', marginTop: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.company}</div>}
-                    {l.phone && l.phone !== 'NOT_FOUND' && <a href={`tel:${l.phone}`} style={{ fontSize: 11, color: '#60a5fa', marginTop: 1, display: 'block', textDecoration: 'none' }}>{l.phone}</a>}
                     {l.email && <a href={`mailto:${l.email}`} style={{ fontSize: 11, color: '#34d399', marginTop: 1, display: 'block', textDecoration: 'none', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{l.email}</a>}
+                  </td>
+                  <td style={{ padding: '10px 14px', whiteSpace: 'nowrap' }}>
+                    {l.phone && l.phone !== 'NOT_FOUND'
+                      ? <a href={`tel:${l.phone}`} style={{ fontSize: 13, color: '#60a5fa', textDecoration: 'none' }}>{l.phone}</a>
+                      : <span style={{ color: '#334155', fontSize: 13 }}>—</span>}
+                  </td>
+                  <td style={{ padding: '10px 14px', whiteSpace: 'nowrap', fontSize: 12, color: '#94a3b8' }}>
+                    {l.date || (l.created_at ? new Date(l.created_at).toLocaleDateString('en-IN') : '—')}
                   </td>
                   <td style={{ padding: '10px 14px', maxWidth: 180 }} onClick={e => e.stopPropagation()}>
                     {l.company_website
@@ -323,7 +329,6 @@ function LeadsTab({ leads, saveLeads }) {
               ))}
             </tbody>
           </table>
-        )}
       </div>
       <Modal open={showModal} onClose={() => setShowModal(false)} title={editId ? 'Edit Lead' : subTab === 'prospect' ? 'Add Prospect' : `Add ${subTab === 'inbound' ? 'Inbound' : 'Outbound'} Lead`}>
         {editId && (
@@ -1984,7 +1989,7 @@ function LoginGate({ onAuth }) {
             Sign In →
           </button>
         </form>
-        <div style={{ marginTop: 20, fontSize: 11, color: '#334155', textAlign: 'center' }}>Default password: <code style={{ color: '#64748b' }}>namo@2025</code></div>
+
       </div>
     </div>
   );
